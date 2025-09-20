@@ -1,0 +1,29 @@
+<svg width="1920" height="1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#001122;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#002244;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#001133;stop-opacity:1" />
+    </linearGradient>
+    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+      <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#004466" stroke-width="1" opacity="0.3"/>
+    </pattern>
+  </defs>
+
+  <!-- Fondo principal -->
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+
+  <!-- Grid tecnológico -->
+  <rect width="100%" height="100%" fill="url(#grid)"/>
+
+  <!-- Elementos decorativos -->
+  <circle cx="200" cy="200" r="100" fill="none" stroke="#00ffff" stroke-width="2" opacity="0.3"/>
+  <circle cx="1720" cy="880" r="150" fill="none" stroke="#00ffff" stroke-width="2" opacity="0.2"/>
+
+  <!-- Líneas de conexión -->
+  <line x1="0" y1="540" x2="1920" y2="540" stroke="#00aaff" stroke-width="1" opacity="0.4"/>
+  <line x1="960" y1="0" x2="960" y2="1080" stroke="#00aaff" stroke-width="1" opacity="0.4"/>
+
+  <!-- Texto de fondo -->
+  <text x="960" y="100" text-anchor="middle" fill="#004488" font-family="Arial" font-size="24" opacity="0.5">SISTEMA ROBÓTICO NIVEL 12</text>
+</svg>
