@@ -6,6 +6,14 @@ class Fallos extends Phaser.Scene {
         this.energyRings = [];
         this.dataStreams = [];
         this.hologramElements = [];
+        this.isMobile = this.checkMobileDevice();
+    }
+
+    // Función para detectar dispositivos móviles
+    checkMobileDevice() {
+        return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent) || 
+               window.innerWidth <= 768 || 
+               window.innerHeight <= 768;
     }
 
     // Premium particle effects for enhanced visual feedback
@@ -113,6 +121,12 @@ class Fallos extends Phaser.Scene {
         const gameWidth = this.scale.width;
         const gameHeight = this.scale.height;
 
+        // Asegurar que las dimensiones sean válidas
+        if (gameWidth <= 0 || gameHeight <= 0) {
+            console.warn('Invalid game dimensions, using fallback values');
+            return;
+        }
+
         // Create space background
         this.createSpaceBackground(gameWidth, gameHeight);
 
@@ -130,29 +144,39 @@ class Fallos extends Phaser.Scene {
     }
 
     createAdvancedTextures() {
-        // Deep space background
+        // Obtener dimensiones dinámicas basadas en el dispositivo
+        const textureWidth = this.isMobile ? Math.max(this.scale.width, 800) : 1920;
+        const textureHeight = this.isMobile ? Math.max(this.scale.height, 600) : 1080;
+
+        // Deep space background con dimensiones responsivas
         const spaceGradient = this.add.graphics();
         spaceGradient.fillGradientStyle(0x000011, 0x001122, 0x000033, 0x002244, 1);
-        spaceGradient.fillRect(0, 0, 1920, 1080);
-        spaceGradient.generateTexture('spaceBackground', 1920, 1080);
+        spaceGradient.fillRect(0, 0, textureWidth, textureHeight);
+        spaceGradient.generateTexture('spaceBackground', textureWidth, textureHeight);
         spaceGradient.destroy();
 
-        // Holographic panel
+        // Holographic panel con tamaño adaptativo
+        const panelWidth = this.isMobile ? Math.min(300, this.scale.width * 0.8) : 400;
+        const panelHeight = this.isMobile ? Math.min(250, this.scale.height * 0.6) : 300;
+        
         const holoPanel = this.add.graphics();
         holoPanel.lineStyle(2, 0x00ffff, 0.8);
         holoPanel.fillStyle(0x001133, 0.3);
-        holoPanel.fillRoundedRect(0, 0, 400, 300, 10);
-        holoPanel.strokeRoundedRect(0, 0, 400, 300, 10);
-        holoPanel.generateTexture('holoPanel', 400, 300);
+        holoPanel.fillRoundedRect(0, 0, panelWidth, panelHeight, 10);
+        holoPanel.strokeRoundedRect(0, 0, panelWidth, panelHeight, 10);
+        holoPanel.generateTexture('holoPanel', panelWidth, panelHeight);
         holoPanel.destroy();
 
-        // Energy button
+        // Energy button con tamaño adaptativo
+        const buttonWidth = this.isMobile ? 140 : 180;
+        const buttonHeight = this.isMobile ? 35 : 45;
+        
         const energyBtn = this.add.graphics();
         energyBtn.lineStyle(2, 0x00ff88, 1);
         energyBtn.fillGradientStyle(0x003366, 0x006699, 0x0099cc, 0x00ccff, 0.8);
-        energyBtn.fillRoundedRect(0, 0, 180, 45, 8);
-        energyBtn.strokeRoundedRect(0, 0, 180, 45, 8);
-        energyBtn.generateTexture('energyButton', 180, 45);
+        energyBtn.fillRoundedRect(0, 0, buttonWidth, buttonHeight, 8);
+        energyBtn.strokeRoundedRect(0, 0, buttonWidth, buttonHeight, 8);
+        energyBtn.generateTexture('energyButton', buttonWidth, buttonHeight);
         energyBtn.destroy();
     }
 
@@ -205,12 +229,30 @@ class Fallos extends Phaser.Scene {
     }
 
     createSpaceBackground(gameWidth, gameHeight) {
-        // Main space background
-        this.background = this.add.image(gameWidth / 2, gameHeight / 2, 'spaceBackground');
-        this.background.setDisplaySize(gameWidth, gameHeight);
+        // Validar dimensiones antes de crear el fondo
+        if (!gameWidth || !gameHeight || gameWidth <= 0 || gameHeight <= 0) {
+            console.warn('Invalid dimensions for background creation');
+            gameWidth = this.isMobile ? 800 : 1920;
+            gameHeight = this.isMobile ? 600 : 1080;
+        }
 
-        // Add stars
-        for (let i = 0; i < 100; i++) {
+        // Main space background con manejo de errores
+        try {
+            this.background = this.add.image(gameWidth / 2, gameHeight / 2, 'spaceBackground');
+            this.background.setDisplaySize(gameWidth, gameHeight);
+            
+            // Asegurar que el fondo sea visible
+            this.background.setAlpha(1);
+            this.background.setDepth(-100);
+        } catch (error) {
+            console.error('Error creating space background:', error);
+            // Crear un fondo de respaldo
+            this.createFallbackBackground(gameWidth, gameHeight);
+        }
+
+        // Add stars con cantidad adaptativa para móviles
+        const starCount = this.isMobile ? 50 : 100;
+        for (let i = 0; i < starCount; i++) {
             const star = this.add.circle(
                 Phaser.Math.Between(0, gameWidth),
                 Phaser.Math.Between(0, gameHeight),
@@ -219,10 +261,15 @@ class Fallos extends Phaser.Scene {
                 Phaser.Math.FloatBetween(0.3, 1)
             );
 
+            // Animación más suave para móviles
+            const duration = this.isMobile ? 
+                Phaser.Math.Between(2000, 4000) : 
+                Phaser.Math.Between(1000, 3000);
+
             this.tweens.add({
                 targets: star,
                 alpha: 0.2,
-                duration: Phaser.Math.Between(1000, 3000),
+                duration: duration,
                 yoyo: true,
                 repeat: -1,
                 ease: 'Sine.easeInOut'
@@ -231,6 +278,15 @@ class Fallos extends Phaser.Scene {
 
         // Animated grid overlay
         this.createEnergyGrid(gameWidth, gameHeight);
+    }
+
+    // Método de respaldo para crear un fondo básico
+    createFallbackBackground(gameWidth, gameHeight) {
+        const fallbackBg = this.add.graphics();
+        fallbackBg.fillGradientStyle(0x000011, 0x001122, 0x000033, 0x002244, 1);
+        fallbackBg.fillRect(0, 0, gameWidth, gameHeight);
+        fallbackBg.setDepth(-100);
+        this.background = fallbackBg;
     }
 
     createEnergyGrid(gameWidth, gameHeight) {
@@ -373,37 +429,49 @@ class Fallos extends Phaser.Scene {
     createHolographicTitle(gameWidth, gameHeight) {
         const titleY = gameHeight * 0.15;
 
+        // Tamaños de fuente adaptativos para móviles
+        const titleFontSize = this.isMobile ? 
+            Math.min(gameWidth * 0.04, 24) : 
+            Math.min(gameWidth * 0.025, 30);
+        
+        const subtitleFontSize = this.isMobile ? 
+            Math.min(gameWidth * 0.025, 16) : 
+            Math.min(gameWidth * 0.015, 18);
+
         // Main title
         this.titleText = this.add.text(gameWidth / 2, titleY, 'SISTEMA DE ENERGÍA CRÍTICO', {
-            fontSize: `${Math.min(gameWidth * 0.025, 30)}px`, // Tamaño aún más reducido
+            fontSize: `${titleFontSize}px`,
             fontFamily: 'Arial Black',
             fill: '#00ffff',
             stroke: '#003366',
-            strokeThickness: 2,
+            strokeThickness: this.isMobile ? 1 : 2,
             shadow: {
                 offsetX: 0,
                 offsetY: 0,
                 color: '#00ffff',
-                blur: 10,
+                blur: this.isMobile ? 5 : 10,
                 stroke: true,
                 fill: true
-            }
+            },
+            wordWrap: { width: gameWidth * 0.9, useAdvancedWrap: true }
         }).setOrigin(0.5);
 
         // Subtitle with typewriter effect
-        this.subtitleText = this.add.text(gameWidth / 2, titleY + 40, '', { // Espaciado aún más reducido
-            fontSize: `${Math.min(gameWidth * 0.015, 18)}px`, // Tamaño aún más reducido
+        const subtitleY = this.isMobile ? titleY + 30 : titleY + 40;
+        this.subtitleText = this.add.text(gameWidth / 2, subtitleY, '', {
+            fontSize: `${subtitleFontSize}px`,
             fontFamily: 'Arial',
             fill: '#00ff88',
             stroke: '#002244',
-            strokeThickness: 1
+            strokeThickness: this.isMobile ? 0.5 : 1,
+            wordWrap: { width: gameWidth * 0.8, useAdvancedWrap: true }
         }).setOrigin(0.5);
 
         const subtitleContent = 'Detecta y corrige los fallos en el código';
         let charIndex = 0;
 
         const typewriterTimer = this.time.addEvent({
-            delay: 100,
+            delay: this.isMobile ? 150 : 100, // Más lento en móviles para mejor rendimiento
             callback: () => {
                 this.subtitleText.text += subtitleContent[charIndex];
                 charIndex++;
@@ -423,7 +491,7 @@ class Fallos extends Phaser.Scene {
             alpha: 1,
             scaleX: 1,
             scaleY: 1,
-            duration: 1000,
+            duration: this.isMobile ? 1500 : 1000, // Animación más lenta en móviles
             ease: 'Back.easeOut'
         });
     }
@@ -450,21 +518,27 @@ class Fallos extends Phaser.Scene {
     }
 
     createCodePanel(gameWidth, gameHeight) {
-        const panelX = gameWidth * 0.25;
-        const panelY = gameHeight * 0.5; // Match diagnostic panel Y position
+        // Posicionamiento adaptativo para móviles
+        const panelX = this.isMobile ? gameWidth * 0.3 : gameWidth * 0.25;
+        const panelY = gameHeight * 0.5;
 
-        // Code panel background
+        // Code panel background con escala adaptativa
         this.codePanel = this.add.image(panelX, panelY, 'holoPanel');
-        this.codePanel.setScale(1.1); // Tamaño aumentado para que el código no se salga
+        const panelScale = this.isMobile ? 0.9 : 1.1;
+        this.codePanel.setScale(panelScale);
         this.codePanel.setAlpha(0);
 
-        // Code title
-        this.add.text(panelX, panelY - 110, 'CÓDIGO DEL SISTEMA', { // Posición ajustada para panel aún más pequeño
-            fontSize: `${Math.min(gameWidth * 0.02, 22)}px`, // Tamaño aún más reducido
+        // Code title con tamaño adaptativo
+        const titleFontSize = this.isMobile ? 
+            Math.min(gameWidth * 0.03, 18) : 
+            Math.min(gameWidth * 0.02, 22);
+
+        this.add.text(panelX, panelY - (this.isMobile ? 90 : 110), 'CÓDIGO DEL SISTEMA', {
+            fontSize: `${titleFontSize}px`,
             fontFamily: 'Arial Bold',
             fill: '#00ffff',
             stroke: '#003366',
-            strokeThickness: 1
+            strokeThickness: this.isMobile ? 0.5 : 1
         }).setOrigin(0.5);
 
         // Code content with syntax highlighting
@@ -484,20 +558,275 @@ class Fallos extends Phaser.Scene {
         ];
 
         this.codeElements = [];
+        
+        // Configuración adaptativa para el código
+        const codeFontSize = this.isMobile ? 
+            Math.min(gameWidth * 0.015, 12) : 
+            Math.min(gameWidth * 0.01, 14);
+        
+        const lineSpacing = this.isMobile ? 16 : 20;
+        const leftOffset = this.isMobile ? -100 : -120;
+        const topOffset = this.isMobile ? -70 : -80;
+        const wrapWidth = this.isMobile ? 200 : 240;
+
         codeLines.forEach((line, index) => {
             const codeText = this.add.text(
-                panelX - 120, // Posición ajustada para panel aún más pequeño
-                panelY - 80 + index * 20, // Espaciado aún más reducido
+                panelX + leftOffset,
+                panelY + topOffset + index * lineSpacing,
                 line,
                 {
-                    fontSize: `${Math.min(gameWidth * 0.01, 14)}px`, // Tamaño de fuente aún más reducido
+                    fontSize: `${codeFontSize}px`,
                     fontFamily: 'Courier New',
                     fill: this.getCodeColor(line),
                     backgroundColor: 'rgba(0, 20, 40, 0.3)',
-                    padding: { x: 5, y: 2 }, // Padding aún más reducido
-                    wordWrap: { width: 240, useAdvancedWrap: true } // Ancho aún más reducido para panel más pequeño
+                    padding: { x: this.isMobile ? 3 : 5, y: this.isMobile ? 1 : 2 },
+                    wordWrap: { width: wrapWidth, useAdvancedWrap: true }
                 }
             );
+
+            this.codeElements.push(codeText);
+            codeText.setAlpha(0);
+        });
+
+        // Animate code panel entrance
+        this.tweens.add({
+            targets: this.codePanel,
+            alpha: 1,
+            x: panelX + 20,
+            duration: 800,
+            delay: 500,
+            ease: 'Power2.easeOut'
+        });
+
+        // Animate code lines
+        this.codeElements.forEach((element, index) => {
+            this.tweens.add({
+                targets: element,
+                alpha: 1,
+                x: element.x + 20,
+                duration: 400,
+                delay: 800 + index * 150,
+                ease: 'Power2.easeOut'
+            });
+        });
+    }
+
+    getCodeColor(line) {
+        // All code lines will be white - no special colors
+        return '#ffffff';
+    }
+
+    createQuestionPanel(gameWidth, gameHeight) {
+        // Posicionamiento adaptativo
+        const panelX = this.isMobile ? gameWidth * 0.7 : gameWidth * 0.75;
+        const panelY = gameHeight * 0.5;
+
+        // Question panel background
+        this.questionPanel = this.add.image(panelX, panelY, 'holoPanel');
+        const panelScale = this.isMobile ? 0.85 : 1;
+        this.questionPanel.setScale(panelScale);
+        this.questionPanel.setAlpha(0);
+
+        // Question title con tamaño adaptativo
+        const titleFontSize = this.isMobile ? 
+            Math.min(gameWidth * 0.025, 16) : 
+            Math.min(gameWidth * 0.018, 20);
+
+        this.add.text(panelX, panelY - (this.isMobile ? 90 : 110), 'DIAGNÓSTICO', {
+            fontSize: `${titleFontSize}px`,
+            fontFamily: 'Arial Bold',
+            fill: '#ff6b6b',
+            stroke: '#330000',
+            strokeThickness: this.isMobile ? 0.5 : 1
+        }).setOrigin(0.5);
+
+        // Question text con tamaño adaptativo
+        const questionFontSize = this.isMobile ? 
+            Math.min(gameWidth * 0.02, 14) : 
+            Math.min(gameWidth * 0.014, 16);
+
+        this.add.text(panelX, panelY - (this.isMobile ? 50 : 60), '¿Cuál es el error en el código?', {
+            fontSize: `${questionFontSize}px`,
+            fontFamily: 'Arial',
+            fill: '#ffffff',
+            wordWrap: { width: this.isMobile ? 250 : 300, useAdvancedWrap: true }
+        }).setOrigin(0.5);
+
+        // Answer options con configuración adaptativa
+        const options = [
+            'Falta punto y coma',
+            'Variable mal declarada',
+            'Error en la condición',
+            'Función incorrecta'
+        ];
+
+        const buttonFontSize = this.isMobile ? 
+            Math.min(gameWidth * 0.018, 12) : 
+            Math.min(gameWidth * 0.012, 14);
+        
+        const buttonSpacing = this.isMobile ? 35 : 40;
+        const startY = this.isMobile ? -10 : 0;
+
+        options.forEach((option, index) => {
+            const buttonY = panelY + startY + index * buttonSpacing;
+            
+            // Button background
+            const buttonBg = this.add.image(panelX, buttonY, 'energyButton');
+            const buttonScale = this.isMobile ? 0.8 : 1;
+            buttonBg.setScale(buttonScale);
+            buttonBg.setAlpha(0);
+            buttonBg.setInteractive();
+
+            // Button text
+            const buttonText = this.add.text(panelX, buttonY, option, {
+                fontSize: `${buttonFontSize}px`,
+                fontFamily: 'Arial',
+                fill: '#ffffff',
+                wordWrap: { width: this.isMobile ? 120 : 160, useAdvancedWrap: true }
+            }).setOrigin(0.5);
+            buttonText.setAlpha(0);
+
+            // Hover effects adaptados para móviles
+            if (this.isMobile) {
+                // Para móviles, usar eventos de toque
+                buttonBg.on('pointerdown', () => {
+                    this.createHoverParticles(panelX, buttonY);
+                    buttonBg.setTint(0x44ff44);
+                });
+                
+                buttonBg.on('pointerup', () => {
+                    buttonBg.clearTint();
+                });
+            } else {
+                // Para desktop, mantener hover tradicional
+                buttonBg.on('pointerover', () => {
+                    this.createHoverParticles(panelX, buttonY);
+                    buttonBg.setTint(0x44ff44);
+                });
+
+                buttonBg.on('pointerout', () => {
+                    buttonBg.clearTint();
+                });
+            }
+
+            buttonBg.on('pointerdown', () => {
+                this.checkAnswer(index, buttonBg, buttonText, gameWidth, gameHeight);
+            });
+
+            // Store references
+            this.questionElements = this.questionElements || [];
+            this.questionElements.push(buttonBg, buttonText);
+
+            // Entrance animation con timing adaptativo
+            const delay = this.isMobile ? index * 200 : index * 150;
+            this.tweens.add({
+                targets: [buttonBg, buttonText],
+                alpha: 1,
+                duration: this.isMobile ? 800 : 600,
+                delay: delay,
+                ease: 'Power2.easeOut'
+            });
+        });
+
+        // Panel entrance animation
+        this.tweens.add({
+            targets: this.questionPanel,
+            alpha: 1,
+            scaleX: panelScale,
+            scaleY: panelScale,
+            duration: this.isMobile ? 1200 : 1000,
+            ease: 'Back.easeOut'
+        });
+    }
+
+    addCursor() {
+        this.cursor = this.add.text(
+            this.subtitleText.x + this.subtitleText.width / 2 + 5,
+            this.subtitleText.y,
+            '|',
+            {
+                fontSize: `${Math.min(this.scale.width * 0.02, 24)}px`,
+                fontFamily: 'Arial',
+                fill: '#00ff88'
+            }
+        ).setOrigin(0, 0.5);
+
+        this.tweens.add({
+            targets: this.cursor,
+            alpha: 0,
+            duration: 500,
+            yoyo: true,
+            repeat: -1
+        });
+    }
+
+    createCodePanel(gameWidth, gameHeight) {
+        // Posicionamiento adaptativo para móviles
+        const panelX = this.isMobile ? gameWidth * 0.3 : gameWidth * 0.25;
+        const panelY = gameHeight * 0.5;
+
+        // Code panel background con escala adaptativa
+        this.codePanel = this.add.image(panelX, panelY, 'holoPanel');
+        const panelScale = this.isMobile ? 0.9 : 1.1;
+        this.codePanel.setScale(panelScale);
+        this.codePanel.setAlpha(0);
+
+        // Code title con tamaño adaptativo
+        const titleFontSize = this.isMobile ? 
+            Math.min(gameWidth * 0.03, 18) : 
+            Math.min(gameWidth * 0.02, 22);
+
+        this.add.text(panelX, panelY - (this.isMobile ? 90 : 110), 'CÓDIGO DEL SISTEMA', {
+            fontSize: `${titleFontSize}px`,
+            fontFamily: 'Arial Bold',
+            fill: '#00ffff',
+            stroke: '#003366',
+            strokeThickness: this.isMobile ? 0.5 : 1
+        }).setOrigin(0.5);
+
+        // Code content with syntax highlighting
+        const codeLines = [
+          "int bateria = 9;",
+          "int sensorVoltaje = A0;",
+          "void setup() {",
+          "  pinMode(bateria, OUTPUT);",
+          "}",
+          "void loop() {",
+          "  int voltaje = analogRead(sensorVoltaje);",
+          " ",
+          "  if (voltaje < 500) {",
+          "    digitalWrite(bateria, HIGH);",
+          "   }",
+          "}",
+        ];
+
+        this.codeElements = [];
+        
+        // Configuración adaptativa para el código
+        const codeFontSize = this.isMobile ? 
+            Math.min(gameWidth * 0.015, 12) : 
+            Math.min(gameWidth * 0.01, 14);
+        
+        const lineSpacing = this.isMobile ? 16 : 20;
+        const leftOffset = this.isMobile ? -100 : -120;
+        const topOffset = this.isMobile ? -70 : -80;
+        const wrapWidth = this.isMobile ? 200 : 240;
+
+        codeLines.forEach((line, index) => {
+            const codeText = this.add.text(
+                panelX + leftOffset,
+                panelY + topOffset + index * lineSpacing,
+                line,
+                {
+                    fontSize: `${codeFontSize}px`,
+                    fontFamily: 'Courier New',
+                    fill: this.getCodeColor(line),
+                    backgroundColor: 'rgba(0, 20, 40, 0.3)',
+                    padding: { x: this.isMobile ? 3 : 5, y: this.isMobile ? 1 : 2 },
+                    wordWrap: { width: wrapWidth, useAdvancedWrap: true }
+                }
+            );
+
             this.codeElements.push(codeText);
             codeText.setAlpha(0);
         });
@@ -1343,21 +1672,23 @@ void loop() {
     }
 
     createDataStreams(gameWidth, gameHeight) {
-        // No particles - completely clean background
+        // No particles - completely clean background for better mobile performance
     }
 
     startCoreAnimations() {
-        // Gentle core pulse animation
+        // Gentle core pulse animation con configuración adaptativa
+        const pulseDelay = this.isMobile ? 6000 : 4000; // Menos frecuente en móviles
+        
         this.time.addEvent({
-            delay: 4000,
+            delay: pulseDelay,
             callback: () => {
                 if (this.centralOrb) {
                     this.tweens.add({
                         targets: this.centralOrb,
-                        scaleX: 1.6,
-                        scaleY: 1.6,
+                        scaleX: this.isMobile ? 1.4 : 1.6,
+                        scaleY: this.isMobile ? 1.4 : 1.6,
                         alpha: 0.8,
-                        duration: 800,
+                        duration: this.isMobile ? 1000 : 800,
                         yoyo: true,
                         ease: 'Sine.easeInOut'
                     });
@@ -1366,19 +1697,21 @@ void loop() {
             loop: true
         });
 
-        // Subtle energy ring effect
+        // Subtle energy ring effect con menos intensidad en móviles
+        const ringDelay = this.isMobile ? 8000 : 6000;
+        
         this.time.addEvent({
-            delay: 6000,
+            delay: ringDelay,
             callback: () => {
                 this.energyRings.forEach((ring, index) => {
                     this.tweens.add({
                         targets: ring,
-                        alpha: 0.6,
-                        scaleX: ring.scaleX + 0.3,
-                        scaleY: ring.scaleY + 0.3,
-                        duration: 1000,
+                        alpha: this.isMobile ? 0.4 : 0.6,
+                        scaleX: ring.scaleX + (this.isMobile ? 0.2 : 0.3),
+                        scaleY: ring.scaleY + (this.isMobile ? 0.2 : 0.3),
+                        duration: this.isMobile ? 1200 : 1000,
                         yoyo: true,
-                        delay: index * 300,
+                        delay: index * (this.isMobile ? 400 : 300),
                         ease: 'Power2.easeOut'
                     });
                 });
@@ -1388,9 +1721,11 @@ void loop() {
     }
 
     update() {
-        // Smooth particle rotation for ambient effect
-        this.dataStreams.forEach(stream => {
-            stream.rotation += 0.01; // Slower, more elegant rotation
-        });
+        // Smooth particle rotation for ambient effect con menos carga en móviles
+        if (!this.isMobile) {
+            this.dataStreams.forEach(stream => {
+                stream.rotation += 0.01; // Slower, more elegant rotation
+            });
+        }
     }
 }
