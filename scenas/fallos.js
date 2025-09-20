@@ -121,63 +121,190 @@ class Fallos extends Phaser.Scene {
         const gameWidth = this.scale.width;
         const gameHeight = this.scale.height;
 
-        // Asegurar que las dimensiones sean válidas
+        // Debug logging para móviles
+        if (this.isMobile) {
+            console.log('🔍 FALLOS SCENE - Mobile Debug Info:', {
+                gameWidth,
+                gameHeight,
+                scaleWidth: this.scale.width,
+                scaleHeight: this.scale.height,
+                windowWidth: window.innerWidth,
+                windowHeight: window.innerHeight,
+                devicePixelRatio: window.devicePixelRatio || 1
+            });
+        }
+
+        // Asegurar que las dimensiones sean válidas con valores mínimos más altos
         if (gameWidth <= 0 || gameHeight <= 0) {
-            console.warn('Invalid game dimensions, using fallback values');
+            console.error('❌ FALLOS SCENE - Invalid game dimensions detected:', { gameWidth, gameHeight });
+            console.log('🔧 Using emergency fallback dimensions...');
+            
+            // Usar dimensiones de emergencia más robustas
+            const fallbackWidth = this.isMobile ? Math.max(window.innerWidth, 800) : 1200;
+            const fallbackHeight = this.isMobile ? Math.max(window.innerHeight, 600) : 800;
+            
+            this.createEmergencyScene(fallbackWidth, fallbackHeight);
             return;
         }
 
-        // Create space background
-        this.createSpaceBackground(gameWidth, gameHeight);
+        try {
+            console.log('🚀 FALLOS SCENE - Starting scene creation...');
+            
+            // Create space background
+            this.createSpaceBackground(gameWidth, gameHeight);
 
-        // Create central energy core (the main focus)
-        this.createEnergyCore(gameWidth, gameHeight);
+            // Create central energy core (the main focus)
+            this.createEnergyCore(gameWidth, gameHeight);
 
-        // Create holographic interface
-        this.createHolographicInterface(gameWidth, gameHeight);
+            // Create holographic interface
+            this.createHolographicInterface(gameWidth, gameHeight);
 
-        // Create data streams
-        this.createDataStreams(gameWidth, gameHeight);
+            // Create data streams
+            this.createDataStreams(gameWidth, gameHeight);
 
-        // Start all animations
-        this.startCoreAnimations();
+            // Start all animations
+            this.startCoreAnimations();
+            
+            console.log('✅ FALLOS SCENE - Scene creation completed successfully');
+            
+        } catch (error) {
+            console.error('❌ FALLOS SCENE - Critical error during scene creation:', error);
+            this.createEmergencyScene(gameWidth, gameHeight);
+        }
+    }
+
+    // Escena de emergencia para casos críticos
+    createEmergencyScene(width, height) {
+        console.log('🚨 FALLOS SCENE - Creating emergency scene...');
+        
+        // Fondo sólido simple
+        const emergencyBg = this.add.graphics();
+        emergencyBg.fillStyle(0x001122, 1);
+        emergencyBg.fillRect(0, 0, width, height);
+        emergencyBg.setDepth(-100);
+        
+        // Texto de emergencia
+        const emergencyText = this.add.text(width / 2, height / 2, 'SISTEMA DE ENERGÍA\nCARGANDO...', {
+            fontSize: this.isMobile ? '24px' : '32px',
+            fontFamily: 'Arial',
+            fill: '#00ffff',
+            align: 'center',
+            stroke: '#003366',
+            strokeThickness: 2
+        }).setOrigin(0.5);
+        
+        // Animación simple de carga
+        this.tweens.add({
+            targets: emergencyText,
+            alpha: 0.3,
+            duration: 1000,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
+        
+        // Intentar recrear la escena después de un delay
+        this.time.delayedCall(3000, () => {
+            console.log('🔄 FALLOS SCENE - Attempting scene recreation...');
+            this.scene.restart();
+        });
     }
 
     createAdvancedTextures() {
-        // Obtener dimensiones dinámicas basadas en el dispositivo
-        const textureWidth = this.isMobile ? Math.max(this.scale.width, 800) : 1920;
-        const textureHeight = this.isMobile ? Math.max(this.scale.height, 600) : 1080;
+        try {
+            console.log('🎨 FALLOS SCENE - Creating advanced textures...');
+            
+            // Obtener dimensiones dinámicas basadas en el dispositivo
+            const textureWidth = this.isMobile ? Math.max(this.scale.width, 800) : 1920;
+            const textureHeight = this.isMobile ? Math.max(this.scale.height, 600) : 1080;
+            
+            console.log('📐 Texture dimensions:', { textureWidth, textureHeight, isMobile: this.isMobile });
 
-        // Deep space background con dimensiones responsivas
-        const spaceGradient = this.add.graphics();
-        spaceGradient.fillGradientStyle(0x000011, 0x001122, 0x000033, 0x002244, 1);
-        spaceGradient.fillRect(0, 0, textureWidth, textureHeight);
-        spaceGradient.generateTexture('spaceBackground', textureWidth, textureHeight);
-        spaceGradient.destroy();
+            // Deep space background con dimensiones responsivas
+            const spaceGradient = this.add.graphics();
+            spaceGradient.fillGradientStyle(0x000011, 0x001122, 0x000033, 0x002244, 1);
+            spaceGradient.fillRect(0, 0, textureWidth, textureHeight);
+            
+            // Verificar que la textura se puede generar
+            if (textureWidth > 0 && textureHeight > 0) {
+                spaceGradient.generateTexture('spaceBackground', textureWidth, textureHeight);
+                console.log('✅ Space background texture created successfully');
+            } else {
+                console.error('❌ Invalid texture dimensions for spaceBackground');
+            }
+            spaceGradient.destroy();
 
-        // Holographic panel con tamaño adaptativo
-        const panelWidth = this.isMobile ? Math.min(300, this.scale.width * 0.8) : 400;
-        const panelHeight = this.isMobile ? Math.min(250, this.scale.height * 0.6) : 300;
+            // Holographic panel con tamaño adaptativo
+            const panelWidth = this.isMobile ? Math.min(300, this.scale.width * 0.8) : 400;
+            const panelHeight = this.isMobile ? Math.min(250, this.scale.height * 0.6) : 300;
+            
+            const holoPanel = this.add.graphics();
+            holoPanel.lineStyle(2, 0x00ffff, 0.8);
+            holoPanel.fillStyle(0x001133, 0.3);
+            holoPanel.fillRoundedRect(0, 0, panelWidth, panelHeight, 10);
+            holoPanel.strokeRoundedRect(0, 0, panelWidth, panelHeight, 10);
+            
+            if (panelWidth > 0 && panelHeight > 0) {
+                holoPanel.generateTexture('holoPanel', panelWidth, panelHeight);
+                console.log('✅ Holo panel texture created successfully');
+            }
+            holoPanel.destroy();
+
+            // Energy button con tamaño adaptativo
+            const buttonWidth = this.isMobile ? 140 : 180;
+            const buttonHeight = this.isMobile ? 35 : 45;
+            
+            const energyBtn = this.add.graphics();
+            energyBtn.lineStyle(2, 0x00ff88, 1);
+            energyBtn.fillGradientStyle(0x003366, 0x006699, 0x0099cc, 0x00ccff, 0.8);
+            energyBtn.fillRoundedRect(0, 0, buttonWidth, buttonHeight, 8);
+            energyBtn.strokeRoundedRect(0, 0, buttonWidth, buttonHeight, 8);
+            
+            if (buttonWidth > 0 && buttonHeight > 0) {
+                energyBtn.generateTexture('energyButton', buttonWidth, buttonHeight);
+                console.log('✅ Energy button texture created successfully');
+            }
+            energyBtn.destroy();
+            
+            console.log('🎨 Advanced textures creation completed');
+            
+        } catch (error) {
+            console.error('❌ FALLOS SCENE - Error creating advanced textures:', error);
+            this.createFallbackTextures();
+        }
+    }
+
+    // Texturas de respaldo simples
+    createFallbackTextures() {
+        console.log('🔧 FALLOS SCENE - Creating fallback textures...');
         
-        const holoPanel = this.add.graphics();
-        holoPanel.lineStyle(2, 0x00ffff, 0.8);
-        holoPanel.fillStyle(0x001133, 0.3);
-        holoPanel.fillRoundedRect(0, 0, panelWidth, panelHeight, 10);
-        holoPanel.strokeRoundedRect(0, 0, panelWidth, panelHeight, 10);
-        holoPanel.generateTexture('holoPanel', panelWidth, panelHeight);
-        holoPanel.destroy();
-
-        // Energy button con tamaño adaptativo
-        const buttonWidth = this.isMobile ? 140 : 180;
-        const buttonHeight = this.isMobile ? 35 : 45;
-        
-        const energyBtn = this.add.graphics();
-        energyBtn.lineStyle(2, 0x00ff88, 1);
-        energyBtn.fillGradientStyle(0x003366, 0x006699, 0x0099cc, 0x00ccff, 0.8);
-        energyBtn.fillRoundedRect(0, 0, buttonWidth, buttonHeight, 8);
-        energyBtn.strokeRoundedRect(0, 0, buttonWidth, buttonHeight, 8);
-        energyBtn.generateTexture('energyButton', buttonWidth, buttonHeight);
-        energyBtn.destroy();
+        try {
+            // Fondo simple
+            const simpleBg = this.add.graphics();
+            simpleBg.fillStyle(0x001122, 1);
+            simpleBg.fillRect(0, 0, 800, 600);
+            simpleBg.generateTexture('spaceBackground', 800, 600);
+            simpleBg.destroy();
+            
+            // Panel simple
+            const simplePanel = this.add.graphics();
+            simplePanel.fillStyle(0x003366, 0.8);
+            simplePanel.fillRect(0, 0, 300, 200);
+            simplePanel.generateTexture('holoPanel', 300, 200);
+            simplePanel.destroy();
+            
+            // Botón simple
+            const simpleBtn = this.add.graphics();
+            simpleBtn.fillStyle(0x006699, 1);
+            simpleBtn.fillRect(0, 0, 120, 30);
+            simpleBtn.generateTexture('energyButton', 120, 30);
+            simpleBtn.destroy();
+            
+            console.log('✅ Fallback textures created successfully');
+            
+        } catch (error) {
+            console.error('❌ FALLOS SCENE - Critical error creating fallback textures:', error);
+        }
     }
 
     createCoreTextures() {
