@@ -363,19 +363,11 @@ class Fallos extends Phaser.Scene {
             gameHeight = this.isMobile ? 600 : 1080;
         }
 
-        // Main space background con manejo de errores
-        try {
-            this.background = this.add.image(gameWidth / 2, gameHeight / 2, 'spaceBackground');
-            this.background.setDisplaySize(gameWidth, gameHeight);
-            
-            // Asegurar que el fondo sea visible
-            this.background.setAlpha(1);
-            this.background.setDepth(-100);
-        } catch (error) {
-            console.error('Error creating space background:', error);
-            // Crear un fondo de respaldo
-            this.createFallbackBackground(gameWidth, gameHeight);
-        }
+        // Crear fondo directamente con gráficos en lugar de textura
+        console.log('🎨 Creating space background with graphics...');
+        
+        // Crear fondo de respaldo siempre (más confiable)
+        this.createFallbackBackground(gameWidth, gameHeight);
 
         // Add stars con cantidad adaptativa para móviles
         const starCount = this.isMobile ? 50 : 100;
@@ -449,22 +441,31 @@ class Fallos extends Phaser.Scene {
         // Main core container
         this.coreContainer = this.add.container(centerX, centerY);
 
-        // Central orb (the main focus)
-        this.centralOrb = this.add.image(0, 0, 'coreOrb');
-        this.centralOrb.setScale(1.5);
+        // Crear elementos del core usando gráficos en lugar de texturas
+        console.log('⚡ Creating energy core with graphics...');
+
+        // Central orb usando gráficos
+        const orbGraphics = this.add.graphics();
+        orbGraphics.fillGradientStyle(0x00ffff, 0x0088ff, 0x0044ff, 0x002288, 1);
+        orbGraphics.fillCircle(0, 0, 40);
+        orbGraphics.lineStyle(2, 0x44ffff, 1);
+        orbGraphics.strokeCircle(0, 0, 40);
+        this.centralOrb = orbGraphics;
         this.coreContainer.add(this.centralOrb);
 
-        // Rotating energy rings
+        // Rotating energy rings usando gráficos
         for (let i = 0; i < 3; i++) {
-            const ring = this.add.image(0, 0, 'energyRing');
-            ring.setScale(1 + i * 0.5);
-            ring.setAlpha(0.6 - i * 0.1);
-            this.energyRings.push(ring);
-            this.coreContainer.add(ring);
+            const ringGraphics = this.add.graphics();
+            const radius = 60 + i * 30;
+            ringGraphics.lineStyle(3, 0x00ffaa, 0.6 - i * 0.1);
+            ringGraphics.strokeCircle(0, 0, radius);
+            
+            this.energyRings.push(ringGraphics);
+            this.coreContainer.add(ringGraphics);
 
             // Rotate each ring at different speeds
             this.tweens.add({
-                targets: ring,
+                targets: ringGraphics,
                 rotation: Math.PI * 2,
                 duration: 3000 + i * 1000,
                 repeat: -1,
@@ -472,16 +473,16 @@ class Fallos extends Phaser.Scene {
             });
         }
 
-        // Pulsing glow effect
-        const coreGlow = this.add.image(0, 0, 'glowOrb');
-        coreGlow.setScale(4);
-        coreGlow.setAlpha(0.3);
-        this.coreContainer.add(coreGlow);
+        // Pulsing glow effect usando gráficos
+        const glowGraphics = this.add.graphics();
+        glowGraphics.fillGradientStyle(0x44ffff, 0x44ffff, 0x0088ff, 0x0088ff, 0.3);
+        glowGraphics.fillCircle(0, 0, 120);
+        this.coreContainer.add(glowGraphics);
 
         this.tweens.add({
-            targets: coreGlow,
-            scaleX: 5,
-            scaleY: 5,
+            targets: glowGraphics,
+            scaleX: 1.5,
+            scaleY: 1.5,
             alpha: 0.1,
             duration: 2000,
             yoyo: true,
@@ -499,22 +500,33 @@ class Fallos extends Phaser.Scene {
             ease: 'Elastic.easeOut'
         });
 
-        // Add energy particles around core
+        // Add energy particles around core usando gráficos
         this.createCoreParticles(centerX, centerY);
     }
 
     createCoreParticles(centerX, centerY) {
-        for (let i = 0; i < 20; i++) {
-            const angle = (i / 20) * Math.PI * 2;
+        // Reducir partículas para móviles
+        const particleCount = this.isMobile ? 10 : 20;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const angle = (i / particleCount) * Math.PI * 2;
             const radius = 150;
             const x = centerX + Math.cos(angle) * radius;
             const y = centerY + Math.sin(angle) * radius;
 
-            const particle = this.add.image(x, y, 'dataNode');
-            particle.setScale(Phaser.Math.FloatBetween(0.5, 1.5));
+            // Crear partícula usando gráficos en lugar de textura
+            const particleGraphics = this.add.graphics();
+            particleGraphics.fillStyle(0x00ffaa, 0.8);
+            particleGraphics.fillCircle(0, 0, 4);
+            particleGraphics.lineStyle(1, 0x44ffff, 1);
+            particleGraphics.strokeCircle(0, 0, 4);
+            
+            particleGraphics.x = x;
+            particleGraphics.y = y;
+            particleGraphics.setScale(Phaser.Math.FloatBetween(0.5, 1.5));
 
             this.tweens.add({
-                targets: particle,
+                targets: particleGraphics,
                 rotation: Math.PI * 2,
                 duration: 4000,
                 repeat: -1,
@@ -522,7 +534,7 @@ class Fallos extends Phaser.Scene {
             });
 
             this.tweens.add({
-                targets: particle,
+                targets: particleGraphics,
                 alpha: 0.3,
                 duration: 1500,
                 yoyo: true,
@@ -532,7 +544,7 @@ class Fallos extends Phaser.Scene {
 
             // Orbit around core
             this.tweens.add({
-                targets: particle,
+                targets: particleGraphics,
                 x: centerX + Math.cos(angle + Math.PI * 2) * radius,
                 y: centerY + Math.sin(angle + Math.PI * 2) * radius,
                 duration: 8000,
@@ -863,233 +875,6 @@ class Fallos extends Phaser.Scene {
             scaleY: panelScale,
             duration: this.isMobile ? 1200 : 1000,
             ease: 'Back.easeOut'
-        });
-    }
-
-    addCursor() {
-        this.cursor = this.add.text(
-            this.subtitleText.x + this.subtitleText.width / 2 + 5,
-            this.subtitleText.y,
-            '|',
-            {
-                fontSize: `${Math.min(this.scale.width * 0.02, 24)}px`,
-                fontFamily: 'Arial',
-                fill: '#00ff88'
-            }
-        ).setOrigin(0, 0.5);
-
-        this.tweens.add({
-            targets: this.cursor,
-            alpha: 0,
-            duration: 500,
-            yoyo: true,
-            repeat: -1
-        });
-    }
-
-    createCodePanel(gameWidth, gameHeight) {
-        // Posicionamiento adaptativo para móviles
-        const panelX = this.isMobile ? gameWidth * 0.3 : gameWidth * 0.25;
-        const panelY = gameHeight * 0.5;
-
-        // Code panel background con escala adaptativa
-        this.codePanel = this.add.image(panelX, panelY, 'holoPanel');
-        const panelScale = this.isMobile ? 0.9 : 1.1;
-        this.codePanel.setScale(panelScale);
-        this.codePanel.setAlpha(0);
-
-        // Code title con tamaño adaptativo
-        const titleFontSize = this.isMobile ? 
-            Math.min(gameWidth * 0.03, 18) : 
-            Math.min(gameWidth * 0.02, 22);
-
-        this.add.text(panelX, panelY - (this.isMobile ? 90 : 110), 'CÓDIGO DEL SISTEMA', {
-            fontSize: `${titleFontSize}px`,
-            fontFamily: 'Arial Bold',
-            fill: '#00ffff',
-            stroke: '#003366',
-            strokeThickness: this.isMobile ? 0.5 : 1
-        }).setOrigin(0.5);
-
-        // Code content with syntax highlighting
-        const codeLines = [
-          "int bateria = 9;",
-          "int sensorVoltaje = A0;",
-          "void setup() {",
-          "  pinMode(bateria, OUTPUT);",
-          "}",
-          "void loop() {",
-          "  int voltaje = analogRead(sensorVoltaje);",
-          " ",
-          "  if (voltaje < 500) {",
-          "    digitalWrite(bateria, HIGH);",
-          "   }",
-          "}",
-        ];
-
-        this.codeElements = [];
-        
-        // Configuración adaptativa para el código
-        const codeFontSize = this.isMobile ? 
-            Math.min(gameWidth * 0.015, 12) : 
-            Math.min(gameWidth * 0.01, 14);
-        
-        const lineSpacing = this.isMobile ? 16 : 20;
-        const leftOffset = this.isMobile ? -100 : -120;
-        const topOffset = this.isMobile ? -70 : -80;
-        const wrapWidth = this.isMobile ? 200 : 240;
-
-        codeLines.forEach((line, index) => {
-            const codeText = this.add.text(
-                panelX + leftOffset,
-                panelY + topOffset + index * lineSpacing,
-                line,
-                {
-                    fontSize: `${codeFontSize}px`,
-                    fontFamily: 'Courier New',
-                    fill: this.getCodeColor(line),
-                    backgroundColor: 'rgba(0, 20, 40, 0.3)',
-                    padding: { x: this.isMobile ? 3 : 5, y: this.isMobile ? 1 : 2 },
-                    wordWrap: { width: wrapWidth, useAdvancedWrap: true }
-                }
-            );
-
-            this.codeElements.push(codeText);
-            codeText.setAlpha(0);
-        });
-
-        // Animate code panel entrance
-        this.tweens.add({
-            targets: this.codePanel,
-            alpha: 1,
-            x: panelX + 20,
-            duration: 800,
-            delay: 500,
-            ease: 'Power2.easeOut'
-        });
-
-        // Animate code lines
-        this.codeElements.forEach((element, index) => {
-            this.tweens.add({
-                targets: element,
-                alpha: 1,
-                x: element.x + 20,
-                duration: 400,
-                delay: 800 + index * 150,
-                ease: 'Power2.easeOut'
-            });
-        });
-    }
-
-    getCodeColor(line) {
-        // All code lines will be white - no special colors
-        return '#ffffff';
-    }
-
-    createQuestionPanel(gameWidth, gameHeight) {
-        const panelX = gameWidth * 0.75; // Centered better position
-        const panelY = gameHeight * 0.5; // More centered vertically
-
-        // Question panel background
-        this.questionPanel = this.add.image(panelX, panelY, 'holoPanel');
-        this.questionPanel.setScale(1.1); // Tamaño aumentado para que las opciones no se salgan
-        this.questionPanel.setAlpha(0);
-
-        // Question title
-        this.add.text(panelX, panelY - 110, 'DIAGNÓSTICO', { // Posición ajustada para panel aún más pequeño
-            fontSize: `${Math.min(gameWidth * 0.02, 22)}px`, // Tamaño aún más reducido
-            fontFamily: 'Arial Bold',
-            fill: '#00ff88',
-            stroke: '#003366',
-            strokeThickness: 1
-        }).setOrigin(0.5);
-
-        // Question text
-        this.questionText = this.add.text(
-            panelX,
-            panelY - 80, // Posición ajustada para panel aún más pequeño
-            '¿Cuál es el error en este código?',
-            {
-                fontSize: `${Math.min(gameWidth * 0.015, 17)}px`, // Tamaño de fuente aún más reducido
-                fontFamily: 'Arial',
-                fill: '#ffffff',
-                wordWrap: { width: 300 }, // Ancho aún más reducido para panel más pequeño
-                align: 'center'
-            }
-        ).setOrigin(0.5);
-
-        // Answer options
-        const answers = [
-            'Falta definir sensorVoltaje como entrada',
-            'No hay un control para evitar sobrecarga en la batería',
-            'Se debería usar digitalRead() en vez de analogRead()',
-            'El código no regula la eficiencia energética'
-        ];
-
-        this.answerButtons = [];
-        answers.forEach((answer, index) => {
-            const buttonY = panelY - 30 + index * 50; // Espaciado aún más reducido para botones más compactos
-
-            // Button background
-            const buttonBg = this.add.image(panelX, buttonY, 'energyButton');
-            buttonBg.setAlpha(0);
-            buttonBg.setInteractive();
-            buttonBg.setScale(1.4, 1.0); // Tamaño aún más reducido
-
-            // Button text
-            const buttonText = this.add.text(panelX, buttonY, answer, {
-                fontSize: `${Math.min(gameWidth * 0.011, 13)}px`, // Tamaño de fuente aún más reducido
-                fontFamily: 'Arial',
-                fill: '#ffffff',
-                wordWrap: { width: 250, useAdvancedWrap: true }, // Ancho aún más reducido
-                align: 'center'
-            }).setOrigin(0.5);
-            buttonText.setAlpha(0);
-
-            // Button hover effects - NO ANIMATIONS, only color change
-            buttonBg.on('pointerover', () => {
-                buttonText.setFill('#00ffff');
-            });
-
-            buttonBg.on('pointerout', () => {
-                buttonText.setFill('#ffffff');
-            });
-
-            buttonBg.on('pointerdown', () => {
-                this.checkAnswer(index, buttonBg, buttonText, gameWidth, gameHeight);
-            });
-
-            this.answerButtons.push({ bg: buttonBg, text: buttonText });
-        });
-
-        // Animate question panel entrance
-        this.tweens.add({
-            targets: this.questionPanel,
-            alpha: 1,
-            x: panelX - 20,
-            duration: 800,
-            delay: 1000,
-            ease: 'Power2.easeOut'
-        });
-
-        // Animate question elements
-        this.tweens.add({
-            targets: this.questionText,
-            alpha: 1,
-            duration: 600,
-            delay: 1200,
-            ease: 'Power2.easeOut'
-        });
-
-        this.answerButtons.forEach((button, index) => {
-            this.tweens.add({
-                targets: [button.bg, button.text],
-                alpha: 1,
-                x: button.bg.x - 10,
-                duration: 400,
-                delay: 1400 + index * 200,
-                ease: 'Power2.easeOut'
-            });
         });
     }
 

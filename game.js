@@ -3,15 +3,15 @@ function isMobile() {
 }
 
 // Wait for the DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   // Configuración adaptativa para móviles
   const isMobileDevice = isMobile();
   const screenWidth = window.innerWidth;
   const screenHeight = window.innerHeight;
-  
+
   // Dimensiones dinámicas basadas en el dispositivo
   let gameWidth, gameHeight;
-  
+
   if (isMobileDevice) {
     // Para móviles, usar dimensiones más apropiadas
     gameWidth = Math.max(screenWidth, 800);
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
       height: gameHeight,
       autoCenter: Phaser.Scale.CENTER_BOTH,
       expandParent: false,
-      fullscreenTarget: "game"
+      fullscreenTarget: "game",
     },
     physics: {
       default: "arcade",
