@@ -150,6 +150,9 @@ class Fallos extends Phaser.Scene {
         try {
             console.log('🚀 FALLOS SCENE - Starting scene creation...');
             
+            // Force create a visible background first (critical for mobile)
+            this.createFallbackBackground(gameWidth, gameHeight);
+            
             // Create space background
             this.createSpaceBackground(gameWidth, gameHeight);
 
@@ -401,11 +404,24 @@ class Fallos extends Phaser.Scene {
 
     // Método de respaldo para crear un fondo básico
     createFallbackBackground(gameWidth, gameHeight) {
+        // Ensure we have valid dimensions
+        const width = gameWidth || this.scale.width || window.innerWidth || 800;
+        const height = gameHeight || this.scale.height || window.innerHeight || 600;
+        
+        console.log('🎨 Creating fallback background:', { width, height });
+        
         const fallbackBg = this.add.graphics();
         fallbackBg.fillGradientStyle(0x000011, 0x001122, 0x000033, 0x002244, 1);
-        fallbackBg.fillRect(0, 0, gameWidth, gameHeight);
+        fallbackBg.fillRect(0, 0, width, height);
         fallbackBg.setDepth(-100);
+        
+        // Make sure it's visible
+        fallbackBg.setVisible(true);
+        fallbackBg.setAlpha(1);
+        
         this.background = fallbackBg;
+        
+        console.log('✅ Fallback background created successfully');
     }
 
     createEnergyGrid(gameWidth, gameHeight) {
@@ -799,6 +815,9 @@ class Fallos extends Phaser.Scene {
             'Función incorrecta'
         ];
 
+        // Initialize answerButtons array
+        this.answerButtons = [];
+
         const buttonFontSize = this.isMobile ? 
             Math.min(gameWidth * 0.018, 12) : 
             Math.min(gameWidth * 0.012, 14);
@@ -850,6 +869,12 @@ class Fallos extends Phaser.Scene {
 
             buttonBg.on('pointerdown', () => {
                 this.checkAnswer(index, buttonBg, buttonText, gameWidth, gameHeight);
+            });
+
+            // Store button references for later use
+            this.answerButtons.push({
+                bg: buttonBg,
+                text: buttonText
             });
 
             // Store references
