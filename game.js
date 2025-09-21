@@ -1,5 +1,7 @@
 function isMobile() {
-  return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+  // Solo usar detección de User Agent para ser más preciso
+  // Evitar usar dimensiones de ventana que pueden ser engañosas en desktop
+  return /Android|iPhone|iPad|iPod|Windows Phone|Mobile|Tablet/i.test(navigator.userAgent);
 }
 
 // Wait for the DOM to be fully loaded

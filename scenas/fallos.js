@@ -11,9 +11,9 @@ class Fallos extends Phaser.Scene {
 
     // Función para detectar dispositivos móviles
     checkMobileDevice() {
-        return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent) || 
-               window.innerWidth <= 768 || 
-               window.innerHeight <= 768;
+        // Solo usar detección de User Agent para ser más preciso
+        // Evitar usar dimensiones de ventana que pueden ser engañosas en desktop
+        return /Android|iPhone|iPad|iPod|Windows Phone|Mobile|Tablet/i.test(navigator.userAgent);
     }
 
     // Premium particle effects for enhanced visual feedback
