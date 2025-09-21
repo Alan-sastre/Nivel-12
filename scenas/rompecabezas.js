@@ -20,6 +20,9 @@ class Rompecabezas extends Phaser.Scene {
     // Configurar dimensiones de la pantalla según game.js (1000x500)
     const { width, height } = this.scale;
     
+    // Detectar si es móvil con mejor lógica
+    this.isMobile = width < 768 || height < 600;
+    
     // Fondo con gradiente mejorado y más moderno
     const graphics = this.add.graphics();
     graphics.fillGradientStyle(0x0d1117, 0x161b22, 0x21262d, 0x30363d, 1);
@@ -35,9 +38,9 @@ class Rompecabezas extends Phaser.Scene {
       backgroundTexture.fillCircle(x, y, size);
     }
 
-    // Título con efecto de sombra mejorado y gradiente - adaptado para móviles
-    const titleSize = this.isMobile ? '20px' : '28px';
-    const titleY = this.isMobile ? 30 : 50;
+    // Título con efecto de sombra mejorado y gradiente - mejor adaptado para móviles
+    const titleSize = this.isMobile ? '18px' : '28px';
+    const titleY = this.isMobile ? 25 : 50;
     
     const titleShadow = this.add.text(width/2 + 2, titleY + 2, 'Sistema de Monitoreo Arduino', {
       fontSize: titleSize,
@@ -55,19 +58,20 @@ class Rompecabezas extends Phaser.Scene {
       fontWeight: '700'
     }).setOrigin(0.5);
 
-    // Línea decorativa bajo el título - adaptada para móviles
-    const lineWidth = this.isMobile ? 120 : 150;
-    const lineY = this.isMobile ? 50 : 70;
+    // Línea decorativa bajo el título - mejor adaptada para móviles
+    const lineWidth = this.isMobile ? 100 : 150;
+    const lineY = this.isMobile ? 40 : 70;
     
     const titleLine = this.add.graphics();
     titleLine.lineStyle(2, 0x58a6ff, 0.8);
     titleLine.lineBetween(width/2 - lineWidth, lineY, width/2 + lineWidth, lineY);
     
-    // Puntos decorativos en la línea
+    // Puntos decorativos en la línea más pequeños para móviles
+    const dotSize = this.isMobile ? 3 : 4;
     titleLine.fillStyle(0x58a6ff, 1);
-    titleLine.fillCircle(width/2 - lineWidth, lineY, 4);
-    titleLine.fillCircle(width/2, lineY, 4);
-    titleLine.fillCircle(width/2 + lineWidth, lineY, 4);
+    titleLine.fillCircle(width/2 - lineWidth, lineY, dotSize);
+    titleLine.fillCircle(width/2, lineY, dotSize);
+    titleLine.fillCircle(width/2 + lineWidth, lineY, dotSize);
 
     // Definir las líneas de código y sus explicaciones
     this.setupCodeAndExplanations();
@@ -75,20 +79,10 @@ class Rompecabezas extends Phaser.Scene {
     // Crear partículas flotantes para ambiente
     this.createFloatingParticles(width, height);
 
-    // Crear contenedor del código y explicación - adaptados para móviles
-    if (this.isMobile) {
-      // En móviles, usar layout vertical
-      this.createCodeContainer(width * 0.5, height * 0.3);
-      this.createExplanationContainer(width * 0.5, height * 0.65);
-    } else {
-      // En desktop, usar layout horizontal
-      this.createCodeContainer(width * 0.25, height * 0.45);
-      this.createExplanationContainer(width * 0.75, height * 0.45);
-    }
-
-    // Crear contenedores para código y explicación
+    // Crear contenedores para código y explicación con mejor layout
     this.createCodeSection();
     this.createExplanationSection();
+    
     // Crear botones de navegación centrados en la parte inferior
     this.createNavigationButtons(width, height);
 
@@ -152,12 +146,12 @@ class Rompecabezas extends Phaser.Scene {
   createCodeSection() {
     // Crear contenedor del código mejor posicionado para evitar colisiones
     const containerX = this.isMobile ? this.scale.width * 0.5 : 250;
-    const containerY = this.isMobile ? this.scale.height * 0.3 : 220;
+    const containerY = this.isMobile ? this.scale.height * 0.25 : 220;
     const codeContainer = this.add.container(containerX, containerY);
     
-    // Dimensiones adaptadas para móviles
-    const containerWidth = this.isMobile ? Math.min(this.scale.width * 0.9, 380) : 440;
-    const containerHeight = this.isMobile ? Math.min(this.scale.height * 0.25, 180) : 300;
+    // Dimensiones adaptadas para móviles con mejor proporción
+    const containerWidth = this.isMobile ? Math.min(this.scale.width * 0.95, 350) : 440;
+    const containerHeight = this.isMobile ? Math.min(this.scale.height * 0.3, 200) : 300;
     
     // Sombra exterior profunda
     const outerShadow = this.add.graphics();
@@ -184,7 +178,7 @@ class Rompecabezas extends Phaser.Scene {
     codeContainer.add(innerBorder);
 
     // Barra superior decorativa más pequeña
-    const topBarHeight = this.isMobile ? 30 : 45;
+    const topBarHeight = this.isMobile ? 25 : 45;
     const topBar = this.add.graphics();
     topBar.fillStyle(0x21262d, 0.9);
     topBar.fillRoundedRect(-containerWidth/2, -containerHeight/2, containerWidth, topBarHeight, 18, 18, 0, 0);
@@ -193,15 +187,15 @@ class Rompecabezas extends Phaser.Scene {
     codeContainer.add(topBar);
 
     // Círculos decorativos estilo terminal - adaptados para móviles
-    const circleSize = this.isMobile ? 4 : 6;
-    const circleY = this.isMobile ? -containerHeight/2 + 15 : -127;
-    const redCircle = this.add.circle(-containerWidth/2 + 30, circleY, circleSize, 0xff5f56);
-    const yellowCircle = this.add.circle(-containerWidth/2 + 50, circleY, circleSize, 0xffbd2e);
-    const greenCircle = this.add.circle(-containerWidth/2 + 70, circleY, circleSize, 0x27ca3f);
+    const circleSize = this.isMobile ? 3 : 6;
+    const circleY = this.isMobile ? -containerHeight/2 + 12 : -127;
+    const redCircle = this.add.circle(-containerWidth/2 + (this.isMobile ? 20 : 30), circleY, circleSize, 0xff5f56);
+    const yellowCircle = this.add.circle(-containerWidth/2 + (this.isMobile ? 35 : 50), circleY, circleSize, 0xffbd2e);
+    const greenCircle = this.add.circle(-containerWidth/2 + (this.isMobile ? 50 : 70), circleY, circleSize, 0x27ca3f);
     codeContainer.add([redCircle, yellowCircle, greenCircle]);
 
     // Título del código con mejor tipografía - adaptado para móviles
-    const titleSize = this.isMobile ? '12px' : '16px';
+    const titleSize = this.isMobile ? '10px' : '16px';
     this.codeTitle = this.add.text(0, circleY, '💻 Arduino IDE', {
       fontSize: titleSize,
       fontFamily: 'SF Mono, Monaco, Consolas, monospace',
@@ -212,7 +206,7 @@ class Rompecabezas extends Phaser.Scene {
     codeContainer.add(this.codeTitle);
 
     // Línea separadora elegante
-    const separatorY = this.isMobile ? -containerHeight/2 + topBarHeight + 5 : -105;
+    const separatorY = this.isMobile ? -containerHeight/2 + topBarHeight + 3 : -105;
     const separatorLine = this.add.graphics();
     separatorLine.lineStyle(1, 0x30363d, 0.8);
     separatorLine.lineBetween(-containerWidth/2 + 20, separatorY, containerWidth/2 - 20, separatorY);
@@ -230,12 +224,12 @@ class Rompecabezas extends Phaser.Scene {
   createExplanationSection() {
     // Crear contenedor de explicación mejor posicionado y con nuevo color
     const containerX = this.isMobile ? this.scale.width * 0.5 : 750;
-    const containerY = this.isMobile ? this.scale.height * 0.65 : 220;
+    const containerY = this.isMobile ? this.scale.height * 0.6 : 220;
     const explanationContainer = this.add.container(containerX, containerY);
     
-    // Dimensiones adaptadas para móviles
-    const containerWidth = this.isMobile ? Math.min(this.scale.width * 0.9, 380) : 440;
-    const containerHeight = this.isMobile ? Math.min(this.scale.height * 0.3, 200) : 300;
+    // Dimensiones adaptadas para móviles con mejor proporción
+    const containerWidth = this.isMobile ? Math.min(this.scale.width * 0.95, 350) : 440;
+    const containerHeight = this.isMobile ? Math.min(this.scale.height * 0.25, 180) : 300;
     
     // Sombra exterior más sutil
     const outerShadow = this.add.graphics();
@@ -262,7 +256,7 @@ class Rompecabezas extends Phaser.Scene {
     explanationContainer.add(innerBorder);
 
     // Barra superior más compacta con color verde
-    const topBarHeight = this.isMobile ? 25 : 40;
+    const topBarHeight = this.isMobile ? 20 : 40;
     const topBar = this.add.graphics();
     topBar.fillStyle(0xd4f1d4, 0.95);
     topBar.fillRoundedRect(-containerWidth/2, -containerHeight/2, containerWidth, topBarHeight, 15, 15, 0, 0);
@@ -271,16 +265,16 @@ class Rompecabezas extends Phaser.Scene {
     explanationContainer.add(topBar);
 
     // Icono principal más pequeño
-    const iconSize = this.isMobile ? '12px' : '16px';
-    const iconY = this.isMobile ? -containerHeight/2 + 12 : -130;
-    const mainIcon = this.add.text(-containerWidth/2 + 30, iconY, '📚', {
+    const iconSize = this.isMobile ? '10px' : '16px';
+    const iconY = this.isMobile ? -containerHeight/2 + 10 : -130;
+    const mainIcon = this.add.text(-containerWidth/2 + (this.isMobile ? 20 : 30), iconY, '📚', {
       fontSize: iconSize,
       align: 'center'
     }).setOrigin(0.5);
     explanationContainer.add(mainIcon);
 
     // Título de la explicación mejor posicionado
-    const titleSize = this.isMobile ? '10px' : '14px';
+    const titleSize = this.isMobile ? '9px' : '14px';
     this.explanationTitle = this.add.text(0, iconY, 'Explicación Técnica', {
       fontSize: titleSize,
       fontFamily: 'SF Pro Display, -apple-system, Arial, sans-serif',
@@ -291,7 +285,7 @@ class Rompecabezas extends Phaser.Scene {
     explanationContainer.add(this.explanationTitle);
 
     // Línea separadora más sutil
-    const separatorY = this.isMobile ? -containerHeight/2 + topBarHeight + 3 : -110;
+    const separatorY = this.isMobile ? -containerHeight/2 + topBarHeight + 2 : -110;
     const separatorLine = this.add.graphics();
     separatorLine.lineStyle(1, 0x6f9f6f, 0.6);
     separatorLine.lineBetween(-containerWidth/2 + 20, separatorY, containerWidth/2 - 20, separatorY);
@@ -335,13 +329,13 @@ class Rompecabezas extends Phaser.Scene {
   }
 
   createNavigationButtons(width, height) {
-    // Adaptaciones para móviles
-    const buttonWidth = this.isMobile ? 100 : 140;
-    const buttonHeight = this.isMobile ? 35 : 45;
-    const buttonRadius = this.isMobile ? 18 : 22;
-    const buttonSpacing = this.isMobile ? 110 : 140;
-    const buttonY = this.isMobile ? height - 50 : height - 80;
-    const fontSize = this.isMobile ? '11px' : '14px';
+    // Adaptaciones mejoradas para móviles y PC
+    const buttonWidth = this.isMobile ? 90 : 140;
+    const buttonHeight = this.isMobile ? 32 : 45;
+    const buttonRadius = this.isMobile ? 16 : 22;
+    const buttonSpacing = this.isMobile ? 100 : 140;
+    const buttonY = this.isMobile ? height - 40 : height - 80;
+    const fontSize = this.isMobile ? '10px' : '14px';
     
     // Botón Anterior con diseño más elegante
     const backButtonBg = this.add.graphics();
@@ -379,24 +373,24 @@ class Rompecabezas extends Phaser.Scene {
       fontWeight: '600'
     }).setOrigin(0.5);
 
-    // Indicador de progreso más compacto
-    const progressWidth = this.isMobile ? 100 : 130;
-    const progressHeight = this.isMobile ? 30 : 45;
+    // Indicador de progreso más compacto y mejor posicionado
+    const progressWidth = this.isMobile ? 80 : 130;
+    const progressHeight = this.isMobile ? 26 : 45;
     const progressBg = this.add.graphics();
     progressBg.fillStyle(0x21262d, 0.95);
     progressBg.fillRoundedRect(width/2 - progressWidth/2, buttonY - progressHeight/2, progressWidth, progressHeight, buttonRadius);
     progressBg.lineStyle(2, 0x30363d, 0.8);
     progressBg.strokeRoundedRect(width/2 - progressWidth/2, buttonY - progressHeight/2, progressWidth, progressHeight, buttonRadius);
 
-    // Icono de progreso más pequeño
-    const iconSize = this.isMobile ? '12px' : '16px';
-    const iconOffset = this.isMobile ? -25 : -30;
+    // Icono de progreso más pequeño y mejor posicionado
+    const iconSize = this.isMobile ? '10px' : '16px';
+    const iconOffset = this.isMobile ? -20 : -30;
     this.add.text(width/2 + iconOffset, buttonY, '📊', {
       fontSize: iconSize
     }).setOrigin(0.5);
 
-    const progressFontSize = this.isMobile ? '9px' : '12px';
-    const progressOffset = this.isMobile ? 10 : 10;
+    const progressFontSize = this.isMobile ? '8px' : '12px';
+    const progressOffset = this.isMobile ? 8 : 10;
     this.progressText = this.add.text(width/2 + progressOffset, buttonY, '', {
       fontSize: progressFontSize,
       fontFamily: 'SF Pro Display, -apple-system, Arial, sans-serif',
