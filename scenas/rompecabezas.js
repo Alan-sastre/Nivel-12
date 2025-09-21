@@ -111,24 +111,37 @@ class Rompecabezas extends Phaser.Scene {
   }
 
   setupCodeAndExplanations() {
-    this.codeLines = [
-      "int sensorAmenaza = A1;",
-      "int sistemaDefensa = 8;",
-      "",
-      "void setup() {",
-      "  pinMode(sensorAmenaza, INPUT);",
-      "  pinMode(sistemaDefensa, OUTPUT);",
-      "}",
-      "",
-      "void loop() {",
-      "  int amenaza = analogRead(sensorAmenaza);",
-      "  ",
-      "  if (amenaza > 700) {",
-      "    digitalWrite(sistemaDefensa, HIGH);",
-      "  } else {",
-      "    digitalWrite(sistemaDefensa, LOW);",
-      "  }",
-      "}",
+    // Fragmentos de código específicos para cada paso
+    this.codeFragments = [
+      // Paso 1: Variables globales
+      [
+        "int sensorAmenaza = A1;",
+        "int sistemaDefensa = 8;"
+      ],
+      // Paso 2: Función setup
+      [
+        "void setup() {",
+        "  pinMode(sensorAmenaza, INPUT);",
+        "  pinMode(sistemaDefensa, OUTPUT);",
+        "}"
+      ],
+      // Paso 3: Inicio de loop y lectura
+      [
+        "void loop() {",
+        "  int amenaza = analogRead(sensorAmenaza);"
+      ],
+      // Paso 4: Condición if
+      [
+        "  if (amenaza > 700) {"
+      ],
+      // Paso 5: Sistema de defensa completo
+      [
+        "    digitalWrite(sistemaDefensa, HIGH);",
+        "  } else {",
+        "    digitalWrite(sistemaDefensa, LOW);",
+        "  }",
+        "}"
+      ]
     ];
 
     this.explanations = [
@@ -166,18 +179,18 @@ class Rompecabezas extends Phaser.Scene {
   }
 
   createCodeSection() {
-    // Posicionamiento optimizado para móviles - centrar mejor y subir contenido
+    // Posicionamiento optimizado para móviles - centrar mejor y ajustar para que no se salga
     const containerX = this.isMobile ? this.scale.width * 0.25 : 250;
-    const containerY = this.isMobile ? this.scale.height * 0.35 : 250; // Subir más de 0.45 a 0.35
+    const containerY = this.isMobile ? this.scale.height * 0.4 : 250; // Centrar mejor verticalmente
     const codeContainer = this.add.container(containerX, containerY);
 
-    // Dimensiones más amplias para móviles para que quepan las líneas completas
+    // Dimensiones ajustadas para fragmentos de código más pequeños
     const containerWidth = this.isMobile
-      ? Math.min(this.scale.width * 0.48, 450)  // Aumentar ancho para líneas completas
-      : 440;
+      ? Math.min(this.scale.width * 0.4, 350)  // Aumentar ligeramente para fragmentos
+      : 400; // Reducir el ancho para fragmentos más pequeños
     const containerHeight = this.isMobile
-      ? Math.min(this.scale.height * 0.45, 220)  // Aumentar altura ligeramente
-      : 300;
+      ? Math.min(this.scale.height * 0.25, 120)  // Reducir altura para fragmentos
+      : 200; // Altura más pequeña para fragmentos
 
     // Sombra exterior profunda
     const outerShadow = this.add.graphics();
@@ -313,8 +326,8 @@ class Rompecabezas extends Phaser.Scene {
     // Inicializar array para objetos de texto del código
     this.codeTextObjects = [];
 
-    // Crear texto del código con colores específicos
-    this.createColoredCodeText(codeContainer, "", []);
+    // Crear texto del código inicial con el primer fragmento
+    this.createColoredCodeText(codeContainer, this.codeFragments[0] || [], []);
 
     this.codeContainer = codeContainer;
   }
@@ -322,15 +335,15 @@ class Rompecabezas extends Phaser.Scene {
   createExplanationSection() {
     // Posicionamiento optimizado para móviles horizontales y desktop
     const containerX = this.isMobile ? this.scale.width * 0.75 : 750;
-    const containerY = this.isMobile ? this.scale.height * 0.35 : 250; // Alinear con el código
+    const containerY = this.isMobile ? this.scale.height * 0.4 : 250; // Alinear con el código
     const explanationContainer = this.add.container(containerX, containerY);
 
-    // Dimensiones más amplias para móviles para que coincidan con el código
+    // Dimensiones ultra pequeñas para móviles - solución extrema
     const containerWidth = this.isMobile
-      ? Math.min(this.scale.width * 0.48, 450)  // Aumentar ancho igual que el código
+      ? Math.min(this.scale.width * 0.3, 300)  // Reducir a 30% del ancho
       : 440;
     const containerHeight = this.isMobile
-      ? Math.min(this.scale.height * 0.45, 220)  // Aumentar altura igual que el código
+      ? Math.min(this.scale.height * 0.3, 150)  // Reducir a 30% del alto
       : 300;
 
     // Sombra exterior más sutil
@@ -509,12 +522,12 @@ class Rompecabezas extends Phaser.Scene {
     const { width, height } = this.scale;
 
     // Adaptaciones para móviles - hacer botones más visibles y accesibles
-    const buttonWidth = this.isMobile ? 100 : 120;
-    const buttonHeight = this.isMobile ? 40 : 45;
+    const buttonWidth = this.isMobile ? 120 : 140;
+    const buttonHeight = this.isMobile ? 50 : 55;
     const buttonSpacing = this.isMobile ? 20 : 20;
-    const buttonY = this.isMobile ? height - 30 : height - 60; // Posición más visible
+    const buttonY = this.isMobile ? height - 50 : height - 60; // Ajustar posición para mejor visibilidad
     const buttonRadius = this.isMobile ? 10 : 12;
-    const fontSize = this.isMobile ? "12px" : "14px";
+    const fontSize = this.isMobile ? "14px" : "16px";
 
     // Botón Anterior con diseño más elegante
     const backButtonBg = this.add.graphics();
@@ -545,7 +558,9 @@ class Rompecabezas extends Phaser.Scene {
         0
       )
       .setInteractive({ useHandCursor: true })
-      .on("pointerdown", () => this.previousStep());
+      .on("pointerdown", () => this.previousStep())
+      .on("pointerover", () => backButtonBg.setAlpha(0.8))
+      .on("pointerout", () => backButtonBg.setAlpha(1));
 
     this.add
       .text(width / 2 - buttonWidth / 2 - buttonSpacing / 2, buttonY, "← Anterior", {
@@ -585,7 +600,9 @@ class Rompecabezas extends Phaser.Scene {
         0
       )
       .setInteractive({ useHandCursor: true })
-      .on("pointerdown", () => this.nextStep());
+      .on("pointerdown", () => this.nextStep())
+      .on("pointerover", () => nextButtonBg.setAlpha(0.8))
+      .on("pointerout", () => nextButtonBg.setAlpha(1));
 
     this.add
       .text(width / 2 + buttonWidth / 2 + buttonSpacing / 2, buttonY, "Siguiente →", {
@@ -690,18 +707,11 @@ class Rompecabezas extends Phaser.Scene {
   }
 
   updateCodeDisplay(step) {
-    const highlightMap = {
-      0: [0, 1], // Declaraciones de variables
-      1: [3, 4, 5, 6], // Configuración de pines
-      2: [8, 9], // Función loop
-      3: [11], // Condición if
-      4: [12, 13, 14], // Sistema de carga
-    };
-
-    const linesToHighlight = highlightMap[step] || [];
-
-    // Actualizar el texto del código con colores
-    this.createColoredCodeText(this.codeContainer, "", linesToHighlight);
+    // Obtener el fragmento de código específico para este paso
+    const currentFragment = this.codeFragments[step] || [];
+    
+    // Actualizar el texto del código con el fragmento específico
+    this.createColoredCodeText(this.codeContainer, currentFragment, []);
   }
 
   highlightLines(highlightIndices) {
@@ -709,30 +719,36 @@ class Rompecabezas extends Phaser.Scene {
     let formattedCode = "";
 
     this.codeLines.forEach((line, index) => {
+      // Truncar líneas largas forzosamente para evitar desbordamiento
+      let truncatedLine = line;
+      const maxChars = this.isMobile ? 20 : 50; // Reducir aún más el límite
+      if (line.length > maxChars) {
+        truncatedLine = line.substring(0, maxChars) + "...";
+      }
       if (highlightIndices.includes(index)) {
         // Líneas resaltadas con colores específicos
-        if (line.includes("int ") || line.includes("void ")) {
-          formattedCode += line + "\n"; // Líneas de declaración resaltadas
+        if (truncatedLine.includes("int ") || truncatedLine.includes("void ")) {
+          formattedCode += truncatedLine + "\n"; // Líneas de declaración resaltadas
         } else if (
-          line.includes("pinMode") ||
-          line.includes("analogRead") ||
-          line.includes("digitalWrite")
+          truncatedLine.includes("pinMode") ||
+          truncatedLine.includes("analogRead") ||
+          truncatedLine.includes("digitalWrite")
         ) {
-          formattedCode += line + "\n"; // Funciones resaltadas
+          formattedCode += truncatedLine + "\n"; // Funciones resaltadas
         } else if (
-          line.includes("if") ||
-          line.includes("{") ||
-          line.includes("}")
+          truncatedLine.includes("if") ||
+          truncatedLine.includes("{") ||
+          truncatedLine.includes("}")
         ) {
-          formattedCode += line + "\n"; // Estructuras resaltadas
-        } else if (line.includes("delay") || line.includes("//")) {
-          formattedCode += line + "\n"; // Comentarios resaltados
+          formattedCode += truncatedLine + "\n"; // Estructuras resaltadas
+        } else if (truncatedLine.includes("delay") || truncatedLine.includes("//")) {
+          formattedCode += truncatedLine + "\n"; // Comentarios resaltados
         } else {
-          formattedCode += line + "\n"; // Otras líneas resaltadas
+          formattedCode += truncatedLine + "\n"; // Otras líneas resaltadas
         }
       } else {
         // Líneas no resaltadas (más tenues)
-        formattedCode += line + "\n";
+        formattedCode += truncatedLine + "\n";
       }
     });
 
@@ -740,22 +756,22 @@ class Rompecabezas extends Phaser.Scene {
   }
 
   // Función para crear texto con colores específicos
-  createColoredCodeText(container, codeText, highlightIndices) {
+  createColoredCodeText(container, codeFragment, highlightIndices) {
     // Limpiar texto anterior
     if (this.codeTextObjects) {
       this.codeTextObjects.forEach((obj) => obj.destroy());
     }
     this.codeTextObjects = [];
 
-    // Adaptaciones para móviles con texto más compacto y mejor posicionado
-    let yOffset = this.isMobile ? -75 : -95; // Ajustar posición inicial del texto
-    const lineHeight = this.isMobile ? 16 : 20; // Reducir más el espaciado entre líneas
-    const leftMargin = this.isMobile ? -160 : -200; // Ajustar margen izquierdo
-    const maxWidth = this.isMobile ? 280 : 380; // Reducir ancho máximo para móviles
-    const fontSize = this.isMobile ? "10px" : "14px"; // Reducir tamaño de fuente para móviles
-    const lineNumberFontSize = this.isMobile ? "9px" : "12px";
+    // Adaptaciones para fragmentos más pequeños
+    let yOffset = this.isMobile ? -45 : -95; // Ajustar posición inicial del texto
+    const lineHeight = this.isMobile ? 12 : 20; // Espaciado normal para fragmentos pequeños
+    const leftMargin = this.isMobile ? -80 : -200; // Ajustar margen izquierdo
+    const maxWidth = this.isMobile ? 200 : 380; // Ancho normal para fragmentos
+    const fontSize = this.isMobile ? "8px" : "14px"; // Tamaño de fuente normal
+    const lineNumberFontSize = this.isMobile ? "7px" : "12px";
 
-    this.codeLines.forEach((line, index) => {
+    codeFragment.forEach((line, index) => {
       // Crear número de línea más pequeño
       const lineNumber = this.add.text(
         leftMargin,
@@ -772,20 +788,13 @@ class Rompecabezas extends Phaser.Scene {
       container.add(lineNumber);
       this.codeTextObjects.push(lineNumber);
 
-      // Sistema de cambio de color simple
-      let color = "#ffffff"; // Color blanco por defecto
-
-      if (highlightIndices.includes(index)) {
-        color = "#00ff88"; // Verde brillante para líneas explicadas
-      }
-
-      // Crear texto del código con dimensiones muy ajustadas
-      const lineText = this.add.text(leftMargin + 25, yOffset, line, {
+      // Crear texto del código con dimensiones ajustadas para fragmentos
+      const lineText = this.add.text(leftMargin + 15, yOffset, line, {
         fontSize: fontSize,
         fontFamily: "SF Mono, Monaco, Consolas, monospace",
-        fill: color,
+        fill: "#00ff88", // Verde para todo el código del fragmento
         align: "left",
-        wordWrap: { width: maxWidth, useAdvancedWrap: true },
+        wordWrap: { width: maxWidth, useAdvancedWrap: true, breakWords: true },
       });
 
       container.add(lineText);
