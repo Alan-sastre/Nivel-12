@@ -828,14 +828,7 @@ class Fallos extends Phaser.Scene {
         options.forEach((option, index) => {
             const buttonY = panelY + startY + index * buttonSpacing;
             
-            // Button background
-            const buttonBg = this.add.image(panelX, buttonY, 'energyButton');
-            const buttonScale = this.isMobile ? 0.8 : 1;
-            buttonBg.setScale(buttonScale);
-            buttonBg.setAlpha(0);
-            buttonBg.setInteractive();
-
-            // Button text
+            // Button text (sin recuadro de fondo)
             const buttonText = this.add.text(panelX, buttonY, option, {
                 fontSize: `${buttonFontSize}px`,
                 fontFamily: 'Arial',
@@ -843,48 +836,49 @@ class Fallos extends Phaser.Scene {
                 wordWrap: { width: this.isMobile ? 120 : 160, useAdvancedWrap: true }
             }).setOrigin(0.5);
             buttonText.setAlpha(0);
+            buttonText.setInteractive();
 
-            // Hover effects adaptados para móviles
+            // Hover effects adaptados para móviles - aplicados al texto
             if (this.isMobile) {
                 // Para móviles, usar eventos de toque
-                buttonBg.on('pointerdown', () => {
+                buttonText.on('pointerdown', () => {
                     this.createHoverParticles(panelX, buttonY);
-                    buttonBg.setTint(0x44ff44);
+                    buttonText.setTint(0x44ff44);
                 });
                 
-                buttonBg.on('pointerup', () => {
-                    buttonBg.clearTint();
+                buttonText.on('pointerup', () => {
+                    buttonText.clearTint();
                 });
             } else {
                 // Para desktop, mantener hover tradicional
-                buttonBg.on('pointerover', () => {
+                buttonText.on('pointerover', () => {
                     this.createHoverParticles(panelX, buttonY);
-                    buttonBg.setTint(0x44ff44);
+                    buttonText.setTint(0x44ff44);
                 });
 
-                buttonBg.on('pointerout', () => {
-                    buttonBg.clearTint();
+                buttonText.on('pointerout', () => {
+                    buttonText.clearTint();
                 });
             }
 
-            buttonBg.on('pointerdown', () => {
-                this.checkAnswer(index, buttonBg, buttonText, gameWidth, gameHeight);
+            buttonText.on('pointerdown', () => {
+                this.checkAnswer(index, null, buttonText, gameWidth, gameHeight);
             });
 
-            // Store button references for later use
+            // Store button references for later use (solo texto, sin bg)
             this.answerButtons.push({
-                bg: buttonBg,
+                bg: null,
                 text: buttonText
             });
 
             // Store references
             this.questionElements = this.questionElements || [];
-            this.questionElements.push(buttonBg, buttonText);
+            this.questionElements.push(buttonText);
 
             // Entrance animation con timing adaptativo
             const delay = this.isMobile ? index * 200 : index * 150;
             this.tweens.add({
-                targets: [buttonBg, buttonText],
+                targets: buttonText,
                 alpha: 1,
                 duration: this.isMobile ? 800 : 600,
                 delay: delay,
@@ -906,7 +900,9 @@ class Fallos extends Phaser.Scene {
     checkAnswer(selectedIndex, buttonBg, buttonText, gameWidth, gameHeight) {
         // Disable all buttons
         this.answerButtons.forEach(button => {
-            button.bg.removeInteractive();
+            if (button.text) {
+                button.text.removeInteractive();
+            }
         });
 
         if (selectedIndex === 1) { // Correct answer (option B)
@@ -917,9 +913,9 @@ class Fallos extends Phaser.Scene {
     }
 
     showCorrectAnswer(buttonBg, buttonText, gameWidth, gameHeight) {
-        // Success animation for button
+        // Success animation for button text only (no buttonBg)
         this.tweens.add({
-            targets: [buttonBg, buttonText],
+            targets: buttonText,
             scaleX: 1.3,
             scaleY: 1.3,
             duration: 300,
@@ -931,14 +927,13 @@ class Fallos extends Phaser.Scene {
 
         // Hide incorrect answer buttons with fade out animation
         this.answerButtons.forEach(button => {
-            if (button.bg !== buttonBg) {
+            if (button.text !== buttonText) {
                 this.tweens.add({
-                    targets: [button.bg, button.text],
+                    targets: button.text,
                     alpha: 0,
                     duration: 500,
                     ease: 'Power2.easeOut',
                     onComplete: () => {
-                        button.bg.destroy();
                         button.text.destroy();
                         // Also destroy red overlay if it exists
                         if (button.redOverlay) {
@@ -998,13 +993,13 @@ class Fallos extends Phaser.Scene {
     }
 
     showIncorrectAnswer(buttonBg, buttonText, gameWidth, gameHeight) {
-        // Create a red rectangle overlay for the button
-        const redOverlay = this.add.rectangle(buttonBg.x, buttonBg.y, buttonBg.width * buttonBg.scaleX, buttonBg.height * buttonBg.scaleY, 0xff0000, 0.8);
-        redOverlay.setDepth(buttonBg.depth + 1);
+        // Create a red rectangle overlay behind the text (since no buttonBg)
+        const redOverlay = this.add.rectangle(buttonText.x, buttonText.y, 200, 40, 0xff0000, 0.8);
+        redOverlay.setDepth(buttonText.depth - 1);
 
         // Store the red overlay reference in the button object for later removal
         this.answerButtons.forEach(button => {
-            if (button.bg === buttonBg) {
+            if (button.text === buttonText) {
                 button.redOverlay = redOverlay;
             }
         });
@@ -1012,10 +1007,10 @@ class Fallos extends Phaser.Scene {
         // Make sure text is above the red overlay
         buttonText.setDepth(redOverlay.depth + 1);
 
-        // Error animation for button
+        // Error animation for button text and overlay
         this.tweens.add({
-            targets: [buttonBg, buttonText, redOverlay],
-            x: buttonBg.x + 10,
+            targets: [buttonText, redOverlay],
+            x: buttonText.x + 10,
             duration: 100,
             yoyo: true,
             repeat: 3,
@@ -1054,8 +1049,8 @@ class Fallos extends Phaser.Scene {
         this.time.delayedCall(2000, () => {
             this.answerButtons.forEach(button => {
                 // Only re-enable buttons that are not the incorrect one
-                if (button.bg !== buttonBg) {
-                    button.bg.setInteractive();
+                if (button.text !== buttonText) {
+                    button.text.setInteractive();
                     button.text.setFill('#ffffff');
                 }
             });
