@@ -184,12 +184,12 @@ class Rompecabezas extends Phaser.Scene {
     const containerY = this.isMobile ? this.scale.height * 0.4 : 250; // Centro vertical
     const codeContainer = this.add.container(containerX, containerY);
 
-    // Dimensiones optimizadas para layout lado a lado en móviles
+    // Dimensiones optimizadas para layout lado a lado en móviles - contenedores más grandes
     const containerWidth = this.isMobile
-      ? Math.min(this.scale.width * 0.45, 180)  // Mitad del ancho para layout lado a lado
+      ? Math.min(this.scale.width * 0.48, 220)  // Más ancho para mejor legibilidad
       : 400; 
     const containerHeight = this.isMobile
-      ? Math.min(this.scale.height * 0.5, 200)  // Más altura para mejor legibilidad
+      ? Math.min(this.scale.height * 0.6, 280)  // Más altura para mejor visualización
       : 200;
 
     // Sombra exterior profunda
@@ -338,12 +338,12 @@ class Rompecabezas extends Phaser.Scene {
     const containerY = this.isMobile ? this.scale.height * 0.4 : 250; // Centro vertical (mismo que código)
     const explanationContainer = this.add.container(containerX, containerY);
 
-    // Dimensiones optimizadas para layout lado a lado en móviles
+    // Dimensiones optimizadas para layout lado a lado en móviles - contenedores más grandes
     const containerWidth = this.isMobile
-      ? Math.min(this.scale.width * 0.45, 180)  // Mitad del ancho para layout lado a lado
+      ? Math.min(this.scale.width * 0.48, 220)  // Más ancho para mejor legibilidad
       : 440;
     const containerHeight = this.isMobile
-      ? Math.min(this.scale.height * 0.5, 200)  // Misma altura que el código
+      ? Math.min(this.scale.height * 0.6, 280)  // Más altura para mejor visualización
       : 300;
 
     // Sombra exterior más sutil
@@ -521,11 +521,11 @@ class Rompecabezas extends Phaser.Scene {
   createNavigationButtons() {
     const { width, height } = this.scale;
 
-    // Adaptaciones para layout lado a lado en móviles - botones visibles debajo
+    // Adaptaciones para layout lado a lado en móviles - botones bien posicionados
     const buttonWidth = this.isMobile ? 120 : 140;
     const buttonHeight = this.isMobile ? 45 : 55;
     const buttonSpacing = this.isMobile ? 40 : 20;
-    const buttonY = this.isMobile ? height - 80 : height - 60; // Más espacio desde abajo para ser visibles
+    const buttonY = this.isMobile ? height - 120 : height - 60; // Más arriba para no salirse de pantalla
     const buttonRadius = this.isMobile ? 10 : 12;
     const fontSize = this.isMobile ? "14px" : "16px";
 
