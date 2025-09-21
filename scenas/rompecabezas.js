@@ -506,13 +506,13 @@ class Rompecabezas extends Phaser.Scene {
   }
 
   createNavigationButtons(width, height) {
-    // Adaptaciones para móviles
-    const buttonWidth = this.isMobile ? 100 : 140;
-    const buttonHeight = this.isMobile ? 35 : 45;
+    // Adaptaciones para móviles con botones más visibles
+    const buttonWidth = this.isMobile ? 120 : 140;
+    const buttonHeight = this.isMobile ? 45 : 45;
     const buttonRadius = this.isMobile ? 18 : 22;
-    const buttonSpacing = this.isMobile ? 110 : 140;
-    const buttonY = this.isMobile ? height - 50 : height - 80;
-    const fontSize = this.isMobile ? "11px" : "14px";
+    const buttonSpacing = this.isMobile ? 130 : 140;
+    const buttonY = this.isMobile ? height - 60 : height - 80;
+    const fontSize = this.isMobile ? "14px" : "14px";
 
     // Botón Anterior con diseño más elegante
     const backButtonBg = this.add.graphics();
@@ -524,7 +524,7 @@ class Rompecabezas extends Phaser.Scene {
       buttonHeight,
       buttonRadius
     );
-    backButtonBg.lineStyle(2, 0x343a40, 0.8);
+    backButtonBg.lineStyle(3, 0x343a40, 1);
     backButtonBg.strokeRoundedRect(
       width / 2 - buttonSpacing - buttonWidth / 2,
       buttonY - buttonHeight / 2,
@@ -550,7 +550,7 @@ class Rompecabezas extends Phaser.Scene {
         fontSize: fontSize,
         fontFamily: "SF Pro Display, -apple-system, Arial, sans-serif",
         fill: "#ffffff",
-        fontWeight: "600",
+        fontWeight: "700",
       })
       .setOrigin(0.5);
 
@@ -564,7 +564,7 @@ class Rompecabezas extends Phaser.Scene {
       buttonHeight,
       buttonRadius
     );
-    nextButtonBg.lineStyle(2, 0x084298, 0.8);
+    nextButtonBg.lineStyle(3, 0x084298, 1);
     nextButtonBg.strokeRoundedRect(
       width / 2 + buttonSpacing - buttonWidth / 2,
       buttonY - buttonHeight / 2,
@@ -590,13 +590,13 @@ class Rompecabezas extends Phaser.Scene {
         fontSize: fontSize,
         fontFamily: "SF Pro Display, -apple-system, Arial, sans-serif",
         fill: "#ffffff",
-        fontWeight: "600",
+        fontWeight: "700",
       })
       .setOrigin(0.5);
 
     // Indicador de progreso más compacto
-    const progressWidth = this.isMobile ? 100 : 130;
-    const progressHeight = this.isMobile ? 30 : 45;
+    const progressWidth = this.isMobile ? 120 : 130;
+    const progressHeight = this.isMobile ? 40 : 45;
     const progressBg = this.add.graphics();
     progressBg.fillStyle(0x21262d, 0.95);
     progressBg.fillRoundedRect(
@@ -616,22 +616,22 @@ class Rompecabezas extends Phaser.Scene {
     );
 
     // Icono de progreso más pequeño
-    const iconSize = this.isMobile ? "12px" : "16px";
-    const iconOffset = this.isMobile ? -25 : -30;
+    const iconSize = this.isMobile ? "14px" : "16px";
+    const iconOffset = this.isMobile ? -30 : -30;
     this.add
       .text(width / 2 + iconOffset, buttonY, "📊", {
         fontSize: iconSize,
       })
       .setOrigin(0.5);
 
-    const progressFontSize = this.isMobile ? "9px" : "12px";
-    const progressOffset = this.isMobile ? 10 : 10;
+    const progressFontSize = this.isMobile ? "12px" : "12px";
+    const progressOffset = this.isMobile ? 15 : 10;
     this.progressText = this.add
       .text(width / 2 + progressOffset, buttonY, "", {
         fontSize: progressFontSize,
         fontFamily: "SF Pro Display, -apple-system, Arial, sans-serif",
         fill: "#f0f6fc",
-        fontWeight: "500",
+        fontWeight: "600",
       })
       .setOrigin(0.5);
   }
@@ -767,13 +767,13 @@ class Rompecabezas extends Phaser.Scene {
     }
     this.codeTextObjects = [];
 
-    // Adaptaciones para móviles
+    // Adaptaciones para móviles con texto más legible
     let yOffset = this.isMobile ? -70 : -95; // Posición inicial más arriba
-    const lineHeight = this.isMobile ? 10 : 12; // Espaciado entre líneas muy compacto
+    const lineHeight = this.isMobile ? 14 : 12; // Espaciado entre líneas más amplio
     const leftMargin = this.isMobile ? -180 : -200; // Margen izquierdo más hacia la izquierda
     const maxWidth = this.isMobile ? 320 : 380; // Ancho máximo que se ajuste al contenedor
-    const fontSize = this.isMobile ? "7px" : "9px";
-    const lineNumberFontSize = this.isMobile ? "7px" : "9px";
+    const fontSize = this.isMobile ? "11px" : "9px"; // Tamaño de fuente más grande para móviles
+    const lineNumberFontSize = this.isMobile ? "10px" : "9px";
 
     this.codeLines.forEach((line, index) => {
       // Crear número de línea más pequeño
