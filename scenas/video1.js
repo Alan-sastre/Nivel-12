@@ -130,7 +130,7 @@ class scenaVideo extends Phaser.Scene {
       if (sliderContainer && sliderContainer.parentNode) {
         sliderContainer.parentNode.removeChild(sliderContainer);
       }
-      this.scene.start("ArduinoGameScene");
+      this.scene.start("Fallos");
     });
   }
 }
