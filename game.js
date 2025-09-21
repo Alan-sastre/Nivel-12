@@ -16,13 +16,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let gameWidth, gameHeight;
 
   if (isMobileDevice) {
-    // Para móviles, usar toda la pantalla disponible
-    gameWidth = screenWidth;
-    gameHeight = screenHeight;
-
-    // Asegurar dimensiones mínimas para funcionalidad
-    gameWidth = Math.max(gameWidth, 360);
-    gameHeight = Math.max(gameHeight, 480);
+    // Para móviles, usar dimensiones base optimizadas
+    gameWidth = 800;  // Ancho base fijo para móviles
+    gameHeight = 600; // Alto base fijo para móviles
   } else {
     // Para desktop, dimensiones optimizadas para mejor experiencia
     gameWidth = Math.min(screenWidth * 0.9, 1200); // Máximo 1200px o 90% de pantalla
@@ -36,12 +32,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const config = {
     type: Phaser.AUTO,
     scale: {
-      mode: Phaser.Scale.RESIZE,
+      mode: Phaser.Scale.FIT,
       parent: "game",
       width: gameWidth,
       height: gameHeight,
       autoCenter: Phaser.Scale.CENTER_BOTH,
-      expandParent: true,
+      expandParent: false,
       fullscreenTarget: "game",
       // Mejorar la escalabilidad en diferentes dispositivos
       min: {
@@ -49,8 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
         height: isMobileDevice ? 480 : 500
       },
       max: {
-        width: isMobileDevice ? screenWidth : 1200,
-        height: isMobileDevice ? screenHeight : 700
+        width: isMobileDevice ? 800 : 1200,
+        height: isMobileDevice ? 600 : 700
       }
     },
     physics: {
@@ -78,11 +74,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const gameContainer = document.createElement("div");
   gameContainer.id = "game";
   gameContainer.style.cssText = `
-    width: 100vw;
+    width: 100%;
     height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -120,8 +113,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Redimensionar el juego para usar toda la pantalla
-    game.scale.resize(newWidth, newHeight);
+    // Redimensionar el juego manteniendo proporciones adecuadas
+    if (currentlyMobile) {
+      game.scale.resize(800, 600);
+    } else {
+      game.scale.resize(
+        Math.min(newWidth * 0.9, 1200),
+        Math.min(newHeight * 0.8, 700)
+      );
+    }
   }
 
   // Agregar event listeners para resize
