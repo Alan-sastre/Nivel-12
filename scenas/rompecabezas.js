@@ -17,11 +17,11 @@ class Rompecabezas extends Phaser.Scene {
   }
 
   create() {
-    // Configurar dimensiones de la pantalla según game.js (1000x500)
+    // Configurar dimensiones de la pantalla
     const { width, height } = this.scale;
     
-    // Detectar si es móvil con mejor lógica
-    this.isMobile = width < 768 || height < 600;
+    // Detectar si es móvil basado en el ancho de la pantalla
+    this.isMobile = width < 900; // Ajustado para que se active en pantallas más grandes
     
     // Fondo con gradiente mejorado y más moderno
     const graphics = this.add.graphics();
@@ -38,9 +38,9 @@ class Rompecabezas extends Phaser.Scene {
       backgroundTexture.fillCircle(x, y, size);
     }
 
-    // Título con efecto de sombra mejorado y gradiente - mejor adaptado para móviles
-    const titleSize = this.isMobile ? '18px' : '28px';
-    const titleY = this.isMobile ? 25 : 50;
+    // Título con efecto de sombra mejorado y gradiente
+    const titleSize = this.isMobile ? '16px' : '24px';
+    const titleY = this.isMobile ? 20 : 40;
     
     const titleShadow = this.add.text(width/2 + 2, titleY + 2, 'Sistema de Monitoreo Arduino', {
       fontSize: titleSize,
@@ -144,14 +144,15 @@ class Rompecabezas extends Phaser.Scene {
   }
 
   createCodeSection() {
-    // Crear contenedor del código mejor posicionado para evitar colisiones
-    const containerX = this.isMobile ? this.scale.width * 0.5 : 250;
-    const containerY = this.isMobile ? this.scale.height * 0.25 : 220;
-    const codeContainer = this.add.container(containerX, containerY);
+    const { width, height } = this.scale;
     
-    // Dimensiones adaptadas para móviles con mejor proporción
-    const containerWidth = this.isMobile ? Math.min(this.scale.width * 0.95, 350) : 440;
-    const containerHeight = this.isMobile ? Math.min(this.scale.height * 0.3, 200) : 300;
+    // Posición y dimensiones adaptativas
+    const containerX = width * 0.5;
+    const containerY = height * (this.isMobile ? 0.3 : 0.4);
+    const containerWidth = Math.min(width * 0.95, 500);
+    const containerHeight = this.isMobile ? Math.min(height * 0.4, 300) : 350;
+    
+    const codeContainer = this.add.container(containerX, containerY);
     
     // Sombra exterior profunda
     const outerShadow = this.add.graphics();
@@ -217,19 +218,28 @@ class Rompecabezas extends Phaser.Scene {
     
     // Crear texto del código con colores específicos
     this.createColoredCodeText(codeContainer, '', []);
+    
+    // Asegurar que el contenedor de código sea interactivo
+    codeContainer.setInteractive(new Phaser.Geom.Rectangle(
+      -containerWidth/2, 
+      -containerHeight/2, 
+      containerWidth, 
+      containerHeight
+    ), Phaser.Geom.Rectangle.Contains);
 
     this.codeContainer = codeContainer;
   }
 
   createExplanationSection() {
-    // Crear contenedor de explicación mejor posicionado y con nuevo color
-    const containerX = this.isMobile ? this.scale.width * 0.5 : 750;
-    const containerY = this.isMobile ? this.scale.height * 0.6 : 220;
-    const explanationContainer = this.add.container(containerX, containerY);
+    const { width, height } = this.scale;
     
-    // Dimensiones adaptadas para móviles con mejor proporción
-    const containerWidth = this.isMobile ? Math.min(this.scale.width * 0.95, 350) : 440;
-    const containerHeight = this.isMobile ? Math.min(this.scale.height * 0.25, 180) : 300;
+    // Posición y dimensiones adaptativas
+    const containerX = width * 0.5;
+    const containerY = this.isMobile ? (height * 0.7) : (height * 0.7);
+    const containerWidth = Math.min(width * 0.95, 500);
+    const containerHeight = this.isMobile ? Math.min(height * 0.4, 250) : 300;
+    
+    const explanationContainer = this.add.container(containerX, containerY);
     
     // Sombra exterior más sutil
     const outerShadow = this.add.graphics();
@@ -291,19 +301,19 @@ class Rompecabezas extends Phaser.Scene {
     separatorLine.lineBetween(-containerWidth/2 + 20, separatorY, containerWidth/2 - 20, separatorY);
     explanationContainer.add(separatorLine);
 
-    // Área de contenido más compacta
-    const contentAreaHeight = containerHeight - topBarHeight - 20;
+    // Área de contenido con mejor espaciado
+    const contentAreaHeight = containerHeight - topBarHeight - 15;
     const contentArea = this.add.graphics();
-    contentArea.fillStyle(0xffffff, 0.9);
-    contentArea.fillRoundedRect(-containerWidth/2 + 10, separatorY + 5, containerWidth - 20, contentAreaHeight, 8);
+    contentArea.fillStyle(0xffffff, 0.95);
+    contentArea.fillRoundedRect(-containerWidth/2 + 10, separatorY + 5, containerWidth - 20, contentAreaHeight, 10);
     contentArea.lineStyle(1, 0xc3e6c3, 0.6);
-    contentArea.strokeRoundedRect(-containerWidth/2 + 10, separatorY + 5, containerWidth - 20, contentAreaHeight, 8);
+    contentArea.strokeRoundedRect(-containerWidth/2 + 10, separatorY + 5, containerWidth - 20, contentAreaHeight, 10);
     explanationContainer.add(contentArea);
 
-    // Texto de explicación con mejor espaciado y posición corregida - adaptado para móviles
-    const textSize = this.isMobile ? '8px' : '12px';
-    const textY = this.isMobile ? separatorY + contentAreaHeight/2 - 10 : 10;
-    const textWidth = this.isMobile ? containerWidth - 40 : 360;
+    // Texto de explicación mejorado
+    const textSize = this.isMobile ? '10px' : '12px';
+    const textY = separatorY + 15;
+    const textWidth = containerWidth - 40;
     
     this.explanationText = this.add.text(0, textY, '', {
       fontSize: textSize,
@@ -330,12 +340,12 @@ class Rompecabezas extends Phaser.Scene {
 
   createNavigationButtons(width, height) {
     // Adaptaciones mejoradas para móviles y PC
-    const buttonWidth = this.isMobile ? 90 : 140;
-    const buttonHeight = this.isMobile ? 32 : 45;
-    const buttonRadius = this.isMobile ? 16 : 22;
-    const buttonSpacing = this.isMobile ? 100 : 140;
-    const buttonY = this.isMobile ? height - 40 : height - 80;
-    const fontSize = this.isMobile ? '10px' : '14px';
+    const buttonWidth = this.isMobile ? 100 : 140;
+    const buttonHeight = this.isMobile ? 36 : 45;
+    const buttonRadius = 20;
+    const buttonSpacing = this.isMobile ? (width * 0.2) : 160;
+    const buttonY = this.isMobile ? (height - 30) : (height - 60);
+    const fontSize = this.isMobile ? '12px' : '14px';
     
     // Botón Anterior con diseño más elegante
     const backButtonBg = this.add.graphics();
@@ -403,38 +413,33 @@ class Rompecabezas extends Phaser.Scene {
     if (step < 0 || step >= this.explanations.length) return;
 
     this.currentStep = step;
-
-    // Actualizar código con resaltado mejorado
     this.updateCodeDisplay(step);
-
-    // Actualizar explicación con icono
-    const explanation = this.explanations[step];
-    this.explanationTitle.setText(explanation.title);
     
-    // Actualizar explicación con animación suave
+    // Actualizar explicación con animación
     this.tweens.add({
-      targets: this.explanationText,
-      alpha: 0,
-      duration: 200,
+      targets: [this.explanationContainer],
+      alpha: { from: 0, to: 1 },
+      duration: 300,
+      ease: 'Power2',
       onComplete: () => {
-        // Ajustar el texto de explicación para móviles
-        const maxLength = this.isMobile ? 180 : 300;
-        let explanationText = explanation.content;
-        
-        if (this.isMobile && explanationText.length > maxLength) {
-          explanationText = explanationText.substring(0, maxLength) + '...';
-        }
-        
-        this.explanationText.setText(explanationText);
-        this.tweens.add({
-          targets: this.explanationText,
-          alpha: 1,
-          duration: 300
-        });
+        const explanation = this.explanations[step];
+        this.explanationTitle.setText(explanation.title);
+        this.explanationText.setText(explanation.content);
+        this.explanationIcon.setText(explanation.icon);
       }
     });
     
-    // Actualizar icono dinámico
+    // Actualizar botones con feedback visual
+    this.backButton.setInteractive(step > 0);
+    this.nextButton.setInteractive(step < this.explanations.length - 1);
+    
+    // Actualizar progreso
+    this.progressText.setText(`${step + 1}/${this.explanations.length}`);
+    
+    // Asegurar que el scroll esté en la parte superior
+    if (this.explanationText.scrollY) {
+      this.explanationText.scrollY = 0;
+    }
     if (this.explanationIcon) {
       this.explanationIcon.setText(explanation.icon);
     }
