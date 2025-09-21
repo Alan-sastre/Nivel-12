@@ -776,13 +776,7 @@ class Fallos extends Phaser.Scene {
         const panelX = this.isMobile ? gameWidth * 0.7 : gameWidth * 0.75;
         const panelY = gameHeight * 0.5;
 
-        // Question panel background
-        this.questionPanel = this.add.image(panelX, panelY, 'holoPanel');
-        const panelScale = this.isMobile ? 0.85 : 1;
-        this.questionPanel.setScale(panelScale);
-        this.questionPanel.setAlpha(0);
-
-        // Question title con tamaño adaptativo
+        // Question title con tamaño adaptativo (sin panel de fondo)
         const titleFontSize = this.isMobile ? 
             Math.min(gameWidth * 0.025, 16) : 
             Math.min(gameWidth * 0.018, 20);
@@ -828,7 +822,23 @@ class Fallos extends Phaser.Scene {
         options.forEach((option, index) => {
             const buttonY = panelY + startY + index * buttonSpacing;
             
-            // Button text (sin recuadro de fondo)
+            // Button background (recuadro individual)
+            const buttonBg = this.add.graphics();
+            const bgWidth = this.isMobile ? 180 : 220;
+            const bgHeight = this.isMobile ? 35 : 40;
+            
+            // Crear recuadro con borde
+            buttonBg.lineStyle(2, 0x00ffff, 0.8);
+            buttonBg.fillStyle(0x001122, 0.3);
+            buttonBg.fillRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 8);
+            buttonBg.strokeRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 8);
+            
+            buttonBg.x = panelX;
+            buttonBg.y = buttonY;
+            buttonBg.setAlpha(0);
+            buttonBg.setInteractive(new Phaser.Geom.Rectangle(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight), Phaser.Geom.Rectangle.Contains);
+
+            // Button text
             const buttonText = this.add.text(panelX, buttonY, option, {
                 fontSize: `${buttonFontSize}px`,
                 fontFamily: 'Arial',
@@ -836,64 +846,69 @@ class Fallos extends Phaser.Scene {
                 wordWrap: { width: this.isMobile ? 120 : 160, useAdvancedWrap: true }
             }).setOrigin(0.5);
             buttonText.setAlpha(0);
-            buttonText.setInteractive();
 
-            // Hover effects adaptados para móviles - aplicados al texto
+            // Hover effects adaptados para móviles - aplicados al recuadro
             if (this.isMobile) {
                 // Para móviles, usar eventos de toque
-                buttonText.on('pointerdown', () => {
+                buttonBg.on('pointerdown', () => {
                     this.createHoverParticles(panelX, buttonY);
-                    buttonText.setTint(0x44ff44);
+                    buttonBg.clear();
+                    buttonBg.lineStyle(2, 0x44ff44, 1);
+                    buttonBg.fillStyle(0x002200, 0.5);
+                    buttonBg.fillRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 8);
+                    buttonBg.strokeRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 8);
                 });
                 
-                buttonText.on('pointerup', () => {
-                    buttonText.clearTint();
+                buttonBg.on('pointerup', () => {
+                    buttonBg.clear();
+                    buttonBg.lineStyle(2, 0x00ffff, 0.8);
+                    buttonBg.fillStyle(0x001122, 0.3);
+                    buttonBg.fillRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 8);
+                    buttonBg.strokeRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 8);
                 });
             } else {
                 // Para desktop, mantener hover tradicional
-                buttonText.on('pointerover', () => {
+                buttonBg.on('pointerover', () => {
                     this.createHoverParticles(panelX, buttonY);
-                    buttonText.setTint(0x44ff44);
+                    buttonBg.clear();
+                    buttonBg.lineStyle(2, 0x44ff44, 1);
+                    buttonBg.fillStyle(0x002200, 0.5);
+                    buttonBg.fillRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 8);
+                    buttonBg.strokeRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 8);
                 });
 
-                buttonText.on('pointerout', () => {
-                    buttonText.clearTint();
+                buttonBg.on('pointerout', () => {
+                    buttonBg.clear();
+                    buttonBg.lineStyle(2, 0x00ffff, 0.8);
+                    buttonBg.fillStyle(0x001122, 0.3);
+                    buttonBg.fillRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 8);
+                    buttonBg.strokeRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 8);
                 });
             }
 
-            buttonText.on('pointerdown', () => {
-                this.checkAnswer(index, null, buttonText, gameWidth, gameHeight);
+            buttonBg.on('pointerdown', () => {
+                this.checkAnswer(index, buttonBg, buttonText, gameWidth, gameHeight);
             });
 
-            // Store button references for later use (solo texto, sin bg)
+            // Store button references for later use
             this.answerButtons.push({
-                bg: null,
+                bg: buttonBg,
                 text: buttonText
             });
 
             // Store references
             this.questionElements = this.questionElements || [];
-            this.questionElements.push(buttonText);
+            this.questionElements.push(buttonBg, buttonText);
 
             // Entrance animation con timing adaptativo
             const delay = this.isMobile ? index * 200 : index * 150;
             this.tweens.add({
-                targets: buttonText,
+                targets: [buttonBg, buttonText],
                 alpha: 1,
                 duration: this.isMobile ? 800 : 600,
                 delay: delay,
                 ease: 'Power2.easeOut'
             });
-        });
-
-        // Panel entrance animation
-        this.tweens.add({
-            targets: this.questionPanel,
-            alpha: 1,
-            scaleX: panelScale,
-            scaleY: panelScale,
-            duration: this.isMobile ? 1200 : 1000,
-            ease: 'Back.easeOut'
         });
     }
 
@@ -1796,7 +1811,6 @@ void loop() {
         // Primero: Desvanecimiento suave de todos los elementos de la escena
         const allElements = [
             this.coreContainer,
-            this.questionPanel,
             ...this.questionElements || [],
             ...this.hologramElements || [],
             ...this.dataStreams || [],
