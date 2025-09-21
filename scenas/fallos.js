@@ -1299,7 +1299,7 @@ void loop() {
 
         // Code display with enhanced readability - AJUSTADO PARA EVITAR DESBORDAMIENTO
         const codeLines = correctedCode.split('\n');
-        const startY = -gameWidth * 0.25; // Posición inicial ajustada
+        const startY = -gameHeight * 0.2; // Posición inicial corregida usando gameHeight
         const lineHeight = this.isMobile ? 
             Math.min(gameHeight * 0.022, 16) : 
             Math.min(gameHeight * 0.025, 18); // Altura de línea adaptativa
