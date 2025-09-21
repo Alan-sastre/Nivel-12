@@ -171,12 +171,12 @@ class Rompecabezas extends Phaser.Scene {
     const containerY = this.isMobile ? this.scale.height * 0.35 : 250; // Subir más de 0.45 a 0.35
     const codeContainer = this.add.container(containerX, containerY);
 
-    // Dimensiones más compactas para móviles
+    // Dimensiones más amplias para móviles para que quepan las líneas completas
     const containerWidth = this.isMobile
-      ? Math.min(this.scale.width * 0.42, 380)  // Reducir ancho para mejor ajuste
+      ? Math.min(this.scale.width * 0.48, 450)  // Aumentar ancho para líneas completas
       : 440;
     const containerHeight = this.isMobile
-      ? Math.min(this.scale.height * 0.45, 200)  // Reducir altura significativamente
+      ? Math.min(this.scale.height * 0.45, 220)  // Aumentar altura ligeramente
       : 300;
 
     // Sombra exterior profunda
@@ -325,12 +325,12 @@ class Rompecabezas extends Phaser.Scene {
     const containerY = this.isMobile ? this.scale.height * 0.35 : 250; // Alinear con el código
     const explanationContainer = this.add.container(containerX, containerY);
 
-    // Dimensiones más compactas para móviles
+    // Dimensiones más amplias para móviles para que coincidan con el código
     const containerWidth = this.isMobile
-      ? Math.min(this.scale.width * 0.42, 380)  // Reducir ancho para mejor ajuste
+      ? Math.min(this.scale.width * 0.48, 450)  // Aumentar ancho igual que el código
       : 440;
     const containerHeight = this.isMobile
-      ? Math.min(this.scale.height * 0.45, 200)  // Reducir altura significativamente
+      ? Math.min(this.scale.height * 0.45, 220)  // Aumentar altura igual que el código
       : 300;
 
     // Sombra exterior más sutil
@@ -508,13 +508,13 @@ class Rompecabezas extends Phaser.Scene {
   createNavigationButtons() {
     const { width, height } = this.scale;
 
-    // Adaptaciones para móviles - posicionar botones más arriba y visibles
-    const buttonWidth = this.isMobile ? 90 : 120;
-    const buttonHeight = this.isMobile ? 30 : 45;
-    const buttonSpacing = this.isMobile ? 15 : 20;
-    const buttonY = this.isMobile ? height - 50 : height - 60; // Subir más los botones
-    const buttonRadius = this.isMobile ? 8 : 12;
-    const fontSize = this.isMobile ? "11px" : "14px";
+    // Adaptaciones para móviles - hacer botones más visibles y accesibles
+    const buttonWidth = this.isMobile ? 100 : 120;
+    const buttonHeight = this.isMobile ? 40 : 45;
+    const buttonSpacing = this.isMobile ? 20 : 20;
+    const buttonY = this.isMobile ? height - 30 : height - 60; // Posición más visible
+    const buttonRadius = this.isMobile ? 10 : 12;
+    const fontSize = this.isMobile ? "12px" : "14px";
 
     // Botón Anterior con diseño más elegante
     const backButtonBg = this.add.graphics();
@@ -596,17 +596,19 @@ class Rompecabezas extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    // Indicador de progreso más compacto
-    const progressY = this.isMobile ? buttonY + 30 : buttonY + 40;
+    // Indicador de progreso más compacto y visible
+    const progressY = this.isMobile ? buttonY + 35 : buttonY + 40;
     const progressText = this.add.text(
       width / 2,
       progressY,
       `Paso ${this.currentStep + 1} de ${this.explanations.length}`,
       {
-        fontSize: this.isMobile ? "11px" : "14px",
+        fontSize: this.isMobile ? "12px" : "14px",
         fontFamily: "Arial, sans-serif",
         fill: "#ffffff",
         fontWeight: "500",
+        stroke: "#000000",
+        strokeThickness: 1,
       }
     );
     progressText.setOrigin(0.5);
