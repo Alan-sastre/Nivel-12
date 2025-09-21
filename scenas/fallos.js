@@ -683,9 +683,9 @@ class Fallos extends Phaser.Scene {
         this.codePanel.setScale(panelScale);
         this.codePanel.setAlpha(0);
 
-        // Code title con tamaño adaptativo
+        // Code title con tamaño adaptativo mejorado para móviles
         const titleFontSize = this.isMobile ? 
-            Math.min(gameWidth * 0.03, 18) : 
+            Math.min(gameWidth * 0.045, 24) : 
             Math.min(gameWidth * 0.02, 22);
 
         this.add.text(panelX, panelY - (this.isMobile ? 90 : 110), 'CÓDIGO DEL SISTEMA', {
@@ -693,7 +693,7 @@ class Fallos extends Phaser.Scene {
             fontFamily: 'Arial Bold',
             fill: '#00ffff',
             stroke: '#003366',
-            strokeThickness: this.isMobile ? 0.5 : 1
+            strokeThickness: this.isMobile ? 1 : 1
         }).setOrigin(0.5);
 
         // Code content with syntax highlighting
@@ -714,15 +714,15 @@ class Fallos extends Phaser.Scene {
 
         this.codeElements = [];
         
-        // Configuración adaptativa para el código
+        // Configuración adaptativa para el código mejorada para móviles
         const codeFontSize = this.isMobile ? 
-            Math.min(gameWidth * 0.015, 12) : 
+            Math.min(gameWidth * 0.025, 16) : 
             Math.min(gameWidth * 0.01, 14);
         
-        const lineSpacing = this.isMobile ? 16 : 20;
+        const lineSpacing = this.isMobile ? 20 : 20;
         const leftOffset = this.isMobile ? -100 : -120;
         const topOffset = this.isMobile ? -70 : -80;
-        const wrapWidth = this.isMobile ? 200 : 240;
+        const wrapWidth = this.isMobile ? 220 : 240;
 
         codeLines.forEach((line, index) => {
             const codeText = this.add.text(
@@ -734,7 +734,7 @@ class Fallos extends Phaser.Scene {
                     fontFamily: 'Courier New',
                     fill: this.getCodeColor(line),
                     backgroundColor: 'rgba(0, 20, 40, 0.3)',
-                    padding: { x: this.isMobile ? 3 : 5, y: this.isMobile ? 1 : 2 },
+                    padding: { x: this.isMobile ? 4 : 5, y: this.isMobile ? 2 : 2 },
                     wordWrap: { width: wrapWidth, useAdvancedWrap: true }
                 }
             );
@@ -1111,21 +1111,30 @@ void loop() {
         const buttonY = gameHeight * 0.9;
 
         const continueButton = this.add.image(buttonX, buttonY, 'energyButton');
-        continueButton.setScale(1.5);
+        // Escala más grande para móviles
+        const buttonScale = this.isMobile ? 2.0 : 1.5;
+        continueButton.setScale(buttonScale);
         continueButton.setInteractive();
 
+        // Tamaño de fuente mejorado para móviles
+        const buttonFontSize = this.isMobile ? 
+            Math.min(gameWidth * 0.035, 28) : 
+            Math.min(gameWidth * 0.02, 22);
+
         const continueText = this.add.text(buttonX, buttonY, 'CONTINUAR', {
-            fontSize: `${Math.min(gameWidth * 0.02, 22)}px`,
+            fontSize: `${buttonFontSize}px`,
             fontFamily: 'Arial Bold',
             fill: '#ffffff'
         }).setOrigin(0.5);
 
-        // Button animations
+        // Button animations con escalas adaptativas
+        const hoverScale = this.isMobile ? 2.2 : 1.7;
+        
         continueButton.on('pointerover', () => {
             this.tweens.add({
                 targets: [continueButton, continueText],
-                scaleX: 1.7,
-                scaleY: 1.7,
+                scaleX: hoverScale,
+                scaleY: hoverScale,
                 duration: 200,
                 ease: 'Power2.easeOut'
             });
@@ -1134,8 +1143,8 @@ void loop() {
         continueButton.on('pointerout', () => {
             this.tweens.add({
                 targets: [continueButton, continueText],
-                scaleX: 1.5,
-                scaleY: 1.5,
+                scaleX: buttonScale,
+                scaleY: buttonScale,
                 duration: 200,
                 ease: 'Power2.easeOut'
             });
@@ -1411,33 +1420,41 @@ void loop() {
     }
 
     createContinueButton(gameWidth, gameHeight) {
-        // Enhanced continue button with modern design
+        // Enhanced continue button with modern design adaptado para móviles
         const buttonContainer = this.add.container(gameWidth / 2, gameHeight * 0.92);
 
-        // Button background with gradient and glow
+        // Button background with gradient and glow - tamaños adaptivos
         const buttonBg = this.add.graphics();
+        
+        // Dimensiones adaptativas para móviles
+        const buttonWidth = this.isMobile ? 300 : 240;
+        const buttonHeight = this.isMobile ? 70 : 50;
+        const cornerRadius = this.isMobile ? 35 : 25;
+        const halfWidth = buttonWidth / 2;
+        const halfHeight = buttonHeight / 2;
         
         // Main gradient background
         buttonBg.fillGradientStyle(0x00ff88, 0x00cc66, 0x009944, 0x00ff88, 1, 0.9, 0.8, 0.9);
-        buttonBg.fillRoundedRect(-120, -25, 240, 50, 25);
+        buttonBg.fillRoundedRect(-halfWidth, -halfHeight, buttonWidth, buttonHeight, cornerRadius);
         
         // Outer glow effect
         buttonBg.lineStyle(3, 0x66ffaa, 0.6);
-        buttonBg.strokeRoundedRect(-120, -25, 240, 50, 25);
+        buttonBg.strokeRoundedRect(-halfWidth, -halfHeight, buttonWidth, buttonHeight, cornerRadius);
         
         // Inner highlight
         buttonBg.lineStyle(1, 0xffffff, 0.3);
-        buttonBg.strokeRoundedRect(-118, -23, 236, 46, 23);
+        buttonBg.strokeRoundedRect(-halfWidth + 2, -halfHeight + 2, buttonWidth - 4, buttonHeight - 4, cornerRadius - 2);
         
         buttonContainer.add(buttonBg);
 
-        // Button text with enhanced styling
+        // Button text with enhanced styling - tamaño adaptativo
+        const buttonFontSize = this.isMobile ? '28px' : '20px';
         const buttonText = this.add.text(0, 0, 'CONTINUAR', {
-            fontSize: '20px',
+            fontSize: buttonFontSize,
             fontFamily: 'Arial Black',
             fill: '#ffffff',
             stroke: '#004422',
-            strokeThickness: 2,
+            strokeThickness: this.isMobile ? 3 : 2,
             shadow: {
                 offsetX: 1,
                 offsetY: 1,
@@ -1448,15 +1465,17 @@ void loop() {
         }).setOrigin(0.5);
         buttonContainer.add(buttonText);
 
-        // Interactive effects
-        buttonContainer.setInteractive(new Phaser.Geom.Rectangle(-120, -25, 240, 50), Phaser.Geom.Rectangle.Contains);
+        // Interactive effects - área adaptativa
+        buttonContainer.setInteractive(new Phaser.Geom.Rectangle(-halfWidth, -halfHeight, buttonWidth, buttonHeight), Phaser.Geom.Rectangle.Contains);
         
-        // Hover effects
+        // Hover effects con escalas adaptativas
+        const hoverScale = this.isMobile ? 1.08 : 1.05;
+        
         buttonContainer.on('pointerover', () => {
             this.tweens.add({
                 targets: buttonContainer,
-                scaleX: 1.05,
-                scaleY: 1.05,
+                scaleX: hoverScale,
+                scaleY: hoverScale,
                 duration: 200,
                 ease: 'Power2.easeOut'
             });
