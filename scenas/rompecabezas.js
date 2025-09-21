@@ -180,13 +180,13 @@ class Rompecabezas extends Phaser.Scene {
 
   createCodeSection() {
     // Posicionamiento para layout lado a lado en móviles - código a la izquierda
-    const containerX = this.isMobile ? this.scale.width * 0.25 : 250; // Izquierda en móviles
+    const containerX = this.isMobile ? this.scale.width * 0.27 : 250; // Ajustado para contenedores más anchos
     const containerY = this.isMobile ? this.scale.height * 0.4 : 250; // Centro vertical
     const codeContainer = this.add.container(containerX, containerY);
 
-    // Dimensiones optimizadas para layout lado a lado en móviles - contenedores más grandes
+    // Dimensiones optimizadas para layout lado a lado en móviles - contenedores más anchos
     const containerWidth = this.isMobile
-      ? Math.min(this.scale.width * 0.48, 220)  // Más ancho para mejor legibilidad
+      ? Math.min(this.scale.width * 0.52, 250)  // Más ancho para mejor legibilidad
       : 400; 
     const containerHeight = this.isMobile
       ? Math.min(this.scale.height * 0.6, 280)  // Más altura para mejor visualización
@@ -334,13 +334,13 @@ class Rompecabezas extends Phaser.Scene {
 
   createExplanationSection() {
     // Posicionamiento para layout lado a lado en móviles - explicación a la derecha
-    const containerX = this.isMobile ? this.scale.width * 0.75 : 750; // Derecha en móviles
+    const containerX = this.isMobile ? this.scale.width * 0.73 : 750; // Ajustado para contenedores más anchos
     const containerY = this.isMobile ? this.scale.height * 0.4 : 250; // Centro vertical (mismo que código)
     const explanationContainer = this.add.container(containerX, containerY);
 
-    // Dimensiones optimizadas para layout lado a lado en móviles - contenedores más grandes
+    // Dimensiones optimizadas para layout lado a lado en móviles - contenedores más anchos
     const containerWidth = this.isMobile
-      ? Math.min(this.scale.width * 0.48, 220)  // Más ancho para mejor legibilidad
+      ? Math.min(this.scale.width * 0.52, 250)  // Más ancho para mejor legibilidad
       : 440;
     const containerHeight = this.isMobile
       ? Math.min(this.scale.height * 0.6, 280)  // Más altura para mejor visualización
