@@ -673,13 +673,13 @@ class Fallos extends Phaser.Scene {
     }
 
     createCodePanel(gameWidth, gameHeight) {
-        // Posicionamiento adaptativo para móviles
+        // Posicionamiento adaptativo para móviles - panel más grande
         const panelX = this.isMobile ? gameWidth * 0.3 : gameWidth * 0.25;
         const panelY = gameHeight * 0.5;
 
-        // Code panel background con escala adaptativa
+        // Code panel background con escala adaptativa - panel más grande para evitar desbordamiento
         this.codePanel = this.add.image(panelX, panelY, 'holoPanel');
-        const panelScale = this.isMobile ? 0.9 : 1.1;
+        const panelScale = this.isMobile ? 1.2 : 1.4; // Aumentado para dar más espacio
         this.codePanel.setScale(panelScale);
         this.codePanel.setAlpha(0);
 
@@ -688,7 +688,7 @@ class Fallos extends Phaser.Scene {
             Math.min(gameWidth * 0.045, 24) : 
             Math.min(gameWidth * 0.02, 22);
 
-        this.add.text(panelX, panelY - (this.isMobile ? 90 : 110), 'CÓDIGO DEL SISTEMA', {
+        this.add.text(panelX, panelY - (this.isMobile ? 110 : 130), 'CÓDIGO DEL SISTEMA', {
             fontSize: `${titleFontSize}px`,
             fontFamily: 'Arial Bold',
             fill: '#00ffff',
@@ -714,15 +714,15 @@ class Fallos extends Phaser.Scene {
 
         this.codeElements = [];
         
-        // Configuración adaptativa para el código mejorada para móviles
+        // Configuración adaptativa para el código - ajustada para panel más grande
         const codeFontSize = this.isMobile ? 
-            Math.min(gameWidth * 0.025, 16) : 
-            Math.min(gameWidth * 0.01, 14);
+            Math.min(gameWidth * 0.022, 14) : // Reducido ligeramente para que quepa mejor
+            Math.min(gameWidth * 0.012, 16);
         
-        const lineSpacing = this.isMobile ? 20 : 20;
-        const leftOffset = this.isMobile ? -100 : -120;
-        const topOffset = this.isMobile ? -70 : -80;
-        const wrapWidth = this.isMobile ? 220 : 240;
+        const lineSpacing = this.isMobile ? 18 : 18; // Espaciado más compacto
+        const leftOffset = this.isMobile ? -130 : -150; // Más espacio a la izquierda
+        const topOffset = this.isMobile ? -85 : -100; // Más espacio arriba
+        const wrapWidth = this.isMobile ? 260 : 300; // Ancho aumentado para evitar cortes
 
         codeLines.forEach((line, index) => {
             const codeText = this.add.text(
@@ -734,7 +734,7 @@ class Fallos extends Phaser.Scene {
                     fontFamily: 'Courier New',
                     fill: this.getCodeColor(line),
                     backgroundColor: 'rgba(0, 20, 40, 0.3)',
-                    padding: { x: this.isMobile ? 4 : 5, y: this.isMobile ? 2 : 2 },
+                    padding: { x: this.isMobile ? 3 : 4, y: this.isMobile ? 1 : 2 },
                     wordWrap: { width: wrapWidth, useAdvancedWrap: true }
                 }
             );
@@ -1276,64 +1276,174 @@ void loop() {
     }
 
     createCodeDisplayArea(gameWidth, gameHeight, correctedCode) {
-        // Main code container with space-themed glass effect - REDUCED SIZE
+        // Main code container with space-themed glass effect - AJUSTADO PARA EVITAR DESBORDAMIENTO
         const codeContainer = this.add.container(gameWidth / 2, gameHeight / 2);
 
-        // Simple solid background - SMALLER DIMENSIONS
+        // Simple solid background - DIMENSIONES AUMENTADAS PARA EVITAR DESBORDAMIENTO
         const codeBg = this.add.graphics();
         codeBg.fillStyle(0x2d3748, 1.0); // Solid dark blue-gray background
-        codeBg.fillRoundedRect(-gameWidth * 0.3, -gameHeight * 0.25, gameWidth * 0.6, gameHeight * 0.4, 20); // Reduced from 0.4/0.35/0.8/0.5
+        codeBg.fillRoundedRect(-gameWidth * 0.4, -gameHeight * 0.3, gameWidth * 0.8, gameHeight * 0.55, 20); // Aumentado significativamente
         codeBg.lineStyle(2, 0x4a5568, 1.0); // Simple gray border
-        codeBg.strokeRoundedRect(-gameWidth * 0.3, -gameHeight * 0.25, gameWidth * 0.6, gameHeight * 0.4, 20); // Reduced dimensions
+        codeBg.strokeRoundedRect(-gameWidth * 0.4, -gameHeight * 0.3, gameWidth * 0.8, gameHeight * 0.55, 20); // Aumentado significativamente
         codeContainer.add(codeBg);
 
-        // Simple professional title - SMALLER FONT
-        const title = this.add.text(0, -gameHeight * 0.30, '✅ CÓDIGO CORREGIDO', {
-            fontSize: `${Math.min(gameWidth * 0.025, 24)}px`, // Reduced from 32px
+        // Simple professional title - POSICIÓN AJUSTADA
+        const title = this.add.text(0, -gameHeight * 0.35, '✅ CÓDIGO CORREGIDO', {
+            fontSize: `${Math.min(gameWidth * 0.025, 24)}px`,
             fontFamily: 'Arial',
-            fill: '#ffffff', // Simple white text
+            fill: '#ffffff',
             stroke: '#000000',
             strokeThickness: 1
         }).setOrigin(0.5);
         codeContainer.add(title);
 
-        // Code display with enhanced readability - SMALLER FONT AND SPACING
+        // Code display with enhanced readability - AJUSTADO PARA EVITAR DESBORDAMIENTO
         const codeLines = correctedCode.split('\n');
-        const startY = -gameHeight * 0.22; // Adjusted start position
-        const lineHeight = Math.min(gameHeight * 0.018, 14); // Reduced from 0.025/20
+        const startY = -gameWidth * 0.25; // Posición inicial ajustada
+        const lineHeight = this.isMobile ? 
+            Math.min(gameHeight * 0.022, 16) : 
+            Math.min(gameHeight * 0.025, 18); // Altura de línea adaptativa
 
         this.correctedCodeElements = [];
 
-        codeLines.forEach((line, index) => {
-            const y = startY + index * lineHeight;
+        // Crear área de scroll si el contenido es muy largo
+        const maxVisibleLines = this.isMobile ? 12 : 15;
+        const visibleLines = Math.min(codeLines.length, maxVisibleLines);
+        
+        // Si hay más líneas de las que caben, implementar scroll
+        if (codeLines.length > maxVisibleLines) {
+            this.createScrollableCodeArea(codeContainer, gameWidth, gameHeight, codeLines, startY, lineHeight);
+        } else {
+            // Mostrar todas las líneas normalmente
+            codeLines.forEach((line, index) => {
+                const y = startY + index * lineHeight;
 
-            // Create more visible background for each line - SMALLER WIDTH
-            const lineBg = this.add.graphics();
-            lineBg.fillStyle(0x1e293b, 0.6); // Increased opacity from 0.2 to 0.6
-            lineBg.fillRoundedRect(-gameWidth * 0.25, y - lineHeight/2, gameWidth * 0.5, lineHeight, 3); // Reduced width
-            codeContainer.add(lineBg);
+                // Create more visible background for each line - ANCHO AUMENTADO
+                const lineBg = this.add.graphics();
+                lineBg.fillStyle(0x1e293b, 0.6);
+                lineBg.fillRoundedRect(-gameWidth * 0.35, y - lineHeight/2, gameWidth * 0.7, lineHeight, 3); // Ancho aumentado
+                codeContainer.add(lineBg);
 
-            // Apply enhanced syntax highlighting with better contrast - CRISP RENDERING
-            const styledLine = this.applySyntaxHighlighting(line);
-            const codeLine = this.add.text(-gameWidth * 0.22, y, styledLine.text, { // Adjusted position
-                fontSize: `${Math.min(gameWidth * 0.012, 16)}px`, // Increased back to 16px for better clarity
-                fontFamily: 'Consolas, "Courier New", monospace', // Better font for code readability
-                fill: styledLine.color,
-                backgroundColor: styledLine.bgColor || 'transparent',
-                stroke: styledLine.strokeColor || '#000000', // Dynamic stroke color
-                strokeThickness: 0.5, // Reduced stroke thickness for cleaner look
-                resolution: 2, // Higher resolution for crisp rendering
-                antialias: true, // Enable antialiasing for smooth text
-                padding: { x: 2, y: 2 } // Add padding for better text rendering
-            }).setOrigin(0, 0.5);
+                // Apply enhanced syntax highlighting with better contrast
+                const styledLine = this.applySyntaxHighlighting(line);
+                const codeLine = this.add.text(-gameWidth * 0.32, y, styledLine.text, { // Posición ajustada
+                    fontSize: `${Math.min(gameWidth * 0.014, 14)}px`, // Tamaño de fuente ajustado
+                    fontFamily: 'Consolas, "Courier New", monospace',
+                    fill: styledLine.color,
+                    backgroundColor: styledLine.bgColor || 'transparent',
+                    stroke: styledLine.strokeColor || '#000000',
+                    strokeThickness: 0.5,
+                    resolution: 2,
+                    antialias: true,
+                    padding: { x: 3, y: 2 },
+                    wordWrap: { width: gameWidth * 0.6, useAdvancedWrap: true } // Ancho de wrap aumentado
+                }).setOrigin(0, 0.5);
 
-            codeContainer.add(codeLine);
-            this.correctedCodeElements.push(lineBg);
-            this.correctedCodeElements.push(codeLine);
-        });
+                codeContainer.add(codeLine);
+                this.correctedCodeElements.push(lineBg);
+                this.correctedCodeElements.push(codeLine);
+            });
+        }
 
         this.codeViewElements.push(codeContainer);
         this.mainCodeContainer = codeContainer;
+    }
+
+    // Nuevo método para crear área de código con scroll
+    createScrollableCodeArea(container, gameWidth, gameHeight, codeLines, startY, lineHeight) {
+        const maxVisibleLines = this.isMobile ? 12 : 15;
+        let scrollOffset = 0;
+        const maxScroll = Math.max(0, codeLines.length - maxVisibleLines);
+
+        // Crear máscara para el área visible
+        const maskGraphics = this.add.graphics();
+        maskGraphics.fillStyle(0xffffff);
+        maskGraphics.fillRect(-gameWidth * 0.35, startY - lineHeight, gameWidth * 0.7, maxVisibleLines * lineHeight);
+        const mask = maskGraphics.createGeometryMask();
+
+        // Contenedor para las líneas de código
+        const codeContentContainer = this.add.container(0, 0);
+        codeContentContainer.setMask(mask);
+        container.add(codeContentContainer);
+
+        // Función para renderizar líneas visibles
+        const renderVisibleLines = () => {
+            codeContentContainer.removeAll(true);
+            
+            for (let i = 0; i < codeLines.length; i++) {
+                const line = codeLines[i];
+                const y = startY + (i - scrollOffset) * lineHeight;
+
+                // Solo renderizar líneas visibles
+                if (y >= startY - lineHeight && y <= startY + maxVisibleLines * lineHeight) {
+                    const lineBg = this.add.graphics();
+                    lineBg.fillStyle(0x1e293b, 0.6);
+                    lineBg.fillRoundedRect(-gameWidth * 0.35, y - lineHeight/2, gameWidth * 0.7, lineHeight, 3);
+                    codeContentContainer.add(lineBg);
+
+                    const styledLine = this.applySyntaxHighlighting(line);
+                    const codeLine = this.add.text(-gameWidth * 0.32, y, styledLine.text, {
+                        fontSize: `${Math.min(gameWidth * 0.014, 14)}px`,
+                        fontFamily: 'Consolas, "Courier New", monospace',
+                        fill: styledLine.color,
+                        backgroundColor: styledLine.bgColor || 'transparent',
+                        stroke: styledLine.strokeColor || '#000000',
+                        strokeThickness: 0.5,
+                        resolution: 2,
+                        antialias: true,
+                        padding: { x: 3, y: 2 },
+                        wordWrap: { width: gameWidth * 0.6, useAdvancedWrap: true }
+                    }).setOrigin(0, 0.5);
+
+                    codeContentContainer.add(codeLine);
+                    this.correctedCodeElements.push(lineBg);
+                    this.correctedCodeElements.push(codeLine);
+                }
+            }
+        };
+
+        // Renderizar líneas iniciales
+        renderVisibleLines();
+
+        // Agregar controles de scroll si es necesario
+        if (maxScroll > 0) {
+            this.createScrollControls(container, gameWidth, gameHeight, () => {
+                scrollOffset = Math.max(0, scrollOffset - 1);
+                renderVisibleLines();
+            }, () => {
+                scrollOffset = Math.min(maxScroll, scrollOffset + 1);
+                renderVisibleLines();
+            });
+        }
+    }
+
+    // Crear controles de scroll
+    createScrollControls(container, gameWidth, gameHeight, scrollUp, scrollDown) {
+        // Botón scroll up
+        const scrollUpBtn = this.add.graphics();
+        scrollUpBtn.fillStyle(0x4a5568, 0.8);
+        scrollUpBtn.fillTriangle(gameWidth * 0.32, -gameHeight * 0.1, 
+                                gameWidth * 0.35, -gameHeight * 0.05, 
+                                gameWidth * 0.38, -gameHeight * 0.1);
+        scrollUpBtn.setInteractive(new Phaser.Geom.Triangle(gameWidth * 0.32, -gameHeight * 0.1, 
+                                                           gameWidth * 0.35, -gameHeight * 0.05, 
+                                                           gameWidth * 0.38, -gameHeight * 0.1), 
+                                  Phaser.Geom.Triangle.Contains);
+        scrollUpBtn.on('pointerdown', scrollUp);
+        container.add(scrollUpBtn);
+
+        // Botón scroll down
+        const scrollDownBtn = this.add.graphics();
+        scrollDownBtn.fillStyle(0x4a5568, 0.8);
+        scrollDownBtn.fillTriangle(gameWidth * 0.32, gameHeight * 0.1, 
+                                  gameWidth * 0.35, gameHeight * 0.15, 
+                                  gameWidth * 0.38, gameHeight * 0.1);
+        scrollDownBtn.setInteractive(new Phaser.Geom.Triangle(gameWidth * 0.32, gameHeight * 0.1, 
+                                                             gameWidth * 0.35, gameHeight * 0.15, 
+                                                             gameWidth * 0.38, gameHeight * 0.1), 
+                                    Phaser.Geom.Triangle.Contains);
+        scrollDownBtn.on('pointerdown', scrollDown);
+        container.add(scrollDownBtn);
     }
 
     applySyntaxHighlighting(line) {
