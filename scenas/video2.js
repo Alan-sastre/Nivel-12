@@ -10,6 +10,10 @@ class scenaVideo2 extends Phaser.Scene {
   create() {
     const screenWidth = this.sys.game.config.width;
     const screenHeight = this.sys.game.config.height;
+    
+    // Detectar si es dispositivo móvil
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                     window.innerWidth <= 768;
 
     // Pausar la música usando el AudioManager
     const audioManager = this.scene.get("AudioManager");
@@ -35,13 +39,19 @@ class scenaVideo2 extends Phaser.Scene {
       const videoHeight = videoElement.videoHeight;
 
       if (videoWidth && videoHeight) {
-        const videoAspectRatio = videoWidth / videoHeight;
-        const screenAspectRatio = screenWidth / screenHeight;
-
-        if (videoAspectRatio > screenAspectRatio) {
-          video.setDisplaySize(screenWidth, screenWidth / videoAspectRatio);
+        if (isMobile) {
+          // En móviles, hacer que el video ocupe toda la pantalla
+          video.setDisplaySize(screenWidth, screenHeight);
         } else {
-          video.setDisplaySize(screenHeight * videoAspectRatio, screenHeight);
+          // En desktop, mantener aspect ratio
+          const videoAspectRatio = videoWidth / videoHeight;
+          const screenAspectRatio = screenWidth / screenHeight;
+
+          if (videoAspectRatio > screenAspectRatio) {
+            video.setDisplaySize(screenWidth, screenWidth / videoAspectRatio);
+          } else {
+            video.setDisplaySize(screenHeight * videoAspectRatio, screenHeight);
+          }
         }
       }
     });
@@ -51,38 +61,57 @@ class scenaVideo2 extends Phaser.Scene {
     // --- Barra de volumen interactiva ---
     const sliderContainer = document.createElement('div');
     sliderContainer.style.position = 'absolute';
-    sliderContainer.style.right = '20px';
-    sliderContainer.style.top = '50%';
-    sliderContainer.style.transform = 'translateY(-50%)';
+    
+    if (isMobile) {
+      // En móviles, posicionar el slider en la esquina superior derecha más pequeño
+      sliderContainer.style.right = '10px';
+      sliderContainer.style.top = '10px';
+      sliderContainer.style.transform = 'none';
+      sliderContainer.style.width = '35px';
+      sliderContainer.style.height = '150px';
+      sliderContainer.style.padding = '10px 8px';
+    } else {
+      // En desktop, mantener posición original
+      sliderContainer.style.right = '20px';
+      sliderContainer.style.top = '50%';
+      sliderContainer.style.transform = 'translateY(-50%)';
+      sliderContainer.style.width = '50px';
+      sliderContainer.style.height = '220px';
+      sliderContainer.style.padding = '20px 15px';
+    }
+    
     sliderContainer.style.zIndex = 1000;
     sliderContainer.style.background = 'rgba(30,30,30,0.85)';
     sliderContainer.style.borderRadius = '16px';
-    sliderContainer.style.padding = '20px 15px';
     sliderContainer.style.display = 'flex';
     sliderContainer.style.flexDirection = 'column';
     sliderContainer.style.alignItems = 'center';
-    sliderContainer.style.justifyContent = 'space-between'; // Pushes label to bottom
-    sliderContainer.style.width = '50px';
-    sliderContainer.style.height = '220px'; // Altura ajustada
+    sliderContainer.style.justifyContent = 'space-between';
     sliderContainer.style.boxShadow = '0 4px 16px rgba(0,0,0,0.35)';
 
     const slider = document.createElement('input');
     slider.type = 'range';
     slider.min = 0;
     slider.max = 100;
-    slider.value = 100; // Start at max volume (top)
-    slider.style.webkitAppearance = 'slider-vertical'; // For WebKit browsers
-    slider.style.writingMode = 'vertical-lr'; // Standard property for vertical elements
-    slider.style.transform = 'rotate(180deg)'; // Invert the visual direction
-    slider.style.width = '8px'; // This is the thickness
-    slider.style.height = '150px'; // This is the length
+    slider.value = 100;
+    slider.style.webkitAppearance = 'slider-vertical';
+    slider.style.writingMode = 'vertical-lr';
+    slider.style.transform = 'rotate(180deg)';
+    slider.style.width = '8px';
+    
+    if (isMobile) {
+      slider.style.height = '100px'; // Más pequeño en móviles
+    } else {
+      slider.style.height = '150px';
+    }
+    
     slider.style.accentColor = '#1abc9c';
     slider.title = 'Volumen general';
     sliderContainer.appendChild(slider);
 
     const valueLabel = document.createElement('span');
     valueLabel.innerText = '100';
-    valueLabel.style.fontSize = '1.2em';
+    valueLabel.style.fontSize = isMobile ? '0.9em' : '1.2em';
     valueLabel.style.color = '#1abc9c';
     valueLabel.style.fontWeight = 'bold';
     sliderContainer.appendChild(valueLabel);
