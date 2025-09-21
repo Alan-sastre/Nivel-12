@@ -166,17 +166,17 @@ class Rompecabezas extends Phaser.Scene {
   }
 
   createCodeSection() {
-    // Posicionamiento optimizado para móviles horizontales y desktop
+    // Posicionamiento optimizado para móviles - subir más el contenido
     const containerX = this.isMobile ? this.scale.width * 0.25 : 250;
-    const containerY = this.isMobile ? this.scale.height * 0.55 : 250;
+    const containerY = this.isMobile ? this.scale.height * 0.45 : 250; // Subir de 0.55 a 0.45
     const codeContainer = this.add.container(containerX, containerY);
 
-    // Dimensiones optimizadas para móviles horizontales
+    // Dimensiones optimizadas para móviles horizontales - reducir altura
     const containerWidth = this.isMobile
       ? Math.min(this.scale.width * 0.45, 450)  // Más ancho para móviles horizontales
       : 440;
     const containerHeight = this.isMobile
-      ? Math.min(this.scale.height * 0.6, 280)  // Más alto para aprovechar el espacio vertical
+      ? Math.min(this.scale.height * 0.5, 240)  // Reducir altura de 0.6 a 0.5 y de 280 a 240
       : 300;
 
     // Sombra exterior profunda
@@ -506,19 +506,19 @@ class Rompecabezas extends Phaser.Scene {
   }
 
   createNavigationButtons(width, height) {
-    // Adaptaciones para móviles con botones más visibles
-    const buttonWidth = this.isMobile ? 120 : 140;
-    const buttonHeight = this.isMobile ? 45 : 45;
+    // Adaptaciones para móviles con botones más visibles y mejor posicionados
+    const buttonWidth = this.isMobile ? 100 : 120;
+    const buttonHeight = this.isMobile ? 35 : 45;
     const buttonRadius = this.isMobile ? 18 : 22;
-    const buttonSpacing = this.isMobile ? 130 : 140;
-    const buttonY = this.isMobile ? height - 60 : height - 80;
-    const fontSize = this.isMobile ? "14px" : "14px";
+    const buttonSpacing = this.isMobile ? 20 : 30;
+    const buttonY = this.isMobile ? height - 80 : height - 80; // Subir los botones más arriba
+    const fontSize = this.isMobile ? "12px" : "16px"; // Reducir ligeramente el tamaño
 
     // Botón Anterior con diseño más elegante
     const backButtonBg = this.add.graphics();
     backButtonBg.fillGradientStyle(0x6c757d, 0x6c757d, 0x495057, 0x495057, 1);
     backButtonBg.fillRoundedRect(
-      width / 2 - buttonSpacing - buttonWidth / 2,
+      width / 2 - buttonWidth - buttonSpacing / 2,
       buttonY - buttonHeight / 2,
       buttonWidth,
       buttonHeight,
@@ -526,7 +526,7 @@ class Rompecabezas extends Phaser.Scene {
     );
     backButtonBg.lineStyle(3, 0x343a40, 1);
     backButtonBg.strokeRoundedRect(
-      width / 2 - buttonSpacing - buttonWidth / 2,
+      width / 2 - buttonWidth - buttonSpacing / 2,
       buttonY - buttonHeight / 2,
       buttonWidth,
       buttonHeight,
@@ -535,7 +535,7 @@ class Rompecabezas extends Phaser.Scene {
 
     this.backButton = this.add
       .rectangle(
-        width / 2 - buttonSpacing,
+        width / 2 - buttonWidth / 2 - buttonSpacing / 2,
         buttonY,
         buttonWidth,
         buttonHeight,
@@ -546,11 +546,11 @@ class Rompecabezas extends Phaser.Scene {
       .on("pointerdown", () => this.previousStep());
 
     this.add
-      .text(width / 2 - buttonSpacing, buttonY, "← Anterior", {
+      .text(width / 2 - buttonWidth / 2 - buttonSpacing / 2, buttonY, "← Anterior", {
         fontSize: fontSize,
         fontFamily: "SF Pro Display, -apple-system, Arial, sans-serif",
         fill: "#ffffff",
-        fontWeight: "700",
+        fontWeight: "600",
       })
       .setOrigin(0.5);
 
@@ -558,7 +558,7 @@ class Rompecabezas extends Phaser.Scene {
     const nextButtonBg = this.add.graphics();
     nextButtonBg.fillGradientStyle(0x0d6efd, 0x0d6efd, 0x0a58ca, 0x0a58ca, 1);
     nextButtonBg.fillRoundedRect(
-      width / 2 + buttonSpacing - buttonWidth / 2,
+      width / 2 + buttonSpacing / 2,
       buttonY - buttonHeight / 2,
       buttonWidth,
       buttonHeight,
@@ -566,7 +566,7 @@ class Rompecabezas extends Phaser.Scene {
     );
     nextButtonBg.lineStyle(3, 0x084298, 1);
     nextButtonBg.strokeRoundedRect(
-      width / 2 + buttonSpacing - buttonWidth / 2,
+      width / 2 + buttonSpacing / 2,
       buttonY - buttonHeight / 2,
       buttonWidth,
       buttonHeight,
@@ -575,7 +575,7 @@ class Rompecabezas extends Phaser.Scene {
 
     this.nextButton = this.add
       .rectangle(
-        width / 2 + buttonSpacing,
+        width / 2 + buttonWidth / 2 + buttonSpacing / 2,
         buttonY,
         buttonWidth,
         buttonHeight,
@@ -586,54 +586,30 @@ class Rompecabezas extends Phaser.Scene {
       .on("pointerdown", () => this.nextStep());
 
     this.add
-      .text(width / 2 + buttonSpacing, buttonY, "Siguiente →", {
+      .text(width / 2 + buttonWidth / 2 + buttonSpacing / 2, buttonY, "Siguiente →", {
         fontSize: fontSize,
         fontFamily: "SF Pro Display, -apple-system, Arial, sans-serif",
         fill: "#ffffff",
-        fontWeight: "700",
+        fontWeight: "600",
       })
       .setOrigin(0.5);
 
     // Indicador de progreso más compacto
-    const progressWidth = this.isMobile ? 120 : 130;
-    const progressHeight = this.isMobile ? 40 : 45;
-    const progressBg = this.add.graphics();
-    progressBg.fillStyle(0x21262d, 0.95);
-    progressBg.fillRoundedRect(
-      width / 2 - progressWidth / 2,
-      buttonY - progressHeight / 2,
-      progressWidth,
-      progressHeight,
-      buttonRadius
+    const progressY = this.isMobile ? buttonY + 30 : buttonY + 40;
+    const progressText = this.add.text(
+      width / 2,
+      progressY,
+      `Paso ${this.currentStep + 1} de ${this.explanations.length}`,
+      {
+        fontSize: this.isMobile ? "11px" : "14px",
+        fontFamily: "Arial, sans-serif",
+        fill: "#ffffff",
+        fontWeight: "500",
+      }
     );
-    progressBg.lineStyle(2, 0x30363d, 0.8);
-    progressBg.strokeRoundedRect(
-      width / 2 - progressWidth / 2,
-      buttonY - progressHeight / 2,
-      progressWidth,
-      progressHeight,
-      buttonRadius
-    );
+    progressText.setOrigin(0.5);
 
-    // Icono de progreso más pequeño
-    const iconSize = this.isMobile ? "14px" : "16px";
-    const iconOffset = this.isMobile ? -30 : -30;
-    this.add
-      .text(width / 2 + iconOffset, buttonY, "📊", {
-        fontSize: iconSize,
-      })
-      .setOrigin(0.5);
-
-    const progressFontSize = this.isMobile ? "12px" : "12px";
-    const progressOffset = this.isMobile ? 15 : 10;
-    this.progressText = this.add
-      .text(width / 2 + progressOffset, buttonY, "", {
-        fontSize: progressFontSize,
-        fontFamily: "SF Pro Display, -apple-system, Arial, sans-serif",
-        fill: "#f0f6fc",
-        fontWeight: "600",
-      })
-      .setOrigin(0.5);
+    this.progressText = progressText;
   }
 
   showStep(step) {
@@ -767,13 +743,13 @@ class Rompecabezas extends Phaser.Scene {
     }
     this.codeTextObjects = [];
 
-    // Adaptaciones para móviles con texto más legible
-    let yOffset = this.isMobile ? -70 : -95; // Posición inicial más arriba
-    const lineHeight = this.isMobile ? 14 : 12; // Espaciado entre líneas más amplio
+    // Adaptaciones para móviles con texto más legible y compacto
+    let yOffset = this.isMobile ? -90 : -95; // Subir más el texto inicial
+    const lineHeight = this.isMobile ? 12 : 12; // Reducir espaciado entre líneas
     const leftMargin = this.isMobile ? -180 : -200; // Margen izquierdo más hacia la izquierda
     const maxWidth = this.isMobile ? 320 : 380; // Ancho máximo que se ajuste al contenedor
-    const fontSize = this.isMobile ? "11px" : "9px"; // Tamaño de fuente más grande para móviles
-    const lineNumberFontSize = this.isMobile ? "10px" : "9px";
+    const fontSize = this.isMobile ? "10px" : "9px"; // Reducir tamaño de fuente ligeramente
+    const lineNumberFontSize = this.isMobile ? "9px" : "9px";
 
     this.codeLines.forEach((line, index) => {
       // Crear número de línea más pequeño
