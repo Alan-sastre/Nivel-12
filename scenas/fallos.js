@@ -822,8 +822,8 @@ class Fallos extends Phaser.Scene {
             Math.min(gameWidth * 0.018, 12) : 
             Math.min(gameWidth * 0.012, 14);
         
-        const buttonSpacing = this.isMobile ? 35 : 40;
-        const startY = this.isMobile ? -10 : 0;
+        const buttonSpacing = this.isMobile ? 50 : 60; // Aumentado de 35/40 a 50/60
+        const startY = this.isMobile ? -20 : -10; // Ajustado para centrar mejor
 
         options.forEach((option, index) => {
             const buttonY = panelY + startY + index * buttonSpacing;
@@ -991,29 +991,9 @@ class Fallos extends Phaser.Scene {
             ease: 'Elastic.easeOut'
         });
 
-        // Create continue button after delay
-        this.time.delayedCall(2000, () => {
-            // Show the correct code view instead of just creating a button
-            const correctedCode = `int bateria = 9;
-int sensorVoltaje = A0;
-
-void setup() {
-  pinMode(bateria, OUTPUT);
-}
-
-void loop() {
-  int voltaje = analogRead(sensorVoltaje);
-
-  if (voltaje < 500) {
-    digitalWrite(bateria, HIGH);
-  }
-
-  // ✅ Control de sobrecarga añadido
-  if (voltaje > 860) {
-    digitalWrite(bateria, LOW);
-  }
-}`;
-            this.showCorrectCode(correctedCode);
+        // Crear animación de apagado y transición directa después del delay
+        this.time.delayedCall(3000, () => {
+            this.createShutdownAnimation();
         });
     }
 
@@ -1793,5 +1773,78 @@ void loop() {
                 stream.rotation += 0.01; // Slower, more elegant rotation
             });
         }
+    }
+
+    createShutdownAnimation() {
+        // Crear overlay de apagado
+        const shutdownOverlay = this.add.rectangle(
+            this.cameras.main.centerX,
+            this.cameras.main.centerY,
+            this.cameras.main.width,
+            this.cameras.main.height,
+            0x000000,
+            0
+        );
+        shutdownOverlay.setDepth(10000);
+
+        // Crear efecto de línea de apagado (como TV antigua)
+        const shutdownLine = this.add.rectangle(
+            this.cameras.main.centerX,
+            this.cameras.main.centerY,
+            this.cameras.main.width,
+            2,
+            0xffffff,
+            0
+        );
+        shutdownLine.setDepth(10001);
+
+        // Primero: Desvanecimiento suave de todos los elementos de la escena
+        const allElements = [
+            this.coreContainer,
+            this.questionPanel,
+            ...this.questionElements || [],
+            ...this.hologramElements || [],
+            ...this.dataStreams || [],
+            ...this.particles || []
+        ].filter(element => element && element.setAlpha);
+
+        // Animación de desvanecimiento de elementos
+        this.tweens.add({
+            targets: allElements,
+            alpha: 0,
+            duration: 800,
+            ease: 'Power2.easeOut',
+            onComplete: () => {
+                // Segundo: Animación de apagado estilo TV
+                this.tweens.add({
+                    targets: shutdownLine,
+                    alpha: 1,
+                    duration: 300,
+                    ease: 'Power2.easeIn',
+                    onComplete: () => {
+                        // Contraer la línea horizontalmente
+                        this.tweens.add({
+                            targets: shutdownLine,
+                            scaleX: 0,
+                            duration: 500,
+                            ease: 'Power2.easeIn',
+                            onComplete: () => {
+                                // Fade out completo con desvanecimiento más suave
+                                this.tweens.add({
+                                    targets: shutdownOverlay,
+                                    alpha: 1,
+                                    duration: 400,
+                                    ease: 'Power2.easeInOut',
+                                    onComplete: () => {
+                                        // Transición a la siguiente escena
+                                        this.scene.start('scenaVideo2');
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 }
