@@ -179,17 +179,17 @@ class Rompecabezas extends Phaser.Scene {
   }
 
   createCodeSection() {
-    // Posicionamiento mejorado para móviles - centrar horizontalmente y ajustar verticalmente
-    const containerX = this.isMobile ? this.scale.width * 0.5 : 250; // Centrar horizontalmente
-    const containerY = this.isMobile ? this.scale.height * 0.3 : 250; // Subir un poco más
+    // Posicionamiento para layout lado a lado en móviles - código a la izquierda
+    const containerX = this.isMobile ? this.scale.width * 0.25 : 250; // Izquierda en móviles
+    const containerY = this.isMobile ? this.scale.height * 0.4 : 250; // Centro vertical
     const codeContainer = this.add.container(containerX, containerY);
 
-    // Dimensiones optimizadas para móviles con fragmentos de código
+    // Dimensiones optimizadas para layout lado a lado en móviles
     const containerWidth = this.isMobile
-      ? Math.min(this.scale.width * 0.85, 320)  // Usar más ancho disponible
+      ? Math.min(this.scale.width * 0.45, 180)  // Mitad del ancho para layout lado a lado
       : 400; 
     const containerHeight = this.isMobile
-      ? Math.min(this.scale.height * 0.2, 100)  // Altura más compacta
+      ? Math.min(this.scale.height * 0.5, 200)  // Más altura para mejor legibilidad
       : 200;
 
     // Sombra exterior profunda
@@ -333,17 +333,17 @@ class Rompecabezas extends Phaser.Scene {
   }
 
   createExplanationSection() {
-    // Posicionamiento mejorado para móviles - centrar horizontalmente debajo del código
-    const containerX = this.isMobile ? this.scale.width * 0.5 : 750; // Centrar horizontalmente
-    const containerY = this.isMobile ? this.scale.height * 0.55 : 250; // Posicionar debajo del código
+    // Posicionamiento para layout lado a lado en móviles - explicación a la derecha
+    const containerX = this.isMobile ? this.scale.width * 0.75 : 750; // Derecha en móviles
+    const containerY = this.isMobile ? this.scale.height * 0.4 : 250; // Centro vertical (mismo que código)
     const explanationContainer = this.add.container(containerX, containerY);
 
-    // Dimensiones optimizadas para móviles con mejor legibilidad
+    // Dimensiones optimizadas para layout lado a lado en móviles
     const containerWidth = this.isMobile
-      ? Math.min(this.scale.width * 0.85, 320)  // Usar más ancho disponible
+      ? Math.min(this.scale.width * 0.45, 180)  // Mitad del ancho para layout lado a lado
       : 440;
     const containerHeight = this.isMobile
-      ? Math.min(this.scale.height * 0.25, 120)  // Altura adecuada para explicaciones
+      ? Math.min(this.scale.height * 0.5, 200)  // Misma altura que el código
       : 300;
 
     // Sombra exterior más sutil
@@ -521,13 +521,13 @@ class Rompecabezas extends Phaser.Scene {
   createNavigationButtons() {
     const { width, height } = this.scale;
 
-    // Adaptaciones mejoradas para móviles - botones más grandes y mejor posicionados
-    const buttonWidth = this.isMobile ? 100 : 140;
-    const buttonHeight = this.isMobile ? 40 : 55;
-    const buttonSpacing = this.isMobile ? 30 : 20;
-    const buttonY = this.isMobile ? height - 40 : height - 60; // Mejor posición para móviles
-    const buttonRadius = this.isMobile ? 8 : 12;
-    const fontSize = this.isMobile ? "12px" : "16px";
+    // Adaptaciones para layout lado a lado en móviles - botones visibles debajo
+    const buttonWidth = this.isMobile ? 120 : 140;
+    const buttonHeight = this.isMobile ? 45 : 55;
+    const buttonSpacing = this.isMobile ? 40 : 20;
+    const buttonY = this.isMobile ? height - 80 : height - 60; // Más espacio desde abajo para ser visibles
+    const buttonRadius = this.isMobile ? 10 : 12;
+    const fontSize = this.isMobile ? "14px" : "16px";
 
     // Botón Anterior con diseño más elegante
     const backButtonBg = this.add.graphics();
