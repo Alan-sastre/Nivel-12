@@ -16,9 +16,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let gameWidth, gameHeight;
 
   if (isMobileDevice) {
-    // Para móviles, usar dimensiones controladas y apropiadas
-    gameWidth = Math.min(screenWidth, 800);  // Máximo 800px de ancho
-    gameHeight = Math.min(screenHeight, 600); // Máximo 600px de alto
+    // Para móviles, usar toda la pantalla disponible
+    gameWidth = screenWidth;
+    gameHeight = screenHeight;
 
     // Asegurar dimensiones mínimas para funcionalidad
     gameWidth = Math.max(gameWidth, 360);
@@ -36,12 +36,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const config = {
     type: Phaser.AUTO,
     scale: {
-      mode: Phaser.Scale.FIT,
+      mode: Phaser.Scale.RESIZE,
       parent: "game",
       width: gameWidth,
       height: gameHeight,
       autoCenter: Phaser.Scale.CENTER_BOTH,
-      expandParent: false,
+      expandParent: true,
       fullscreenTarget: "game",
       // Mejorar la escalabilidad en diferentes dispositivos
       min: {
@@ -49,8 +49,8 @@ document.addEventListener("DOMContentLoaded", () => {
         height: isMobileDevice ? 480 : 500
       },
       max: {
-        width: isMobileDevice ? 800 : 1200,
-        height: isMobileDevice ? 600 : 700
+        width: isMobileDevice ? screenWidth : 1200,
+        height: isMobileDevice ? screenHeight : 700
       }
     },
     physics: {
@@ -78,8 +78,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const gameContainer = document.createElement("div");
   gameContainer.id = "game";
   gameContainer.style.cssText = `
-    width: 100%;
+    width: 100vw;
     height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -117,11 +120,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Redimensionar el juego si es necesario
-    game.scale.resize(
-      currentlyMobile ? Math.min(newWidth, 800) : Math.min(newWidth * 0.9, 1200),
-      currentlyMobile ? Math.min(newHeight, 600) : Math.min(newHeight * 0.8, 700)
-    );
+    // Redimensionar el juego para usar toda la pantalla
+    game.scale.resize(newWidth, newHeight);
   }
 
   // Agregar event listeners para resize
