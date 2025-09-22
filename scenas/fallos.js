@@ -684,19 +684,21 @@ class Fallos extends Phaser.Scene {
         // Crear elementos del core usando gráficos en lugar de texturas
         console.log('⚡ Creating energy core with graphics...');
 
-        // Central orb usando gráficos
+        // Central orb usando gráficos - tamaño ajustado para móviles
+        const orbRadius = this.isMobile ? 30 : 40; // Más pequeño en móviles
         const orbGraphics = this.add.graphics();
         orbGraphics.fillGradientStyle(0x00ffff, 0x0088ff, 0x0044ff, 0x002288, 1);
-        orbGraphics.fillCircle(0, 0, 40);
+        orbGraphics.fillCircle(0, 0, orbRadius);
         orbGraphics.lineStyle(2, 0x44ffff, 1);
-        orbGraphics.strokeCircle(0, 0, 40);
+        orbGraphics.strokeCircle(0, 0, orbRadius);
         this.centralOrb = orbGraphics;
         this.coreContainer.add(this.centralOrb);
 
-        // Rotating energy rings usando gráficos
-        for (let i = 0; i < 3; i++) {
+        // Rotating energy rings usando gráficos - tamaños ajustados para móviles
+        const ringCount = this.isMobile ? 2 : 3; // Menos anillos en móviles
+        for (let i = 0; i < ringCount; i++) {
             const ringGraphics = this.add.graphics();
-            const radius = 60 + i * 30;
+            const radius = this.isMobile ? 45 + i * 25 : 60 + i * 30; // Más pequeños en móviles
             ringGraphics.lineStyle(3, 0x00ffaa, 0.6 - i * 0.1);
             ringGraphics.strokeCircle(0, 0, radius);
 
@@ -713,10 +715,11 @@ class Fallos extends Phaser.Scene {
             });
         }
 
-        // Pulsing glow effect usando gráficos
+        // Pulsing glow effect usando gráficos - más pequeño en móviles
+        const glowRadius = this.isMobile ? 90 : 120;
         const glowGraphics = this.add.graphics();
         glowGraphics.fillGradientStyle(0x44ffff, 0x44ffff, 0x0088ff, 0x0088ff, 0.3);
-        glowGraphics.fillCircle(0, 0, 120);
+        glowGraphics.fillCircle(0, 0, glowRadius);
         this.coreContainer.add(glowGraphics);
 
         this.tweens.add({
@@ -745,21 +748,23 @@ class Fallos extends Phaser.Scene {
     }
 
     createCoreParticles(centerX, centerY) {
-        // Reducir partículas para móviles
-        const particleCount = this.isMobile ? 10 : 20;
+        // Reducir partículas para móviles y ajustar radio
+        const particleCount = this.isMobile ? 8 : 20;
+        const particleRadius = this.isMobile ? 120 : 150; // Radio más pequeño en móviles
 
         for (let i = 0; i < particleCount; i++) {
             const angle = (i / particleCount) * Math.PI * 2;
-            const radius = 150;
+            const radius = particleRadius;
             const x = centerX + Math.cos(angle) * radius;
             const y = centerY + Math.sin(angle) * radius;
 
-            // Crear partícula usando gráficos en lugar de textura
+            // Crear partícula usando gráficos en lugar de textura - más pequeñas en móviles
+            const particleSize = this.isMobile ? 3 : 4;
             const particleGraphics = this.add.graphics();
             particleGraphics.fillStyle(0x00ffaa, 0.8);
-            particleGraphics.fillCircle(0, 0, 4);
+            particleGraphics.fillCircle(0, 0, particleSize);
             particleGraphics.lineStyle(1, 0x44ffff, 1);
-            particleGraphics.strokeCircle(0, 0, 4);
+            particleGraphics.strokeCircle(0, 0, particleSize);
 
             particleGraphics.x = x;
             particleGraphics.y = y;
@@ -782,7 +787,7 @@ class Fallos extends Phaser.Scene {
                 ease: 'Sine.easeInOut'
             });
 
-            // Orbit around core
+            // Orbit around core con radio ajustado
             this.tweens.add({
                 targets: particleGraphics,
                 x: centerX + Math.cos(angle + Math.PI * 2) * radius,
@@ -806,15 +811,15 @@ class Fallos extends Phaser.Scene {
     }
 
     createHolographicTitle(gameWidth, gameHeight) {
-        const titleY = gameHeight * 0.15;
+        const titleY = this.isMobile ? gameHeight * 0.12 : gameHeight * 0.15; // Más arriba en móviles
 
-        // Tamaños de fuente optimizados para la configuración 1000x500 del proyecto
+        // Tamaños de fuente más grandes para móviles
         const titleFontSize = this.isMobile ? 
-            Math.max(18, Math.min(gameWidth * 0.028, 24)) : 
+            Math.max(20, Math.min(gameWidth * 0.032, 26)) : // Aumentado para móviles
             Math.max(24, Math.min(gameWidth * 0.022, 28));
         
         const subtitleFontSize = this.isMobile ? 
-            Math.max(12, Math.min(gameWidth * 0.018, 16)) : 
+            Math.max(14, Math.min(gameWidth * 0.022, 18)) : // Aumentado para móviles
             Math.max(14, Math.min(gameWidth * 0.013, 17));
 
         // Main title con efectos visuales mejorados
@@ -823,12 +828,12 @@ class Fallos extends Phaser.Scene {
             fontFamily: 'Arial Black',
             fill: '#00ffff',
             stroke: '#003366',
-            strokeThickness: this.isMobile ? 1 : 2,
+            strokeThickness: this.isMobile ? 2 : 2, // Aumentado para móviles
             shadow: {
                 offsetX: 0,
                 offsetY: 0,
                 color: '#00ffff',
-                blur: this.isMobile ? 8 : 15,
+                blur: this.isMobile ? 12 : 15, // Aumentado para móviles
                 stroke: true,
                 fill: true
             },
@@ -846,7 +851,7 @@ class Fallos extends Phaser.Scene {
         });
 
         // Subtitle con efectos mejorados
-        const subtitleY = this.isMobile ? titleY + 28 : titleY + 35;
+        const subtitleY = this.isMobile ? titleY + 32 : titleY + 35; // Más espacio en móviles
         this.subtitleText = this.add.text(gameWidth / 2, subtitleY, '', {
             fontSize: `${subtitleFontSize}px`,
             fontFamily: 'Arial',
@@ -956,32 +961,32 @@ class Fallos extends Phaser.Scene {
     }
 
     createCodePanel(gameWidth, gameHeight) {
-        // Posicionamiento mejorado para evitar desbordamiento
-        const minPanelX = this.isMobile ? 200 : 250;
-        const maxPanelX = this.isMobile ? gameWidth - 200 : gameWidth - 250;
-        const panelX = Math.max(minPanelX, Math.min(maxPanelX, this.isMobile ? gameWidth * 0.35 : gameWidth * 0.3));
-        const panelY = gameHeight * 0.55; // Movido más abajo para evitar superposición con títulos
+        // Posicionamiento optimizado para móviles - panel más centrado y grande
+        const minPanelX = this.isMobile ? 150 : 250;
+        const maxPanelX = this.isMobile ? gameWidth - 150 : gameWidth - 250;
+        const panelX = Math.max(minPanelX, Math.min(maxPanelX, this.isMobile ? gameWidth * 0.25 : gameWidth * 0.3));
+        const panelY = this.isMobile ? gameHeight * 0.5 : gameHeight * 0.55; // Más centrado en móviles
 
-        // Code panel background con escala más pequeña
+        // Code panel background con escala más grande para móviles
         this.codePanel = this.add.image(panelX, panelY, 'holoPanel');
         const panelScale = this.isMobile ?
-            Math.min(0.7, gameWidth / 500) : // Reducido significativamente el tamaño
+            Math.min(1.2, gameWidth / 350) : // Aumentado significativamente para móviles
             Math.min(0.85, gameWidth / 700);
         this.codePanel.setScale(panelScale);
         this.codePanel.setAlpha(0);
         this.codePanel.setDepth(10); // Asegurar que esté por debajo de los títulos
 
-        // Code title con posicionamiento ajustado
+        // Code title con tamaño más grande para móviles
         const titleFontSize = this.isMobile ?
-            Math.min(gameWidth * 0.035, 18) :
+            Math.min(gameWidth * 0.045, 22) : // Aumentado para móviles
             Math.min(gameWidth * 0.016, 20);
 
-        this.add.text(panelX, panelY - (this.isMobile ? 80 : 100), 'CÓDIGO DEL SISTEMA', {
+        this.add.text(panelX, panelY - (this.isMobile ? 100 : 100), 'CÓDIGO DEL SISTEMA', {
             fontSize: `${titleFontSize}px`,
             fontFamily: 'Arial Bold',
             fill: '#00ffff',
             stroke: '#003366',
-            strokeThickness: this.isMobile ? 1 : 1
+            strokeThickness: this.isMobile ? 2 : 1
         }).setOrigin(0.5).setDepth(11);
 
         // Code content with syntax highlighting
@@ -1002,20 +1007,20 @@ class Fallos extends Phaser.Scene {
 
         this.codeElements = [];
 
-        // Configuración responsiva optimizada para el código
+        // Configuración responsiva optimizada para el código - texto más grande en móviles
         const codeFontSize = this.isMobile ?
-            Math.max(9, Math.min(gameWidth * 0.014, 11)) :
+            Math.max(12, Math.min(gameWidth * 0.018, 14)) : // Aumentado significativamente para móviles
             Math.max(11, Math.min(gameWidth * 0.01, 12));
 
-        const lineSpacing = this.isMobile ? 12 : 16; // Espaciado más compacto para móviles
+        const lineSpacing = this.isMobile ? 16 : 16; // Espaciado más amplio para móviles
 
-        // Cálculo dinámico de offsets basado en el tamaño del panel más pequeño
+        // Cálculo dinámico de offsets basado en el tamaño del panel más grande
         const panelWidth = this.codePanel.displayWidth * panelScale;
         const panelHeight = this.codePanel.displayHeight * panelScale;
 
-        const leftOffset = -(panelWidth * 0.35); // Reducido el offset
-        const topOffset = -(panelHeight * 0.3); // Reducido el offset superior
-        const wrapWidth = panelWidth * 0.75; // Reducido el ancho del texto
+        const leftOffset = -(panelWidth * 0.32); // Ajustado para el panel más grande
+        const topOffset = -(panelHeight * 0.25); // Ajustado para mejor centrado
+        const wrapWidth = panelWidth * 0.7; // Ajustado para el panel más grande
 
         codeLines.forEach((line, index) => {
             const codeText = this.add.text(
@@ -1066,35 +1071,35 @@ class Fallos extends Phaser.Scene {
     }
 
     createQuestionPanel(gameWidth, gameHeight) {
-        // Posicionamiento mejorado para evitar desbordamiento
-        const minPanelX = this.isMobile ? 200 : 300;
-        const maxPanelX = this.isMobile ? gameWidth - 200 : gameWidth - 300;
-        const panelX = Math.max(minPanelX, Math.min(maxPanelX, this.isMobile ? gameWidth * 0.7 : gameWidth * 0.75));
-        const panelY = gameHeight * 0.55; // Movido más abajo para evitar superposición con títulos
+        // Posicionamiento optimizado para móviles - panel más centrado
+        const minPanelX = this.isMobile ? 150 : 300;
+        const maxPanelX = this.isMobile ? gameWidth - 150 : gameWidth - 300;
+        const panelX = Math.max(minPanelX, Math.min(maxPanelX, this.isMobile ? gameWidth * 0.75 : gameWidth * 0.75));
+        const panelY = this.isMobile ? gameHeight * 0.5 : gameHeight * 0.55; // Más centrado en móviles
 
-        // Question title con tamaño adaptativo optimizado
+        // Question title con tamaño más grande para móviles
         const titleFontSize = this.isMobile ?
-            Math.max(12, Math.min(gameWidth * 0.018, 15)) :
+            Math.max(14, Math.min(gameWidth * 0.022, 18)) : // Aumentado para móviles
             Math.max(14, Math.min(gameWidth * 0.014, 16));
 
-        this.add.text(panelX, panelY - (this.isMobile ? 70 : 85), 'DIAGNÓSTICO', {
+        this.add.text(panelX, panelY - (this.isMobile ? 90 : 85), 'DIAGNÓSTICO', {
             fontSize: `${titleFontSize}px`,
             fontFamily: 'Arial Bold',
             fill: '#ff6b6b',
             stroke: '#330000',
-            strokeThickness: this.isMobile ? 0.5 : 1
+            strokeThickness: this.isMobile ? 1 : 1
         }).setOrigin(0.5).setDepth(11);
 
-        // Question text con tamaño adaptativo optimizado
+        // Question text con tamaño más grande para móviles
         const questionFontSize = this.isMobile ?
-            Math.max(10, Math.min(gameWidth * 0.014, 13)) :
+            Math.max(12, Math.min(gameWidth * 0.018, 15)) : // Aumentado para móviles
             Math.max(12, Math.min(gameWidth * 0.011, 13));
 
-        this.add.text(panelX, panelY - (this.isMobile ? 40 : 50), '¿Cuál es el error en el código?', {
+        this.add.text(panelX, panelY - (this.isMobile ? 55 : 50), '¿Cuál es el error en el código?', {
             fontSize: `${questionFontSize}px`,
             fontFamily: 'Arial',
             fill: '#ffffff',
-            wordWrap: { width: this.isMobile ? 200 : 250, useAdvancedWrap: true }
+            wordWrap: { width: this.isMobile ? 250 : 250, useAdvancedWrap: true } // Aumentado para móviles
         }).setOrigin(0.5).setDepth(11);
 
         // Answer options con configuración mejorada
@@ -1109,21 +1114,21 @@ class Fallos extends Phaser.Scene {
         this.answerButtons = [];
 
         const buttonFontSize = this.isMobile ?
-            Math.max(9, Math.min(gameWidth * 0.012, 11)) :
+            Math.max(12, Math.min(gameWidth * 0.016, 14)) : // Aumentado para móviles
             Math.max(10, Math.min(gameWidth * 0.009, 11));
 
-        const buttonSpacing = this.isMobile ? 35 : 45; // Espaciado más compacto para móviles
-        const startY = this.isMobile ? -15 : 0; // Posición inicial más alta para móviles
+        const buttonSpacing = this.isMobile ? 45 : 45; // Espaciado más amplio para móviles
+        const startY = this.isMobile ? -20 : 0; // Posición inicial ajustada para móviles
 
         options.forEach((option, index) => {
             const buttonY = panelY + startY + index * buttonSpacing;
 
-            // Button background (recuadro individual) con tamaño más compacto
+            // Button background (recuadro individual) con tamaño más grande para móviles
             const buttonBg = this.add.graphics();
             const bgWidth = this.isMobile ?
-                Math.min(150, gameWidth * 0.35) : // Reducido el ancho
+                Math.min(200, gameWidth * 0.45) : // Aumentado significativamente para móviles
                 Math.min(180, gameWidth * 0.22);
-            const bgHeight = this.isMobile ? 28 : 32; // Reducido la altura
+            const bgHeight = this.isMobile ? 38 : 32; // Aumentado la altura para móviles
 
             // Crear recuadro con borde mejorado
             buttonBg.lineStyle(2, 0x00ffff, 0.8);
