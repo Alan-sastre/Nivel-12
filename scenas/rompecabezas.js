@@ -180,13 +180,13 @@ class Rompecabezas extends Phaser.Scene {
 
   createCodeSection() {
     // Posicionamiento para layout lado a lado en móviles - código a la izquierda
-    const containerX = this.isMobile ? this.scale.width * 0.29 : 250; // Ajustado para contenedor más ancho
+    const containerX = this.isMobile ? this.scale.width * 0.31 : 250; // Ajustado para contenedor aún más ancho
     const containerY = this.isMobile ? this.scale.height * 0.4 : 250; // Centro vertical
     const codeContainer = this.add.container(containerX, containerY);
 
     // Dimensiones optimizadas para layout lado a lado en móviles - contenedores más anchos
     const containerWidth = this.isMobile
-      ? Math.min(this.scale.width * 0.58, 280)  // Más ancho para que no se salgan los números
+      ? Math.min(this.scale.width * 0.62, 300)  // Aún más ancho para acomodar mejor el contenido
       : 400; 
     const containerHeight = this.isMobile
       ? Math.min(this.scale.height * 0.6, 280)  // Más altura para mejor visualización
@@ -334,7 +334,7 @@ class Rompecabezas extends Phaser.Scene {
 
   createExplanationSection() {
     // Posicionamiento para layout lado a lado en móviles - explicación a la derecha
-    const containerX = this.isMobile ? this.scale.width * 0.71 : 750; // Ajustado para balance con código más ancho
+    const containerX = this.isMobile ? this.scale.width * 0.69 : 750; // Ajustado para balance con código aún más ancho
     const containerY = this.isMobile ? this.scale.height * 0.4 : 250; // Centro vertical (mismo que código)
     const explanationContainer = this.add.container(containerX, containerY);
 
@@ -766,8 +766,8 @@ class Rompecabezas extends Phaser.Scene {
     // Adaptaciones mejoradas para fragmentos en móviles - más espacio para números
     let yOffset = this.isMobile ? -35 : -95; // Mejor posición inicial
     const lineHeight = this.isMobile ? 14 : 20; // Espaciado más cómodo
-    const leftMargin = this.isMobile ? -160 : -200; // Más margen izquierdo para números
-    const maxWidth = this.isMobile ? 300 : 380; // Ancho más generoso para el texto
+    const leftMargin = this.isMobile ? -180 : -200; // Mucho más margen izquierdo para números
+    const maxWidth = this.isMobile ? 320 : 380; // Ancho más generoso para el texto
     const fontSize = this.isMobile ? "10px" : "14px"; // Tamaño de fuente más legible
     const lineNumberFontSize = this.isMobile ? "9px" : "12px";
 
@@ -789,7 +789,7 @@ class Rompecabezas extends Phaser.Scene {
       this.codeTextObjects.push(lineNumber);
 
       // Crear texto del código con mejor legibilidad
-      const lineText = this.add.text(leftMargin + 25, yOffset, line, {
+      const lineText = this.add.text(leftMargin + 30, yOffset, line, {
         fontSize: fontSize,
         fontFamily: "SF Mono, Monaco, Consolas, monospace",
         fill: "#00ff88", // Verde brillante para mejor contraste
