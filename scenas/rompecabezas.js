@@ -187,7 +187,7 @@ class Rompecabezas extends Phaser.Scene {
     // Dimensiones optimizadas para layout lado a lado en móviles - contenedores más anchos
     const containerWidth = this.isMobile
       ? Math.min(this.scale.width * 0.62, 300)  // Aún más ancho para acomodar mejor el contenido
-      : 400; 
+      : 400;
     const containerHeight = this.isMobile
       ? Math.min(this.scale.height * 0.6, 280)  // Más altura para mejor visualización
       : 200;
@@ -709,7 +709,7 @@ class Rompecabezas extends Phaser.Scene {
   updateCodeDisplay(step) {
     // Obtener el fragmento de código específico para este paso
     const currentFragment = this.codeFragments[step] || [];
-    
+
     // Actualizar el texto del código con el fragmento específico
     this.createColoredCodeText(this.codeContainer, currentFragment, []);
   }
@@ -958,7 +958,7 @@ class Rompecabezas extends Phaser.Scene {
       )
       .setInteractive({ useHandCursor: true })
       .on("pointerdown", () => {
-        this.scene.start("MenuPrincipal");
+        this.scene.start("scenaVideo4");
       });
 
     const continueButtonText = this.add

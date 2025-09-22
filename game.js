@@ -26,9 +26,10 @@ var config = {
   },
   scene: [
 
+    Fallos,
     Rompecabezas,
     scenaVideo4,
-    Ultima
+    Ultima,
   ],
   //
 };

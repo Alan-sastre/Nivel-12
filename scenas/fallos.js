@@ -138,21 +138,21 @@ class Fallos extends Phaser.Scene {
         if (gameWidth <= 0 || gameHeight <= 0) {
             console.error('❌ FALLOS SCENE - Invalid game dimensions detected:', { gameWidth, gameHeight });
             console.log('🔧 Using emergency fallback dimensions...');
-            
+
             // Usar dimensiones de emergencia más robustas
             const fallbackWidth = this.isMobile ? Math.max(window.innerWidth, 800) : 1200;
             const fallbackHeight = this.isMobile ? Math.max(window.innerHeight, 600) : 800;
-            
+
             this.createEmergencyScene(fallbackWidth, fallbackHeight);
             return;
         }
 
         try {
             console.log('🚀 FALLOS SCENE - Starting scene creation...');
-            
+
             // Force create a visible background first (critical for mobile)
             this.createFallbackBackground(gameWidth, gameHeight);
-            
+
             // Create space background
             this.createSpaceBackground(gameWidth, gameHeight);
 
@@ -167,9 +167,9 @@ class Fallos extends Phaser.Scene {
 
             // Start all animations
             this.startCoreAnimations();
-            
+
             console.log('✅ FALLOS SCENE - Scene creation completed successfully');
-            
+
         } catch (error) {
             console.error('❌ FALLOS SCENE - Critical error during scene creation:', error);
             this.createEmergencyScene(gameWidth, gameHeight);
@@ -179,13 +179,13 @@ class Fallos extends Phaser.Scene {
     // Escena de emergencia para casos críticos
     createEmergencyScene(width, height) {
         console.log('🚨 FALLOS SCENE - Creating emergency scene...');
-        
+
         // Fondo sólido simple
         const emergencyBg = this.add.graphics();
         emergencyBg.fillStyle(0x001122, 1);
         emergencyBg.fillRect(0, 0, width, height);
         emergencyBg.setDepth(-100);
-        
+
         // Texto de emergencia
         const emergencyText = this.add.text(width / 2, height / 2, 'SISTEMA DE ENERGÍA\nCARGANDO...', {
             fontSize: this.isMobile ? '24px' : '32px',
@@ -195,7 +195,7 @@ class Fallos extends Phaser.Scene {
             stroke: '#003366',
             strokeThickness: 2
         }).setOrigin(0.5);
-        
+
         // Animación simple de carga
         this.tweens.add({
             targets: emergencyText,
@@ -205,7 +205,7 @@ class Fallos extends Phaser.Scene {
             repeat: -1,
             ease: 'Sine.easeInOut'
         });
-        
+
         // Intentar recrear la escena después de un delay
         this.time.delayedCall(3000, () => {
             console.log('🔄 FALLOS SCENE - Attempting scene recreation...');
@@ -216,18 +216,18 @@ class Fallos extends Phaser.Scene {
     createAdvancedTextures() {
         try {
             console.log('🎨 FALLOS SCENE - Creating advanced textures...');
-            
+
             // Obtener dimensiones dinámicas basadas en el dispositivo
             const textureWidth = this.isMobile ? Math.max(this.scale.width, 800) : 1920;
             const textureHeight = this.isMobile ? Math.max(this.scale.height, 600) : 1080;
-            
+
             console.log('📐 Texture dimensions:', { textureWidth, textureHeight, isMobile: this.isMobile });
 
             // Deep space background con dimensiones responsivas
             const spaceGradient = this.add.graphics();
             spaceGradient.fillGradientStyle(0x000011, 0x001122, 0x000033, 0x002244, 1);
             spaceGradient.fillRect(0, 0, textureWidth, textureHeight);
-            
+
             // Verificar que la textura se puede generar
             if (textureWidth > 0 && textureHeight > 0) {
                 spaceGradient.generateTexture('spaceBackground', textureWidth, textureHeight);
@@ -240,13 +240,13 @@ class Fallos extends Phaser.Scene {
             // Holographic panel con tamaño adaptativo
             const panelWidth = this.isMobile ? Math.min(300, this.scale.width * 0.8) : 400;
             const panelHeight = this.isMobile ? Math.min(250, this.scale.height * 0.6) : 300;
-            
+
             const holoPanel = this.add.graphics();
             holoPanel.lineStyle(2, 0x00ffff, 0.8);
             holoPanel.fillStyle(0x001133, 0.3);
             holoPanel.fillRoundedRect(0, 0, panelWidth, panelHeight, 10);
             holoPanel.strokeRoundedRect(0, 0, panelWidth, panelHeight, 10);
-            
+
             if (panelWidth > 0 && panelHeight > 0) {
                 holoPanel.generateTexture('holoPanel', panelWidth, panelHeight);
                 console.log('✅ Holo panel texture created successfully');
@@ -256,21 +256,21 @@ class Fallos extends Phaser.Scene {
             // Energy button con tamaño adaptativo
             const buttonWidth = this.isMobile ? 140 : 180;
             const buttonHeight = this.isMobile ? 35 : 45;
-            
+
             const energyBtn = this.add.graphics();
             energyBtn.lineStyle(2, 0x00ff88, 1);
             energyBtn.fillGradientStyle(0x003366, 0x006699, 0x0099cc, 0x00ccff, 0.8);
             energyBtn.fillRoundedRect(0, 0, buttonWidth, buttonHeight, 8);
             energyBtn.strokeRoundedRect(0, 0, buttonWidth, buttonHeight, 8);
-            
+
             if (buttonWidth > 0 && buttonHeight > 0) {
                 energyBtn.generateTexture('energyButton', buttonWidth, buttonHeight);
                 console.log('✅ Energy button texture created successfully');
             }
             energyBtn.destroy();
-            
+
             console.log('🎨 Advanced textures creation completed');
-            
+
         } catch (error) {
             console.error('❌ FALLOS SCENE - Error creating advanced textures:', error);
             this.createFallbackTextures();
@@ -280,7 +280,7 @@ class Fallos extends Phaser.Scene {
     // Texturas de respaldo simples
     createFallbackTextures() {
         console.log('🔧 FALLOS SCENE - Creating fallback textures...');
-        
+
         try {
             // Fondo simple
             const simpleBg = this.add.graphics();
@@ -288,23 +288,23 @@ class Fallos extends Phaser.Scene {
             simpleBg.fillRect(0, 0, 800, 600);
             simpleBg.generateTexture('spaceBackground', 800, 600);
             simpleBg.destroy();
-            
+
             // Panel simple
             const simplePanel = this.add.graphics();
             simplePanel.fillStyle(0x003366, 0.8);
             simplePanel.fillRect(0, 0, 300, 200);
             simplePanel.generateTexture('holoPanel', 300, 200);
             simplePanel.destroy();
-            
+
             // Botón simple
             const simpleBtn = this.add.graphics();
             simpleBtn.fillStyle(0x006699, 1);
             simpleBtn.fillRect(0, 0, 120, 30);
             simpleBtn.generateTexture('energyButton', 120, 30);
             simpleBtn.destroy();
-            
+
             console.log('✅ Fallback textures created successfully');
-            
+
         } catch (error) {
             console.error('❌ FALLOS SCENE - Critical error creating fallback textures:', error);
         }
@@ -367,39 +367,145 @@ class Fallos extends Phaser.Scene {
         }
 
         // Crear fondo directamente con gráficos en lugar de textura
-        console.log('🎨 Creating space background with graphics...');
-        
+        console.log('🎨 Creating enhanced space background with graphics...');
+
         // Crear fondo de respaldo siempre (más confiable)
         this.createFallbackBackground(gameWidth, gameHeight);
 
-        // Add stars con cantidad adaptativa para móviles
-        const starCount = this.isMobile ? 50 : 100;
+        // Add enhanced stars con efectos mejorados
+        const starCount = this.isMobile ? 60 : 120;
         for (let i = 0; i < starCount; i++) {
+            const starSize = Phaser.Math.Between(1, this.isMobile ? 2 : 3);
             const star = this.add.circle(
                 Phaser.Math.Between(0, gameWidth),
                 Phaser.Math.Between(0, gameHeight),
-                Phaser.Math.Between(1, 3),
+                starSize,
                 0xffffff,
-                Phaser.Math.FloatBetween(0.3, 1)
+                Phaser.Math.FloatBetween(0.4, 1)
             );
 
-            // Animación más suave para móviles
-            const duration = this.isMobile ? 
-                Phaser.Math.Between(2000, 4000) : 
-                Phaser.Math.Between(1000, 3000);
+            // Animación de parpadeo mejorada
+            const duration = this.isMobile ?
+                Phaser.Math.Between(2500, 5000) :
+                Phaser.Math.Between(1500, 4000);
 
             this.tweens.add({
                 targets: star,
-                alpha: 0.2,
+                alpha: 0.1,
+                scaleX: 0.5,
+                scaleY: 0.5,
                 duration: duration,
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut',
+                delay: Phaser.Math.Between(0, 2000)
+            });
+
+            // Añadir brillo ocasional a algunas estrellas
+            if (Math.random() < 0.3) {
+                this.time.delayedCall(Phaser.Math.Between(1000, 10000), () => {
+                    this.createStarBurst(star.x, star.y);
+                });
+            }
+        }
+
+        // Crear nebulosas de fondo
+        this.createNebulae(gameWidth, gameHeight);
+
+        // Animated grid overlay
+        this.createEnergyGrid(gameWidth, gameHeight);
+
+        // Añadir partículas flotantes ambientales
+        this.createAmbientParticles(gameWidth, gameHeight);
+    }
+
+    createStarBurst(x, y) {
+        // Crear efecto de destello en estrella
+        const burst = this.add.circle(x, y, 8, 0xffffff, 0.8);
+
+        this.tweens.add({
+            targets: burst,
+            scaleX: 3,
+            scaleY: 3,
+            alpha: 0,
+            duration: 800,
+            ease: 'Power2.easeOut',
+            onComplete: () => burst.destroy()
+        });
+    }
+
+    createNebulae(gameWidth, gameHeight) {
+        // Crear nebulosas de colores suaves en el fondo
+        const nebulaCount = this.isMobile ? 3 : 5;
+        const colors = [0x4a0e4e, 0x0e2a4a, 0x0e4a2a, 0x4a2a0e];
+
+        for (let i = 0; i < nebulaCount; i++) {
+            const nebula = this.add.graphics();
+            const color = colors[i % colors.length];
+            const size = this.isMobile ?
+                Phaser.Math.Between(100, 200) :
+                Phaser.Math.Between(150, 300);
+
+            nebula.fillStyle(color, 0.1);
+            nebula.fillCircle(
+                Phaser.Math.Between(0, gameWidth),
+                Phaser.Math.Between(0, gameHeight),
+                size
+            );
+
+            nebula.setDepth(-50);
+
+            // Animación suave de movimiento
+            this.tweens.add({
+                targets: nebula,
+                x: nebula.x + Phaser.Math.Between(-50, 50),
+                y: nebula.y + Phaser.Math.Between(-30, 30),
+                duration: Phaser.Math.Between(15000, 25000),
                 yoyo: true,
                 repeat: -1,
                 ease: 'Sine.easeInOut'
             });
         }
+    }
 
-        // Animated grid overlay
-        this.createEnergyGrid(gameWidth, gameHeight);
+    createAmbientParticles(gameWidth, gameHeight) {
+        // Crear partículas ambientales flotantes
+        const particleCount = this.isMobile ? 15 : 25;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = this.add.circle(
+                Phaser.Math.Between(0, gameWidth),
+                Phaser.Math.Between(0, gameHeight),
+                1,
+                0x8b5cf6,
+                Phaser.Math.FloatBetween(0.2, 0.5)
+            );
+
+            particle.setDepth(-30);
+
+            // Movimiento flotante continuo
+            this.tweens.add({
+                targets: particle,
+                x: particle.x + Phaser.Math.Between(-100, 100),
+                y: particle.y + Phaser.Math.Between(-80, 80),
+                duration: Phaser.Math.Between(8000, 15000),
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut',
+                delay: i * 300
+            });
+
+            // Pulsación de alpha
+            this.tweens.add({
+                targets: particle,
+                alpha: 0.1,
+                duration: Phaser.Math.Between(2000, 4000),
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut',
+                delay: i * 150
+            });
+        }
     }
 
     // Método de respaldo para crear un fondo básico
@@ -407,48 +513,164 @@ class Fallos extends Phaser.Scene {
         // Ensure we have valid dimensions
         const width = gameWidth || this.scale.width || window.innerWidth || 800;
         const height = gameHeight || this.scale.height || window.innerHeight || 600;
-        
+
         console.log('🎨 Creating fallback background:', { width, height });
-        
+
         const fallbackBg = this.add.graphics();
         fallbackBg.fillGradientStyle(0x000011, 0x001122, 0x000033, 0x002244, 1);
         fallbackBg.fillRect(0, 0, width, height);
         fallbackBg.setDepth(-100);
-        
+
         // Make sure it's visible
         fallbackBg.setVisible(true);
         fallbackBg.setAlpha(1);
-        
+
         this.background = fallbackBg;
-        
+
         console.log('✅ Fallback background created successfully');
     }
 
     createEnergyGrid(gameWidth, gameHeight) {
+        // Crear grilla base con líneas más sutiles
         const gridGraphics = this.add.graphics();
-        gridGraphics.lineStyle(1, 0x003366, 0.3);
+        gridGraphics.lineStyle(1, 0x003366, 0.2);
 
-        const gridSize = 50;
+        const gridSize = this.isMobile ? 60 : 50;
+
+        // Líneas verticales
         for (let x = 0; x <= gameWidth; x += gridSize) {
             gridGraphics.moveTo(x, 0);
             gridGraphics.lineTo(x, gameHeight);
         }
+
+        // Líneas horizontales
         for (let y = 0; y <= gameHeight; y += gridSize) {
             gridGraphics.moveTo(0, y);
             gridGraphics.lineTo(gameWidth, y);
         }
         gridGraphics.strokePath();
+        gridGraphics.setDepth(-40);
 
-        // Animate grid opacity
+        // Animación de pulsación de la grilla
         this.tweens.add({
             targets: gridGraphics,
-            alpha: 0.1,
-            duration: 2000,
+            alpha: 0.05,
+            duration: 3000,
             yoyo: true,
             repeat: -1,
             ease: 'Sine.easeInOut'
         });
-     }
+
+        // Crear líneas de energía pulsantes ocasionales
+        this.createEnergyPulses(gameWidth, gameHeight, gridSize);
+
+        // Crear nodos brillantes en intersecciones
+        this.createGridNodes(gameWidth, gameHeight, gridSize);
+    }
+
+    createEnergyPulses(gameWidth, gameHeight, gridSize) {
+        // Crear pulsos de energía que viajan por la grilla
+        const pulseCount = this.isMobile ? 3 : 5;
+
+        for (let i = 0; i < pulseCount; i++) {
+            this.time.delayedCall(Phaser.Math.Between(2000, 8000), () => {
+                this.createSingleEnergyPulse(gameWidth, gameHeight, gridSize);
+            });
+        }
+
+        // Repetir pulsos periódicamente
+        this.time.addEvent({
+            delay: this.isMobile ? 12000 : 8000,
+            callback: () => {
+                if (Math.random() < 0.7) {
+                    this.createSingleEnergyPulse(gameWidth, gameHeight, gridSize);
+                }
+            },
+            loop: true
+        });
+    }
+
+    createSingleEnergyPulse(gameWidth, gameHeight, gridSize) {
+        const isVertical = Math.random() < 0.5;
+        const pulseGraphics = this.add.graphics();
+
+        if (isVertical) {
+            // Pulso vertical
+            const x = Math.floor(Phaser.Math.Between(0, gameWidth) / gridSize) * gridSize;
+            pulseGraphics.lineStyle(2, 0x00ffff, 0.8);
+            pulseGraphics.moveTo(x, 0);
+            pulseGraphics.lineTo(x, gameHeight);
+            pulseGraphics.strokePath();
+        } else {
+            // Pulso horizontal
+            const y = Math.floor(Phaser.Math.Between(0, gameHeight) / gridSize) * gridSize;
+            pulseGraphics.lineStyle(2, 0x00ffff, 0.8);
+            pulseGraphics.moveTo(0, y);
+            pulseGraphics.lineTo(gameWidth, y);
+            pulseGraphics.strokePath();
+        }
+
+        pulseGraphics.setDepth(-35);
+
+        // Animación del pulso
+        this.tweens.add({
+            targets: pulseGraphics,
+            alpha: 0,
+            duration: 1500,
+            ease: 'Power2.easeOut',
+            onComplete: () => pulseGraphics.destroy()
+        });
+    }
+
+    createGridNodes(gameWidth, gameHeight, gridSize) {
+        // Crear nodos brillantes en algunas intersecciones
+        const nodeCount = this.isMobile ? 8 : 15;
+
+        for (let i = 0; i < nodeCount; i++) {
+            const gridX = Math.floor(Phaser.Math.Between(1, gameWidth / gridSize - 1)) * gridSize;
+            const gridY = Math.floor(Phaser.Math.Between(1, gameHeight / gridSize - 1)) * gridSize;
+
+            const node = this.add.circle(gridX, gridY, 2, 0x00ffff, 0.6);
+            node.setDepth(-30);
+
+            // Animación de pulsación del nodo
+            this.tweens.add({
+                targets: node,
+                scaleX: 2,
+                scaleY: 2,
+                alpha: 0.2,
+                duration: Phaser.Math.Between(2000, 4000),
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut',
+                delay: i * 200
+            });
+
+            // Ocasionalmente crear ondas expansivas desde los nodos
+            if (Math.random() < 0.3) {
+                this.time.delayedCall(Phaser.Math.Between(3000, 10000), () => {
+                    this.createNodeRipple(gridX, gridY);
+                });
+            }
+        }
+    }
+
+    createNodeRipple(x, y) {
+        // Crear onda expansiva desde un nodo
+        const ripple = this.add.circle(x, y, 5, 0x00ffff, 0);
+        ripple.setStrokeStyle(1, 0x00ffff, 0.8);
+        ripple.setDepth(-25);
+
+        this.tweens.add({
+            targets: ripple,
+            scaleX: 8,
+            scaleY: 8,
+            alpha: 0,
+            duration: 2000,
+            ease: 'Power2.easeOut',
+            onComplete: () => ripple.destroy()
+        });
+    }
 
     createEnergyCore(gameWidth, gameHeight) {
         const centerX = gameWidth / 2;
@@ -475,7 +697,7 @@ class Fallos extends Phaser.Scene {
             const radius = 60 + i * 30;
             ringGraphics.lineStyle(3, 0x00ffaa, 0.6 - i * 0.1);
             ringGraphics.strokeCircle(0, 0, radius);
-            
+
             this.energyRings.push(ringGraphics);
             this.coreContainer.add(ringGraphics);
 
@@ -523,7 +745,7 @@ class Fallos extends Phaser.Scene {
     createCoreParticles(centerX, centerY) {
         // Reducir partículas para móviles
         const particleCount = this.isMobile ? 10 : 20;
-        
+
         for (let i = 0; i < particleCount; i++) {
             const angle = (i / particleCount) * Math.PI * 2;
             const radius = 150;
@@ -536,7 +758,7 @@ class Fallos extends Phaser.Scene {
             particleGraphics.fillCircle(0, 0, 4);
             particleGraphics.lineStyle(1, 0x44ffff, 1);
             particleGraphics.strokeCircle(0, 0, 4);
-            
+
             particleGraphics.x = x;
             particleGraphics.y = y;
             particleGraphics.setScale(Phaser.Math.FloatBetween(0.5, 1.5));
@@ -584,16 +806,16 @@ class Fallos extends Phaser.Scene {
     createHolographicTitle(gameWidth, gameHeight) {
         const titleY = gameHeight * 0.15;
 
-        // Tamaños de fuente adaptativos para móviles
-        const titleFontSize = this.isMobile ? 
-            Math.min(gameWidth * 0.04, 24) : 
-            Math.min(gameWidth * 0.025, 30);
-        
-        const subtitleFontSize = this.isMobile ? 
-            Math.min(gameWidth * 0.025, 16) : 
-            Math.min(gameWidth * 0.015, 18);
+        // Tamaños de fuente adaptativos mejorados
+        const titleFontSize = this.isMobile ?
+            Math.min(gameWidth * 0.035, 22) :
+            Math.min(gameWidth * 0.022, 28);
 
-        // Main title
+        const subtitleFontSize = this.isMobile ?
+            Math.min(gameWidth * 0.022, 15) :
+            Math.min(gameWidth * 0.013, 17);
+
+        // Main title con efectos visuales mejorados
         this.titleText = this.add.text(gameWidth / 2, titleY, 'SISTEMA DE ENERGÍA CRÍTICO', {
             fontSize: `${titleFontSize}px`,
             fontFamily: 'Arial Black',
@@ -604,29 +826,47 @@ class Fallos extends Phaser.Scene {
                 offsetX: 0,
                 offsetY: 0,
                 color: '#00ffff',
-                blur: this.isMobile ? 5 : 10,
+                blur: this.isMobile ? 8 : 15,
                 stroke: true,
                 fill: true
             },
             wordWrap: { width: gameWidth * 0.9, useAdvancedWrap: true }
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setDepth(15);
 
-        // Subtitle with typewriter effect
-        const subtitleY = this.isMobile ? titleY + 30 : titleY + 40;
+        // Añadir efecto de parpadeo al título
+        this.tweens.add({
+            targets: this.titleText,
+            alpha: 0.7,
+            duration: 2000,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
+
+        // Subtitle con efectos mejorados
+        const subtitleY = this.isMobile ? titleY + 28 : titleY + 35;
         this.subtitleText = this.add.text(gameWidth / 2, subtitleY, '', {
             fontSize: `${subtitleFontSize}px`,
             fontFamily: 'Arial',
             fill: '#00ff88',
             stroke: '#002244',
             strokeThickness: this.isMobile ? 0.5 : 1,
+            shadow: {
+                offsetX: 0,
+                offsetY: 0,
+                color: '#00ff88',
+                blur: this.isMobile ? 3 : 5,
+                stroke: false,
+                fill: true
+            },
             wordWrap: { width: gameWidth * 0.8, useAdvancedWrap: true }
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setDepth(15);
 
         const subtitleContent = 'Detecta y corrige los fallos en el código';
         let charIndex = 0;
 
         const typewriterTimer = this.time.addEvent({
-            delay: this.isMobile ? 150 : 100, // Más lento en móviles para mejor rendimiento
+            delay: this.isMobile ? 120 : 80, // Velocidad optimizada
             callback: () => {
                 this.subtitleText.text += subtitleContent[charIndex];
                 charIndex++;
@@ -638,17 +878,58 @@ class Fallos extends Phaser.Scene {
             repeat: subtitleContent.length - 1
         });
 
-        // Title entrance animation
+        // Title entrance animation mejorada
         this.titleText.setAlpha(0);
-        this.titleText.setScale(0.5);
+        this.titleText.setScale(0.3);
         this.tweens.add({
             targets: this.titleText,
             alpha: 1,
             scaleX: 1,
             scaleY: 1,
-            duration: this.isMobile ? 1500 : 1000, // Animación más lenta en móviles
+            duration: this.isMobile ? 1200 : 800,
             ease: 'Back.easeOut'
         });
+
+        // Añadir partículas decorativas alrededor del título
+        this.createTitleParticles(gameWidth / 2, titleY, gameWidth);
+    }
+
+    createTitleParticles(centerX, centerY, gameWidth) {
+        // Crear partículas flotantes alrededor del título
+        for (let i = 0; i < (this.isMobile ? 8 : 12); i++) {
+            const angle = (i / (this.isMobile ? 8 : 12)) * Math.PI * 2;
+            const radius = this.isMobile ? 80 : 120;
+
+            const particle = this.add.circle(
+                centerX + Math.cos(angle) * radius,
+                centerY + Math.sin(angle) * radius,
+                this.isMobile ? 2 : 3,
+                0x00ffff,
+                0.6
+            );
+
+            // Animación orbital
+            this.tweens.add({
+                targets: particle,
+                rotation: Math.PI * 2,
+                duration: Phaser.Math.Between(8000, 12000),
+                repeat: -1,
+                ease: 'Linear'
+            });
+
+            // Animación de pulsación
+            this.tweens.add({
+                targets: particle,
+                scaleX: 1.5,
+                scaleY: 1.5,
+                alpha: 0.3,
+                duration: Phaser.Math.Between(1500, 2500),
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut',
+                delay: i * 200
+            });
+        }
     }
 
     addCursor() {
@@ -673,28 +954,33 @@ class Fallos extends Phaser.Scene {
     }
 
     createCodePanel(gameWidth, gameHeight) {
-        // Posicionamiento adaptativo para móviles - panel más grande
-        const panelX = this.isMobile ? gameWidth * 0.3 : gameWidth * 0.25;
-        const panelY = gameHeight * 0.5;
+        // Posicionamiento mejorado para evitar desbordamiento
+        const minPanelX = this.isMobile ? 200 : 250;
+        const maxPanelX = this.isMobile ? gameWidth - 200 : gameWidth - 250;
+        const panelX = Math.max(minPanelX, Math.min(maxPanelX, this.isMobile ? gameWidth * 0.35 : gameWidth * 0.3));
+        const panelY = gameHeight * 0.55; // Movido más abajo para evitar superposición con títulos
 
-        // Code panel background con escala adaptativa - panel más grande para evitar desbordamiento
+        // Code panel background con escala más pequeña
         this.codePanel = this.add.image(panelX, panelY, 'holoPanel');
-        const panelScale = this.isMobile ? 1.2 : 1.4; // Aumentado para dar más espacio
+        const panelScale = this.isMobile ?
+            Math.min(0.7, gameWidth / 500) : // Reducido significativamente el tamaño
+            Math.min(0.85, gameWidth / 700);
         this.codePanel.setScale(panelScale);
         this.codePanel.setAlpha(0);
+        this.codePanel.setDepth(10); // Asegurar que esté por debajo de los títulos
 
-        // Code title con tamaño adaptativo mejorado para móviles
-        const titleFontSize = this.isMobile ? 
-            Math.min(gameWidth * 0.045, 24) : 
-            Math.min(gameWidth * 0.02, 22);
+        // Code title con posicionamiento ajustado
+        const titleFontSize = this.isMobile ?
+            Math.min(gameWidth * 0.035, 18) :
+            Math.min(gameWidth * 0.016, 20);
 
-        this.add.text(panelX, panelY - (this.isMobile ? 110 : 130), 'CÓDIGO DEL SISTEMA', {
+        this.add.text(panelX, panelY - (this.isMobile ? 80 : 100), 'CÓDIGO DEL SISTEMA', {
             fontSize: `${titleFontSize}px`,
             fontFamily: 'Arial Bold',
             fill: '#00ffff',
             stroke: '#003366',
             strokeThickness: this.isMobile ? 1 : 1
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setDepth(11);
 
         // Code content with syntax highlighting
         const codeLines = [
@@ -705,24 +991,29 @@ class Fallos extends Phaser.Scene {
           "}",
           "void loop() {",
           "  int voltaje = analogRead(sensorVoltaje);",
-          " ",
+          "",
           "  if (voltaje < 500) {",
           "    digitalWrite(bateria, HIGH);",
-          "   }",
+          "  }",
           "}",
         ];
 
         this.codeElements = [];
-        
-        // Configuración adaptativa para el código - ajustada para panel más grande
-        const codeFontSize = this.isMobile ? 
-            Math.min(gameWidth * 0.022, 14) : // Reducido ligeramente para que quepa mejor
-            Math.min(gameWidth * 0.012, 16);
-        
-        const lineSpacing = this.isMobile ? 18 : 18; // Espaciado más compacto
-        const leftOffset = this.isMobile ? -130 : -150; // Más espacio a la izquierda
-        const topOffset = this.isMobile ? -85 : -100; // Más espacio arriba
-        const wrapWidth = this.isMobile ? 260 : 300; // Ancho aumentado para evitar cortes
+
+        // Configuración responsiva mejorada para el código
+        const codeFontSize = this.isMobile ?
+            Math.min(gameWidth * 0.018, 10) :
+            Math.min(gameWidth * 0.01, 12);
+
+        const lineSpacing = this.isMobile ? 14 : 16; // Reducido el espaciado
+
+        // Cálculo dinámico de offsets basado en el tamaño del panel más pequeño
+        const panelWidth = this.codePanel.displayWidth * panelScale;
+        const panelHeight = this.codePanel.displayHeight * panelScale;
+
+        const leftOffset = -(panelWidth * 0.35); // Reducido el offset
+        const topOffset = -(panelHeight * 0.3); // Reducido el offset superior
+        const wrapWidth = panelWidth * 0.75; // Reducido el ancho del texto
 
         codeLines.forEach((line, index) => {
             const codeText = this.add.text(
@@ -734,20 +1025,21 @@ class Fallos extends Phaser.Scene {
                     fontFamily: 'Courier New',
                     fill: this.getCodeColor(line),
                     backgroundColor: 'rgba(0, 20, 40, 0.3)',
-                    padding: { x: this.isMobile ? 3 : 4, y: this.isMobile ? 1 : 2 },
+                    padding: { x: this.isMobile ? 2 : 3, y: this.isMobile ? 1 : 2 },
                     wordWrap: { width: wrapWidth, useAdvancedWrap: true }
                 }
             );
 
             this.codeElements.push(codeText);
             codeText.setAlpha(0);
+            codeText.setDepth(12);
         });
 
         // Animate code panel entrance
         this.tweens.add({
             targets: this.codePanel,
             alpha: 1,
-            x: panelX + 20,
+            x: panelX + 5, // Reducido el desplazamiento
             duration: 800,
             delay: 500,
             ease: 'Power2.easeOut'
@@ -758,9 +1050,9 @@ class Fallos extends Phaser.Scene {
             this.tweens.add({
                 targets: element,
                 alpha: 1,
-                x: element.x + 20,
+                x: element.x + 5, // Reducido el desplazamiento
                 duration: 400,
-                delay: 800 + index * 150,
+                delay: 800 + index * 100, // Reducido el delay
                 ease: 'Power2.easeOut'
             });
         });
@@ -772,36 +1064,38 @@ class Fallos extends Phaser.Scene {
     }
 
     createQuestionPanel(gameWidth, gameHeight) {
-        // Posicionamiento adaptativo
-        const panelX = this.isMobile ? gameWidth * 0.7 : gameWidth * 0.75;
-        const panelY = gameHeight * 0.5;
+        // Posicionamiento mejorado para evitar desbordamiento
+        const minPanelX = this.isMobile ? 200 : 300;
+        const maxPanelX = this.isMobile ? gameWidth - 200 : gameWidth - 300;
+        const panelX = Math.max(minPanelX, Math.min(maxPanelX, this.isMobile ? gameWidth * 0.7 : gameWidth * 0.75));
+        const panelY = gameHeight * 0.55; // Movido más abajo para evitar superposición con títulos
 
-        // Question title con tamaño adaptativo (sin panel de fondo)
-        const titleFontSize = this.isMobile ? 
-            Math.min(gameWidth * 0.025, 16) : 
-            Math.min(gameWidth * 0.018, 20);
+        // Question title con tamaño adaptativo mejorado
+        const titleFontSize = this.isMobile ?
+            Math.min(gameWidth * 0.02, 14) :
+            Math.min(gameWidth * 0.014, 16);
 
-        this.add.text(panelX, panelY - (this.isMobile ? 90 : 110), 'DIAGNÓSTICO', {
+        this.add.text(panelX, panelY - (this.isMobile ? 70 : 85), 'DIAGNÓSTICO', {
             fontSize: `${titleFontSize}px`,
             fontFamily: 'Arial Bold',
             fill: '#ff6b6b',
             stroke: '#330000',
             strokeThickness: this.isMobile ? 0.5 : 1
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setDepth(11);
 
-        // Question text con tamaño adaptativo
-        const questionFontSize = this.isMobile ? 
-            Math.min(gameWidth * 0.02, 14) : 
-            Math.min(gameWidth * 0.014, 16);
+        // Question text con tamaño adaptativo mejorado
+        const questionFontSize = this.isMobile ?
+            Math.min(gameWidth * 0.016, 12) :
+            Math.min(gameWidth * 0.011, 13);
 
-        this.add.text(panelX, panelY - (this.isMobile ? 50 : 60), '¿Cuál es el error en el código?', {
+        this.add.text(panelX, panelY - (this.isMobile ? 40 : 50), '¿Cuál es el error en el código?', {
             fontSize: `${questionFontSize}px`,
             fontFamily: 'Arial',
             fill: '#ffffff',
-            wordWrap: { width: this.isMobile ? 250 : 300, useAdvancedWrap: true }
-        }).setOrigin(0.5);
+            wordWrap: { width: this.isMobile ? 200 : 250, useAdvancedWrap: true }
+        }).setOrigin(0.5).setDepth(11);
 
-        // Answer options con configuración adaptativa
+        // Answer options con configuración mejorada
         const options = [
             'Falta punto y coma',
             'Variable mal declarada',
@@ -812,42 +1106,46 @@ class Fallos extends Phaser.Scene {
         // Initialize answerButtons array
         this.answerButtons = [];
 
-        const buttonFontSize = this.isMobile ? 
-            Math.min(gameWidth * 0.018, 12) : 
-            Math.min(gameWidth * 0.012, 14);
-        
-        const buttonSpacing = this.isMobile ? 50 : 60; // Aumentado de 35/40 a 50/60
-        const startY = this.isMobile ? -20 : -10; // Ajustado para centrar mejor
+        const buttonFontSize = this.isMobile ?
+            Math.min(gameWidth * 0.014, 10) :
+            Math.min(gameWidth * 0.009, 11);
+
+        const buttonSpacing = this.isMobile ? 38 : 45; // Reducido el espaciado
+        const startY = this.isMobile ? -10 : 0; // Posición inicial ajustada
 
         options.forEach((option, index) => {
             const buttonY = panelY + startY + index * buttonSpacing;
-            
-            // Button background (recuadro individual)
+
+            // Button background (recuadro individual) con tamaño más compacto
             const buttonBg = this.add.graphics();
-            const bgWidth = this.isMobile ? 180 : 220;
-            const bgHeight = this.isMobile ? 35 : 40;
-            
-            // Crear recuadro con borde
+            const bgWidth = this.isMobile ?
+                Math.min(150, gameWidth * 0.35) : // Reducido el ancho
+                Math.min(180, gameWidth * 0.22);
+            const bgHeight = this.isMobile ? 28 : 32; // Reducido la altura
+
+            // Crear recuadro con borde mejorado
             buttonBg.lineStyle(2, 0x00ffff, 0.8);
             buttonBg.fillStyle(0x001122, 0.3);
-            buttonBg.fillRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 8);
-            buttonBg.strokeRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 8);
-            
+            buttonBg.fillRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 6);
+            buttonBg.strokeRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 6);
+
             buttonBg.x = panelX;
             buttonBg.y = buttonY;
             buttonBg.setAlpha(0);
+            buttonBg.setDepth(10);
             buttonBg.setInteractive(new Phaser.Geom.Rectangle(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight), Phaser.Geom.Rectangle.Contains);
 
-            // Button text
+            // Button text con wordWrap mejorado
             const buttonText = this.add.text(panelX, buttonY, option, {
                 fontSize: `${buttonFontSize}px`,
                 fontFamily: 'Arial',
                 fill: '#ffffff',
-                wordWrap: { width: this.isMobile ? 120 : 160, useAdvancedWrap: true }
-            }).setOrigin(0.5);
+                wordWrap: { width: bgWidth * 0.85, useAdvancedWrap: true }, // Reducido el ancho del texto
+                align: 'center'
+            }).setOrigin(0.5).setDepth(12);
             buttonText.setAlpha(0);
 
-            // Hover effects adaptados para móviles - aplicados al recuadro
+            // Hover effects mejorados para móviles
             if (this.isMobile) {
                 // Para móviles, usar eventos de toque
                 buttonBg.on('pointerdown', () => {
@@ -858,7 +1156,7 @@ class Fallos extends Phaser.Scene {
                     buttonBg.fillRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 8);
                     buttonBg.strokeRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 8);
                 });
-                
+
                 buttonBg.on('pointerup', () => {
                     buttonBg.clear();
                     buttonBg.lineStyle(2, 0x00ffff, 0.8);
@@ -900,12 +1198,12 @@ class Fallos extends Phaser.Scene {
             this.questionElements = this.questionElements || [];
             this.questionElements.push(buttonBg, buttonText);
 
-            // Entrance animation con timing adaptativo
-            const delay = this.isMobile ? index * 200 : index * 150;
+            // Entrance animation con timing mejorado
+            const delay = this.isMobile ? index * 180 : index * 120;
             this.tweens.add({
                 targets: [buttonBg, buttonText],
                 alpha: 1,
-                duration: this.isMobile ? 800 : 600,
+                duration: this.isMobile ? 700 : 500,
                 delay: delay,
                 ease: 'Power2.easeOut'
             });
@@ -1107,8 +1405,8 @@ class Fallos extends Phaser.Scene {
         continueButton.setInteractive();
 
         // Tamaño de fuente mejorado para móviles
-        const buttonFontSize = this.isMobile ? 
-            Math.min(gameWidth * 0.035, 28) : 
+        const buttonFontSize = this.isMobile ?
+            Math.min(gameWidth * 0.035, 28) :
             Math.min(gameWidth * 0.02, 22);
 
         const continueText = this.add.text(buttonX, buttonY, 'CONTINUAR', {
@@ -1119,7 +1417,7 @@ class Fallos extends Phaser.Scene {
 
         // Button animations con escalas adaptativas
         const hoverScale = this.isMobile ? 2.2 : 1.7;
-        
+
         continueButton.on('pointerover', () => {
             this.tweens.add({
                 targets: [continueButton, continueText],
@@ -1290,8 +1588,8 @@ void loop() {
         // Code display with enhanced readability - AJUSTADO PARA EVITAR DESBORDAMIENTO
         const codeLines = correctedCode.split('\n');
         const startY = -gameHeight * 0.2; // Posición inicial corregida usando gameHeight
-        const lineHeight = this.isMobile ? 
-            Math.min(gameHeight * 0.022, 16) : 
+        const lineHeight = this.isMobile ?
+            Math.min(gameHeight * 0.022, 16) :
             Math.min(gameHeight * 0.025, 18); // Altura de línea adaptativa
 
         this.correctedCodeElements = [];
@@ -1299,7 +1597,7 @@ void loop() {
         // Crear área de scroll si el contenido es muy largo
         const maxVisibleLines = this.isMobile ? 12 : 15;
         const visibleLines = Math.min(codeLines.length, maxVisibleLines);
-        
+
         // Si hay más líneas de las que caben, implementar scroll
         if (codeLines.length > maxVisibleLines) {
             this.createScrollableCodeArea(codeContainer, gameWidth, gameHeight, codeLines, startY, lineHeight);
@@ -1359,7 +1657,7 @@ void loop() {
         // Función para renderizar líneas visibles
         const renderVisibleLines = () => {
             codeContentContainer.removeAll(true);
-            
+
             for (let i = 0; i < codeLines.length; i++) {
                 const line = codeLines[i];
                 const y = startY + (i - scrollOffset) * lineHeight;
@@ -1412,12 +1710,12 @@ void loop() {
         // Botón scroll up
         const scrollUpBtn = this.add.graphics();
         scrollUpBtn.fillStyle(0x4a5568, 0.8);
-        scrollUpBtn.fillTriangle(gameWidth * 0.32, -gameHeight * 0.1, 
-                                gameWidth * 0.35, -gameHeight * 0.05, 
+        scrollUpBtn.fillTriangle(gameWidth * 0.32, -gameHeight * 0.1,
+                                gameWidth * 0.35, -gameHeight * 0.05,
                                 gameWidth * 0.38, -gameHeight * 0.1);
-        scrollUpBtn.setInteractive(new Phaser.Geom.Triangle(gameWidth * 0.32, -gameHeight * 0.1, 
-                                                           gameWidth * 0.35, -gameHeight * 0.05, 
-                                                           gameWidth * 0.38, -gameHeight * 0.1), 
+        scrollUpBtn.setInteractive(new Phaser.Geom.Triangle(gameWidth * 0.32, -gameHeight * 0.1,
+                                                           gameWidth * 0.35, -gameHeight * 0.05,
+                                                           gameWidth * 0.38, -gameHeight * 0.1),
                                   Phaser.Geom.Triangle.Contains);
         scrollUpBtn.on('pointerdown', scrollUp);
         container.add(scrollUpBtn);
@@ -1425,12 +1723,12 @@ void loop() {
         // Botón scroll down
         const scrollDownBtn = this.add.graphics();
         scrollDownBtn.fillStyle(0x4a5568, 0.8);
-        scrollDownBtn.fillTriangle(gameWidth * 0.32, gameHeight * 0.1, 
-                                  gameWidth * 0.35, gameHeight * 0.15, 
+        scrollDownBtn.fillTriangle(gameWidth * 0.32, gameHeight * 0.1,
+                                  gameWidth * 0.35, gameHeight * 0.15,
                                   gameWidth * 0.38, gameHeight * 0.1);
-        scrollDownBtn.setInteractive(new Phaser.Geom.Triangle(gameWidth * 0.32, gameHeight * 0.1, 
-                                                             gameWidth * 0.35, gameHeight * 0.15, 
-                                                             gameWidth * 0.38, gameHeight * 0.1), 
+        scrollDownBtn.setInteractive(new Phaser.Geom.Triangle(gameWidth * 0.32, gameHeight * 0.1,
+                                                             gameWidth * 0.35, gameHeight * 0.15,
+                                                             gameWidth * 0.38, gameHeight * 0.1),
                                     Phaser.Geom.Triangle.Contains);
         scrollDownBtn.on('pointerdown', scrollDown);
         container.add(scrollDownBtn);
@@ -1439,10 +1737,10 @@ void loop() {
     applySyntaxHighlighting(line) {
         // Simplified syntax highlighting - sin colores para mejor legibilidad
         const trimmedLine = line.trim();
-        
+
         // Todos los elementos del código ahora usan el mismo color limpio
-        return { 
-            text: line, 
+        return {
+            text: line,
             color: '#f8f9fa', // Color blanco limpio para todo el código
             bgColor: 'rgba(248, 249, 250, 0.05)', // Fondo sutil uniforme
             strokeColor: '#495057' // Contorno gris sutil para definición
@@ -1455,19 +1753,19 @@ void loop() {
 
         // Main panel with modern glass effect
         const feedbackBg = this.add.graphics();
-        
+
         // Gradient background with glass effect
         feedbackBg.fillGradientStyle(0x1a202c, 0x2d3748, 0x4a5568, 0x2d3748, 1, 0.95, 0.9, 0.95);
         feedbackBg.fillRoundedRect(-gameWidth * 0.35, -gameHeight * 0.08, gameWidth * 0.7, gameHeight * 0.16, 25);
-        
+
         // Glowing border effect
         feedbackBg.lineStyle(3, 0x00ff88, 0.8);
         feedbackBg.strokeRoundedRect(-gameWidth * 0.35, -gameHeight * 0.08, gameWidth * 0.7, gameHeight * 0.16, 25);
-        
+
         // Inner glow effect
         feedbackBg.lineStyle(1, 0x66ffaa, 0.4);
         feedbackBg.strokeRoundedRect(-gameWidth * 0.34, -gameHeight * 0.075, gameWidth * 0.68, gameHeight * 0.15, 23);
-        
+
         feedbackContainer.add(feedbackBg);
 
         // Success icon with glow effect
@@ -1475,7 +1773,7 @@ void loop() {
             fontSize: '36px',
             fill: '#00ff88'
         }).setOrigin(0.5);
-        
+
         // Add glow effect to icon
         successIcon.setStroke('#ffffff', 2);
         successIcon.setShadow(0, 0, '#00ff88', 10, true, true);
@@ -1525,26 +1823,26 @@ void loop() {
 
         // Button background with gradient and glow - tamaños adaptivos
         const buttonBg = this.add.graphics();
-        
+
         // Dimensiones adaptativas para móviles
         const buttonWidth = this.isMobile ? 300 : 240;
         const buttonHeight = this.isMobile ? 70 : 50;
         const cornerRadius = this.isMobile ? 35 : 25;
         const halfWidth = buttonWidth / 2;
         const halfHeight = buttonHeight / 2;
-        
+
         // Main gradient background
         buttonBg.fillGradientStyle(0x00ff88, 0x00cc66, 0x009944, 0x00ff88, 1, 0.9, 0.8, 0.9);
         buttonBg.fillRoundedRect(-halfWidth, -halfHeight, buttonWidth, buttonHeight, cornerRadius);
-        
+
         // Outer glow effect
         buttonBg.lineStyle(3, 0x66ffaa, 0.6);
         buttonBg.strokeRoundedRect(-halfWidth, -halfHeight, buttonWidth, buttonHeight, cornerRadius);
-        
+
         // Inner highlight
         buttonBg.lineStyle(1, 0xffffff, 0.3);
         buttonBg.strokeRoundedRect(-halfWidth + 2, -halfHeight + 2, buttonWidth - 4, buttonHeight - 4, cornerRadius - 2);
-        
+
         buttonContainer.add(buttonBg);
 
         // Button text with enhanced styling - tamaño adaptativo
@@ -1567,10 +1865,10 @@ void loop() {
 
         // Interactive effects - área adaptativa
         buttonContainer.setInteractive(new Phaser.Geom.Rectangle(-halfWidth, -halfHeight, buttonWidth, buttonHeight), Phaser.Geom.Rectangle.Contains);
-        
+
         // Hover effects con escalas adaptativas
         const hoverScale = this.isMobile ? 1.08 : 1.05;
-        
+
         buttonContainer.on('pointerover', () => {
             this.tweens.add({
                 targets: buttonContainer,
@@ -1579,7 +1877,7 @@ void loop() {
                 duration: 200,
                 ease: 'Power2.easeOut'
             });
-            
+
             // Glow pulse effect
             this.tweens.add({
                 targets: buttonBg,
@@ -1599,7 +1897,7 @@ void loop() {
                 duration: 200,
                 ease: 'Power2.easeOut'
             });
-            
+
             // Stop glow pulse
             this.tweens.killTweensOf(buttonBg);
             buttonBg.alpha = 1;
@@ -1615,7 +1913,7 @@ void loop() {
                 yoyo: true,
                 ease: 'Power2.easeOut'
             });
-            
+
             // Proceed to next level
             this.time.delayedCall(200, () => {
                 this.scene.start('scenaVideo2');
@@ -1636,9 +1934,9 @@ void loop() {
                 0x00ff88,
                 0.7
             );
-            
+
             container.add(particle);
-            
+
             // Floating animation
             this.tweens.add({
                 targets: particle,
@@ -1734,7 +2032,7 @@ void loop() {
     startCoreAnimations() {
         // Gentle core pulse animation con configuración adaptativa
         const pulseDelay = this.isMobile ? 6000 : 4000; // Menos frecuente en móviles
-        
+
         this.time.addEvent({
             delay: pulseDelay,
             callback: () => {
@@ -1755,7 +2053,7 @@ void loop() {
 
         // Subtle energy ring effect con menos intensidad en móviles
         const ringDelay = this.isMobile ? 8000 : 6000;
-        
+
         this.time.addEvent({
             delay: ringDelay,
             callback: () => {
