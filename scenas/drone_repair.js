@@ -1872,125 +1872,16 @@ class DroneRepairScene extends Phaser.Scene {
     }
 
     showCompletionMessage() {
-        console.log('🎊 showCompletionMessage iniciado - congelando escena...');
-        console.log('🔍 Estado antes de limpiar:', {
-            malwareParticles: this.malwareParticles ? this.malwareParticles.length : 0,
-            virusParticles: this.virusParticles ? this.virusParticles.length : 0,
-            malwareTimer: !!this.malwareTimer,
-            virusTimer: !!this.virusTimer,
-            aiCorruption: this.aiCorruption
-        });
-
-        // ELIMINAR TODOS LOS VIRUS Y MALWARES PRIMERO
+        console.log('🎊 showCompletionMessage iniciado - transicionando directamente...');
+        
+        // Limpiar malware y virus
         this.clearAllMalwareAndViruses();
-
-        // Congelar la escena deshabilitando interacciones TEMPORALMENTE
-        this.input.enabled = false;
-
-        // Crear overlay semi-transparente
-        this.completionOverlay = this.add.rectangle(
-            this.cameras.main.centerX,
-            this.cameras.main.centerY,
-            this.cameras.main.width,
-            this.cameras.main.height,
-            0x000000,
-            0.8
-        ).setDepth(2000);
-
-        // Crear panel de felicitaciones
-        this.completionPanel = this.add.rectangle(
-            this.cameras.main.centerX,
-            this.cameras.main.centerY,
-            500,
-            350,
-            0x003300,
-            0.95
-        ).setDepth(2001);
-        this.completionPanel.setStrokeStyle(3, 0x00ff00);
-
-        // Título de felicitaciones
-        this.completionTitle = this.add.text(
-            this.cameras.main.centerX,
-            this.cameras.main.centerY - 100,
-            '🎉 ¡FELICITACIONES!',
-            {
-                fontSize: '32px',
-                fill: '#00ff00',
-                fontFamily: 'Courier New',
-                fontStyle: 'bold'
-            }
-        ).setOrigin(0.5).setDepth(2002);
-
-        // Mensaje de feedback
-        this.completionMessage = this.add.text(
-            this.cameras.main.centerX,
-            this.cameras.main.centerY - 30,
-            'Has completado exitosamente el sistema\nde defensa cibernética del dron.\n\n¡Tu código está funcionando perfectamente\ny el sistema está protegido!',
-            {
-                fontSize: '18px',
-                fill: '#88ff88',
-                fontFamily: 'Courier New',
-                align: 'center'
-            }
-        ).setOrigin(0.5).setDepth(2002);
-
-        // Botón para continuar
-        this.continueButton = this.add.rectangle(
-            this.cameras.main.centerX,
-            this.cameras.main.centerY + 80,
-            300,
-            50,
-            0x006600,
-            0.9
-        ).setDepth(2002);
-        this.continueButton.setStrokeStyle(2, 0x00ff00);
-
-        this.continueButtonText = this.add.text(
-            this.cameras.main.centerX,
-            this.cameras.main.centerY + 80,
-            '🚀 CLICK PARA CONTINUAR',
-            {
-                fontSize: '18px',
-                fill: '#00ff00',
-                fontFamily: 'Courier New',
-                fontStyle: 'bold'
-            }
-        ).setOrigin(0.5).setDepth(2003);
-
-        // Hacer el botón interactivo
-        this.continueButton.setInteractive();
-
-        // REACTIVAR INPUT PARA EL BOTÓN
-        this.input.enabled = true;
-        console.log('🔄 Input reactivado para el botón continuar');
-
-        this.continueButton.on('pointerdown', () => {
-            console.log('🖱️ Botón continuar clickeado - iniciando transición...');
-            console.log('🎯 Llamando a goToNextScene()...');
+        
+        // Transicionar directamente sin efectos visuales
+        this.time.delayedCall(1000, () => {
             this.goToNextScene();
         });
-
-        // Efecto hover para el botón
-        this.continueButton.on('pointerover', () => {
-            this.continueButton.setFillStyle(0x008800, 0.9);
-            this.continueButtonText.setFill('#88ff88');
-        });
-
-        this.continueButton.on('pointerout', () => {
-            this.continueButton.setFillStyle(0x006600, 0.9);
-            this.continueButtonText.setFill('#00ff00');
-        });
-
-        // Animación de aparición
-        [this.completionOverlay, this.completionPanel, this.completionTitle, this.completionMessage, this.continueButton, this.continueButtonText].forEach(element => {
-            element.setAlpha(0);
-            this.tweens.add({
-                targets: element,
-                alpha: element === this.completionOverlay ? 0.8 : 1,
-                duration: 800,
-                ease: 'Power2'
-            });
-        });
+        return; // Salir temprano para evitar todos los efectos visuales
     }
 
     clearAllMalwareAndViruses() {
