@@ -763,33 +763,16 @@ class Rompecabezas extends Phaser.Scene {
     }
     this.codeTextObjects = [];
 
-    // Adaptaciones mejoradas para fragmentos en móviles - más espacio para números
+    // Adaptaciones mejoradas para fragmentos en móviles - sin números de línea
     let yOffset = this.isMobile ? -35 : -95; // Mejor posición inicial
     const lineHeight = this.isMobile ? 14 : 20; // Espaciado más cómodo
-    const leftMargin = this.isMobile ? -180 : -200; // Mucho más margen izquierdo para números
+    const leftMargin = this.isMobile ? -140 : -200; // Margen izquierdo optimizado sin números
     const maxWidth = this.isMobile ? 320 : 380; // Ancho más generoso para el texto
     const fontSize = this.isMobile ? "10px" : "14px"; // Tamaño de fuente más legible
-    const lineNumberFontSize = this.isMobile ? "9px" : "12px";
 
     codeFragment.forEach((line, index) => {
-      // Crear número de línea
-      const lineNumber = this.add.text(
-        leftMargin,
-        yOffset,
-        `${index + 1}`.padStart(2, " "),
-        {
-          fontSize: lineNumberFontSize,
-          fontFamily: "SF Mono, Monaco, Consolas, monospace",
-          fill: "#7d8590",
-          align: "right",
-          fontWeight: "500",
-        }
-      );
-      container.add(lineNumber);
-      this.codeTextObjects.push(lineNumber);
-
-      // Crear texto del código con mejor legibilidad
-      const lineText = this.add.text(leftMargin + 30, yOffset, line, {
+      // Crear texto del código sin números de línea
+      const lineText = this.add.text(leftMargin, yOffset, line, {
         fontSize: fontSize,
         fontFamily: "SF Mono, Monaco, Consolas, monospace",
         fill: "#00ff88", // Verde brillante para mejor contraste
