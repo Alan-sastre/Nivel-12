@@ -334,7 +334,7 @@ class Rompecabezas extends Phaser.Scene {
 
   createExplanationSection() {
     // Posicionamiento para layout lado a lado en móviles - explicación a la derecha
-    const containerX = this.isMobile ? this.scale.width * 0.73 : 750; // Ajustado para contenedores más anchos
+    const containerX = this.isMobile ? this.scale.width * 0.71 : 750; // Ajustado para balance con código más ancho
     const containerY = this.isMobile ? this.scale.height * 0.4 : 250; // Centro vertical (mismo que código)
     const explanationContainer = this.add.container(containerX, containerY);
 
