@@ -202,50 +202,10 @@ class CircuitosQuemados extends Phaser.Scene {
     const contentContainer = this.add.container(modalX, modalY - modalHeight/2 + 160);
     this.createModalContent(systemType, contentContainer, modalWidth, modalHeight);
 
-    // Botón de iniciar juego - SIN ANIMACIONES
-    const gameButtonWidth = this.isMobile ? 200 : 180;
-    const gameButtonHeight = this.isMobile ? 50 : 45;
-    const gameButton = this.add.graphics()
-      .fillGradientStyle(0x27ae60, 0x2ecc71, 0x27ae60, 0x2ecc71, 1)
-      .fillRoundedRect(modalX - gameButtonWidth/2, modalY + modalHeight/2 - 80, gameButtonWidth, gameButtonHeight, 22)
-      .lineStyle(3, 0x229954)
-      .strokeRoundedRect(modalX - gameButtonWidth/2, modalY + modalHeight/2 - 80, gameButtonWidth, gameButtonHeight, 22)
-      .setInteractive(new Phaser.Geom.Rectangle(modalX - gameButtonWidth/2, modalY + modalHeight/2 - 80, gameButtonWidth, gameButtonHeight), Phaser.Geom.Rectangle.Contains, { useHandCursor: true })
-      .on('pointerdown', () => {
-        this.closeModal();
-        this.startSystemGame(systemType);
-      });
-      // ANIMACIONES DE HOVER REMOVIDAS
-      // .on('pointerover', () => {
-      //   this.tweens.add({
-      //     targets: gameButton,
-      //     scaleX: 1.05,
-      //     scaleY: 1.05,
-      //     duration: 200,
-      //     ease: 'Power2.easeOut'
-      //   });
-      // })
-      // .on('pointerout', () => {
-      //   this.tweens.add({
-      //     targets: gameButton,
-      //     scaleX: 1,
-      //     scaleY: 1,
-      //     duration: 200,
-      //     ease: 'Power2.easeOut'
-      //   });
-      // });
-
-    const gameButtonText = this.add.text(modalX, modalY + modalHeight/2 - 55, '🎮 INICIAR REPARACIÓN', {
-      fontSize: this.isMobile ? '16px' : '14px',
-      fontFamily: 'Arial Bold',
-      fill: '#ffffff'
-    }).setOrigin(0.5);
-
     // Agregar todos los elementos al contenedor del modal
     this.modalContainer.add([
-      overlay, modalBg, modalGlow, closeButton, closeText, 
-      modalTitle, modalSubtitle, decorLine, contentContainer, 
-      gameButton, gameButtonText
+      overlay, modalBg, modalGlow, closeButton, closeText,
+      modalTitle, modalSubtitle, decorLine, contentContainer
     ]);
 
     // Animación de entrada del modal (REMOVIDA)
@@ -268,87 +228,95 @@ class CircuitosQuemados extends Phaser.Scene {
   }
 
   createMemoryGameContent(container, width, isMobile, systemIndex) {
-    // === FONDO PRINCIPAL FUTURISTA ===
+    // === FONDO PRINCIPAL MODERNO ===
     const mainBackground = this.add.graphics()
-      .fillGradientStyle(0x0a0f1a, 0x1a2332, 0x0f1b2d, 0x243447, 0.98)
-      .fillRoundedRect(-width/2 + 10, -200, width - 20, 400, 25)
-      .lineStyle(3, 0x00ccff, 0.8)
-      .strokeRoundedRect(-width/2 + 10, -200, width - 20, 400, 25);
-    
-    // Efecto de brillo exterior múltiple
-    const glowEffect1 = this.add.graphics()
-      .lineStyle(2, 0x00ffff, 0.4)
-      .strokeRoundedRect(-width/2 + 8, -202, width - 16, 404, 27);
-    
-    const glowEffect2 = this.add.graphics()
-      .lineStyle(1, 0x66ccff, 0.2)
-      .strokeRoundedRect(-width/2 + 6, -204, width - 12, 408, 29);
-    
-    container.add([mainBackground, glowEffect1, glowEffect2]);
+      .fillGradientStyle(0x2d1b69, 0x11998e, 0x38ada9, 0x079992, 0.95)
+      .fillRoundedRect(-width/2 + 10, -200, width - 20, 400, 30)
+      .lineStyle(4, 0x00e676, 0.9)
+      .strokeRoundedRect(-width/2 + 10, -200, width - 20, 400, 30);
 
-    // === HEADER SECTION MEJORADO ===
-    // Panel superior con diseño hexagonal y mejor espaciado
+    // Efecto de brillo exterior múltiple con colores verdes
+    const glowEffect1 = this.add.graphics()
+      .lineStyle(3, 0x00ff88, 0.6)
+      .strokeRoundedRect(-width/2 + 7, -203, width - 14, 406, 33);
+
+    const glowEffect2 = this.add.graphics()
+      .lineStyle(2, 0x4ecdc4, 0.4)
+      .strokeRoundedRect(-width/2 + 4, -206, width - 8, 412, 36);
+
+    // Efecto de partículas flotantes
+    const particleEffect = this.add.graphics()
+      .fillStyle(0x00ff88, 0.3)
+      .fillCircle(-width/2 + 30, -180, 3)
+      .fillCircle(width/2 - 40, -160, 2)
+      .fillCircle(-width/2 + 60, 150, 2)
+      .fillCircle(width/2 - 30, 170, 3);
+
+    container.add([mainBackground, glowEffect1, glowEffect2, particleEffect]);
+
+    // === HEADER SECTION RENOVADO ===
+    // Panel superior con diseño moderno y colores verdes
     const headerPanel = this.add.graphics()
-      .fillGradientStyle(0x001122, 0x003366, 0x002244, 0x004488, 0.95)
-      .fillRoundedRect(-width/2 + 25, -185, width - 50, 90, 15)
-      .lineStyle(2, 0x00ccff, 0.9)
-      .strokeRoundedRect(-width/2 + 25, -185, width - 50, 90, 15);
-    
-    // Líneas de circuito decorativas en el header con mejor distribución
+      .fillGradientStyle(0x134e5e, 0x71b280, 0x52b788, 0x40916c, 0.92)
+      .fillRoundedRect(-width/2 + 25, -185, width - 50, 90, 20)
+      .lineStyle(3, 0x00e676, 0.95)
+      .strokeRoundedRect(-width/2 + 25, -185, width - 50, 90, 20);
+
+    // Líneas de circuito decorativas en el header con colores verdes modernos
     const headerCircuits = this.add.graphics()
-      .lineStyle(2, 0x00ffff, 0.7)
+      .lineStyle(3, 0x00e676, 0.8)
       .moveTo(-width/2 + 35, -175)
       .lineTo(-width/2 + 100, -175)
       .lineTo(-width/2 + 110, -165)
       .moveTo(width/2 - 100, -175)
       .lineTo(width/2 - 35, -175)
       .lineTo(width/2 - 45, -165)
-      .lineStyle(1, 0x66ccff, 0.5)
+      .lineStyle(2, 0x4ecdc4, 0.6)
       .moveTo(-width/2 + 40, -160)
       .lineTo(-width/2 + 80, -160)
       .moveTo(width/2 - 80, -160)
       .lineTo(width/2 - 40, -160);
-    
-    // Indicadores de estado en el header con mejor posicionamiento
+
+    // Indicadores de estado en el header con colores verdes modernos
     const statusIndicators = this.add.graphics()
-      .fillStyle(0x00ff00, 0.9)
+      .fillStyle(0x00e676, 0.9)
       .fillCircle(-width/2 + 45, -170, 4)
-      .fillStyle(0x00ff00, 0.9)
+      .fillStyle(0x52b788, 0.9)
       .fillCircle(-width/2 + 60, -170, 4)
-      .fillStyle(0xffaa00, 0.9)
+      .fillStyle(0x40916c, 0.9)
       .fillCircle(-width/2 + 75, -170, 4)
-      .fillStyle(0xff3366, 0.9)
+      .fillStyle(0x2d6a4f, 0.9)
       .fillCircle(-width/2 + 90, -170, 4);
-    
+
     container.add([headerPanel, headerCircuits, statusIndicators]);
 
-    // Título principal con efecto holográfico avanzado y mejor posicionamiento
-    const titleShadow = this.add.text(2, -148, '⚡ SISTEMA DE MEMORIA NEURAL', {
+    // Título principal con efecto moderno verde y mejor posicionamiento
+    const titleShadow = this.add.text(2, -148, '', {
       fontSize: isMobile ? '18px' : '24px',
       fontFamily: 'Orbitron, Arial Black',
-      fill: '#003366',
+      fill: '#134e5e',
       align: 'center',
       alpha: 0.6
     }).setOrigin(0.5);
-    
-    const title = this.add.text(0, -150, '⚡ SISTEMA DE MEMORIA NEURAL', {
+
+    const title = this.add.text(0, -150, '', {
       fontSize: isMobile ? '18px' : '24px',
       fontFamily: 'Orbitron, Arial Black',
-      fill: '#00ffff',
+      fill: '#00e676',
       align: 'center',
-      stroke: '#001133',
+      stroke: '#2d6a4f',
       strokeThickness: 2
     }).setOrigin(0.5);
-    
-    // Efecto de resplandor animado en el título
-    const titleGlow = this.add.text(0, -150, '⚡ SISTEMA DE MEMORIA NEURAL', {
+
+    // Efecto de resplandor animado en el título con colores verdes
+    const titleGlow = this.add.text(0, -150, '', {
       fontSize: isMobile ? '18px' : '24px',
       fontFamily: 'Orbitron, Arial Black',
-      fill: '#66ffff',
+      fill: '#4ecdc4',
       align: 'center',
       alpha: 0.4
     }).setOrigin(0.5);
-    
+
     container.add([titleShadow, titleGlow, title]);
 
     // Animación del resplandor del título
@@ -380,7 +348,7 @@ class CircuitosQuemados extends Phaser.Scene {
       .fillRoundedRect(-width/2 + 30, -85, width - 60, 60, 12)
       .lineStyle(2, 0x0099cc, 0.8)
       .strokeRoundedRect(-width/2 + 30, -85, width - 60, 60, 12);
-    
+
     // Decoración del panel de información con mejor distribución
     const infoDecoration = this.add.graphics()
       .lineStyle(1, 0x00ccff, 0.6)
@@ -391,7 +359,7 @@ class CircuitosQuemados extends Phaser.Scene {
       .fillStyle(0x00ffff, 0.8)
       .fillCircle(-width/2 + 40, -55, 2)
       .fillCircle(width/2 - 40, -55, 2);
-    
+
     container.add([infoPanelBg, infoDecoration]);
 
     // Descripción del juego con mejor espaciado
@@ -402,7 +370,7 @@ class CircuitosQuemados extends Phaser.Scene {
       align: 'center',
       letterSpacing: 1
     }).setOrigin(0.5);
-    
+
     const instructions = this.add.text(0, -50, 'REPRODUCE EL PATRÓN NEURAL EXACTO', {
       fontSize: isMobile ? '9px' : '11px',
       fontFamily: 'Courier New, monospace',
@@ -411,7 +379,7 @@ class CircuitosQuemados extends Phaser.Scene {
       letterSpacing: 0.5,
       alpha: 0.9
     }).setOrigin(0.5);
-    
+
     const additionalInfo = this.add.text(0, -35, 'PRECISIÓN REQUERIDA: 100%', {
       fontSize: isMobile ? '8px' : '10px',
       fontFamily: 'Courier New, monospace',
@@ -420,7 +388,7 @@ class CircuitosQuemados extends Phaser.Scene {
       letterSpacing: 0.5,
       alpha: 0.8
     }).setOrigin(0.5);
-    
+
     container.add([description, instructions, additionalInfo]);
 
     // === PANEL DE ESTADO MEJORADO ===
@@ -429,7 +397,7 @@ class CircuitosQuemados extends Phaser.Scene {
       .fillRoundedRect(-width/2 + 40, -15, width - 80, 50, 10)
       .lineStyle(2, 0x00ccff, 0.9)
       .strokeRoundedRect(-width/2 + 40, -15, width - 80, 50, 10);
-    
+
     // LEDs de estado del sistema con mejor posicionamiento
     const systemLeds = this.add.graphics()
       .fillStyle(0x00ff00, 1)
@@ -440,7 +408,7 @@ class CircuitosQuemados extends Phaser.Scene {
       .fillCircle(-width/2 + 85, 0, 3)
       .fillStyle(0x333333, 0.5)
       .fillCircle(-width/2 + 100, 0, 3);
-    
+
     // Etiquetas de los LEDs con mejor espaciado
     const ledLabels = this.add.text(-width/2 + 77, 12, 'SYS | MEM | CPU | NET', {
       fontSize: '7px',
@@ -448,7 +416,7 @@ class CircuitosQuemados extends Phaser.Scene {
       fill: '#66ccff',
       alpha: 0.7
     }).setOrigin(0.5);
-    
+
     container.add([statusPanelBg, systemLeds, ledLabels]);
 
     const statusText = this.add.text(0, 25, 'INICIALIZANDO MATRIZ NEURAL...', {
@@ -477,23 +445,23 @@ class CircuitosQuemados extends Phaser.Scene {
       .fillRoundedRect(-width/2 + 20, 50, width - 40, 140, 20)
       .lineStyle(3, 0x00ccff, 0.8)
       .strokeRoundedRect(-width/2 + 20, 50, width - 40, 140, 20);
-    
+
     // Efectos de brillo en el área de botones
     const buttonAreaGlow1 = this.add.graphics()
       .lineStyle(2, 0x00ffff, 0.4)
       .strokeRoundedRect(-width/2 + 18, 48, width - 36, 144, 22);
-    
+
     const buttonAreaGlow2 = this.add.graphics()
       .lineStyle(1, 0x66ccff, 0.2)
       .strokeRoundedRect(-width/2 + 16, 46, width - 32, 148, 24);
-    
+
     // Panel de control interno con mejor espaciado
     const controlPanelBg = this.add.graphics()
       .fillGradientStyle(0x001122, 0x003366, 0x002244, 0x004488, 0.9)
       .fillRoundedRect(-width/2 + 35, 65, width - 70, 110, 15)
       .lineStyle(2, 0x0099cc, 0.7)
       .strokeRoundedRect(-width/2 + 35, 65, width - 70, 110, 15);
-    
+
     // Líneas de circuito decorativas en el panel con mejor distribución
     const controlCircuits = this.add.graphics()
       .lineStyle(1, 0x00ccff, 0.6)
@@ -510,7 +478,7 @@ class CircuitosQuemados extends Phaser.Scene {
       .lineTo(-width/2 + 50, 160)
       .moveTo(width/2 - 50, 80)
       .lineTo(width/2 - 50, 160);
-    
+
     // Título del panel de control
     const controlTitle = this.add.text(0, 85, 'MATRIZ DE CONTROL NEURAL', {
       fontSize: isMobile ? '8px' : '10px',
@@ -520,7 +488,7 @@ class CircuitosQuemados extends Phaser.Scene {
       letterSpacing: 1,
       alpha: 0.8
     }).setOrigin(0.5);
-    
+
     container.add([buttonAreaBg, buttonAreaGlow1, buttonAreaGlow2, controlPanelBg, controlCircuits, controlTitle]);
 
     // Crear botones de colores completamente rediseñados con mejor espaciado
@@ -528,9 +496,9 @@ class CircuitosQuemados extends Phaser.Scene {
     for (let i = 0; i < 4; i++) {
       const xPos = -120 + (i * 80);
       const yPos = 120; // Posición más centrada en el panel
-      
+
       // === ESTRUCTURA DEL BOTÓN FUTURISTA ===
-      
+
       // Base principal hexagonal
       const hexagonalBase = this.add.graphics()
         .fillGradientStyle(0x0a0a0a, 0x1a1a1a, 0x0f0f0f, 0x2a2a2a, 0.95)
@@ -541,29 +509,29 @@ class CircuitosQuemados extends Phaser.Scene {
         .strokeCircle(xPos, yPos, 36)
         .lineStyle(1, colors[i], 0.3)
         .strokeCircle(xPos, yPos, 40);
-      
+
       // Anillo de energía exterior
       const energyRing = this.add.graphics()
         .lineStyle(4, colors[i], 0.5)
         .strokeCircle(xPos, yPos, 44);
-      
+
       // Anillo medio pulsante
       const pulseRing = this.add.graphics()
         .lineStyle(2, colors[i], 0.7)
         .strokeCircle(xPos, yPos, 38);
-      
+
       // Botón principal con gradiente avanzado
       const mainButton = this.add.graphics()
         .fillGradientStyle(colors[i], Phaser.Display.Color.Interpolate.ColorWithColor(colors[i], 0xffffff, 100, 30), colors[i], Phaser.Display.Color.Interpolate.ColorWithColor(colors[i], 0x000000, 100, 20), 0.9)
         .fillCircle(xPos, yPos, 28);
-      
+
       // Núcleo holográfico central
       const holoCore = this.add.graphics()
         .fillGradientStyle(0xffffff, colors[i], 0xffffff, colors[i], 0.6)
         .fillCircle(xPos, yPos, 18)
         .lineStyle(1, 0xffffff, 0.8)
         .strokeCircle(xPos, yPos, 18);
-      
+
       // Patrón de circuito interno avanzado
       const circuitGrid = this.add.graphics()
         .lineStyle(1, 0xffffff, 0.8)
@@ -588,13 +556,13 @@ class CircuitosQuemados extends Phaser.Scene {
         .fillCircle(xPos, yPos, 4)
         .fillStyle(0xffffff, 0.8)
         .fillCircle(xPos, yPos, 2);
-      
+
       // Indicadores LED de estado
       const statusLedTop = this.add.circle(xPos, yPos - 25, 3, 0x333333, 0.8);
       const statusLedRight = this.add.circle(xPos + 25, yPos, 3, 0x333333, 0.8);
       const statusLedBottom = this.add.circle(xPos, yPos + 25, 3, 0x333333, 0.8);
       const statusLedLeft = this.add.circle(xPos - 25, yPos, 3, 0x333333, 0.8);
-      
+
       // Etiqueta del color con diseño futurista
       const colorLabel = this.add.text(xPos, yPos + 55, colorNames[i], {
         fontSize: '12px',
@@ -605,7 +573,7 @@ class CircuitosQuemados extends Phaser.Scene {
         stroke: '#000000',
         strokeThickness: 2
       }).setOrigin(0.5);
-      
+
       // Código hexadecimal del color
       const hexCode = this.add.text(xPos, yPos + 70, `#${colors[i].toString(16).toUpperCase().padStart(6, '0')}`, {
         fontSize: '8px',
@@ -614,11 +582,11 @@ class CircuitosQuemados extends Phaser.Scene {
         align: 'center',
         alpha: 0.7
       }).setOrigin(0.5);
-      
+
       // Crear botón interactivo invisible
       const interactiveButton = this.add.circle(xPos, yPos, 44, 0x000000, 0)
         .setInteractive({ useHandCursor: true });
-      
+
       // Asignar propiedades al botón
       interactiveButton.colorIndex = i;
       interactiveButton.hexBase = hexagonalBase;
@@ -629,7 +597,7 @@ class CircuitosQuemados extends Phaser.Scene {
       interactiveButton.circuitGrid = circuitGrid;
       interactiveButton.statusLeds = [statusLedTop, statusLedRight, statusLedBottom, statusLedLeft];
       interactiveButton.colorLabel = colorLabel;
-      
+
       colorButtons.push(interactiveButton);
       container.add([
         hexagonalBase, energyRing, pulseRing, mainButton, holoCore, circuitGrid,
@@ -638,7 +606,7 @@ class CircuitosQuemados extends Phaser.Scene {
       ]);
 
       // === ANIMACIONES CONTINUAS ===
-      
+
       // Rotación del anillo de energía
       this.tweens.add({
         targets: energyRing,
@@ -647,7 +615,7 @@ class CircuitosQuemados extends Phaser.Scene {
         repeat: -1,
         ease: 'Linear'
       });
-      
+
       // Pulsación del anillo medio
       this.tweens.add({
         targets: pulseRing,
@@ -659,7 +627,7 @@ class CircuitosQuemados extends Phaser.Scene {
         repeat: -1,
         ease: 'Sine.easeInOut'
       });
-      
+
       // Brillo del núcleo holográfico
       this.tweens.add({
         targets: holoCore,
@@ -669,7 +637,7 @@ class CircuitosQuemados extends Phaser.Scene {
         repeat: -1,
         ease: 'Power2'
       });
-      
+
       // Parpadeo sutil del patrón de circuito
       this.tweens.add({
         targets: circuitGrid,
@@ -681,7 +649,7 @@ class CircuitosQuemados extends Phaser.Scene {
       });
 
       // === EVENTOS DE INTERACCIÓN REDISEÑADOS ===
-      
+
       // Efectos hover avanzados
       interactiveButton.on('pointerover', () => {
         if (!showingSequence) {
@@ -696,7 +664,7 @@ class CircuitosQuemados extends Phaser.Scene {
               ease: 'Back.easeOut'
             });
           });
-          
+
           // Intensificar el anillo de energía
           this.tweens.add({
             targets: energyRing,
@@ -706,7 +674,7 @@ class CircuitosQuemados extends Phaser.Scene {
             duration: 200,
             ease: 'Back.easeOut'
           });
-          
+
           // Brillo del núcleo holográfico
           this.tweens.add({
             targets: holoCore,
@@ -716,7 +684,7 @@ class CircuitosQuemados extends Phaser.Scene {
             duration: 200,
             ease: 'Back.easeOut'
           });
-          
+
           // Intensificar el patrón de circuito
           this.tweens.add({
             targets: circuitGrid,
@@ -725,7 +693,7 @@ class CircuitosQuemados extends Phaser.Scene {
             scaleY: 1.05,
             duration: 200
           });
-          
+
           // Efecto de brillo en la etiqueta
           this.tweens.add({
             targets: colorLabel,
@@ -751,7 +719,7 @@ class CircuitosQuemados extends Phaser.Scene {
               ease: 'Back.easeOut'
             });
           });
-          
+
           // Restaurar anillo de energía
           this.tweens.add({
             targets: energyRing,
@@ -761,7 +729,7 @@ class CircuitosQuemados extends Phaser.Scene {
             duration: 200,
             ease: 'Back.easeOut'
           });
-          
+
           // Restaurar núcleo holográfico
           this.tweens.add({
             targets: holoCore,
@@ -771,7 +739,7 @@ class CircuitosQuemados extends Phaser.Scene {
             duration: 200,
             ease: 'Back.easeOut'
           });
-          
+
           // Restaurar patrón de circuito
           this.tweens.add({
             targets: circuitGrid,
@@ -780,7 +748,7 @@ class CircuitosQuemados extends Phaser.Scene {
             scaleY: 1,
             duration: 200
           });
-          
+
           // Restaurar etiqueta
           this.tweens.add({
             targets: colorLabel,
@@ -797,7 +765,7 @@ class CircuitosQuemados extends Phaser.Scene {
         if (showingSequence) return;
 
         // === EFECTOS VISUALES DE ACTIVACIÓN ===
-        
+
         // Explosión de energía en el botón principal
         this.tweens.add({
           targets: mainButton,
@@ -869,7 +837,7 @@ class CircuitosQuemados extends Phaser.Scene {
           // === EFECTOS DE ERROR AVANZADOS ===
           statusText.setText('⚠️ ERROR CRÍTICO EN MATRIZ NEURAL');
           statusText.setFill('#ff3366');
-          
+
           // Efecto de error en todos los botones
           colorButtons.forEach(btn => {
             // Error en todos los LEDs
@@ -883,7 +851,7 @@ class CircuitosQuemados extends Phaser.Scene {
                 yoyo: true
               });
             });
-            
+
             // Efecto de cortocircuito en el botón
             this.tweens.add({
               targets: [btn.mainButton, btn.holoCore],
@@ -894,7 +862,7 @@ class CircuitosQuemados extends Phaser.Scene {
               yoyo: true,
               ease: 'Power2'
             });
-            
+
             // Parpadeo errático del patrón de circuito
             this.tweens.add({
               targets: btn.circuitGrid,
@@ -904,7 +872,7 @@ class CircuitosQuemados extends Phaser.Scene {
               repeat: 6,
               yoyo: true
             });
-            
+
             // Distorsión del anillo de energía
             this.tweens.add({
               targets: btn.energyRing,
@@ -921,7 +889,7 @@ class CircuitosQuemados extends Phaser.Scene {
           this.time.delayedCall(2500, () => {
             statusText.setText('🔄 REINICIANDO PROTOCOLO NEURAL...');
             statusText.setFill('#00ffff');
-            
+
             // Restaurar todos los elementos
             colorButtons.forEach(btn => {
               btn.statusLeds.forEach(led => {
@@ -929,21 +897,21 @@ class CircuitosQuemados extends Phaser.Scene {
                 led.setScale(1);
                 led.setAlpha(0.8);
               });
-              
+
               // Limpiar efectos de tinte
               btn.mainButton.clearTint();
               btn.holoCore.clearTint();
               btn.circuitGrid.setRotation(0);
               btn.energyRing.setScale(1);
             });
-            
+
             showSequence();
           });
         } else if (userSequence.length === sequence.length) {
           // === EFECTOS DE ÉXITO ESPECTACULARES ===
           statusText.setText('✅ MATRIZ NEURAL SINCRONIZADA CON ÉXITO');
           statusText.setFill('#66ff33');
-          
+
           // Efecto de éxito en todos los botones
           colorButtons.forEach((btn, btnIndex) => {
             this.time.delayedCall(btnIndex * 100, () => {
@@ -961,7 +929,7 @@ class CircuitosQuemados extends Phaser.Scene {
                   });
                 });
               });
-              
+
               // Efecto de victoria en el botón
               this.tweens.add({
                 targets: [btn.mainButton, btn.holoCore],
@@ -972,7 +940,7 @@ class CircuitosQuemados extends Phaser.Scene {
                 yoyo: true,
                 ease: 'Back.easeOut'
               });
-              
+
               // Rotación triunfal del anillo de energía
               this.tweens.add({
                 targets: btn.energyRing,
@@ -983,7 +951,7 @@ class CircuitosQuemados extends Phaser.Scene {
                 duration: 800,
                 ease: 'Power2'
               });
-              
+
               // Brillo intenso del patrón
               this.tweens.add({
                 targets: btn.circuitGrid,
@@ -996,7 +964,7 @@ class CircuitosQuemados extends Phaser.Scene {
               });
             });
           });
-          
+
           // Completar el circuito
           this.time.delayedCall(3000, () => {
             this.completeCircuitRepair('MEMORIA', systemIndex);
@@ -1004,7 +972,7 @@ class CircuitosQuemados extends Phaser.Scene {
           });
         }
       });
-      
+
       // Efectos de éxito
       this.tweens.add({
         targets: [btn, btn.innerCore],
@@ -1015,7 +983,7 @@ class CircuitosQuemados extends Phaser.Scene {
         yoyo: true,
         ease: 'Back.easeOut'
       });
-            
+
       // Pulso del anillo exterior
       this.tweens.add({
         targets: btn.outerRing,
@@ -1025,7 +993,7 @@ class CircuitosQuemados extends Phaser.Scene {
         duration: 600,
         yoyo: true
       });
-      
+
       // Brillo del patrón
       this.tweens.add({
         targets: btn.circuitPattern,
@@ -1035,7 +1003,7 @@ class CircuitosQuemados extends Phaser.Scene {
         duration: 400,
         yoyo: true
       });
-      
+
       // Completar el circuito
       this.time.delayedCall(2000, () => {
         this.completeCircuitRepair('MEMORIA', systemIndex);
@@ -1095,7 +1063,7 @@ class CircuitosQuemados extends Phaser.Scene {
   createMemoryParticles(x, y, color) {
     for (let i = 0; i < 8; i++) {
       const particle = this.add.circle(x, y, 2, color, 0.8);
-      
+
       this.tweens.add({
         targets: particle,
         x: x + Phaser.Math.Between(-30, 30),
@@ -1115,7 +1083,7 @@ class CircuitosQuemados extends Phaser.Scene {
       const particle = this.add.circle(x, y, Phaser.Math.Between(2, 4), color, 0.9);
       const angle = (i / 12) * Math.PI * 2;
       const distance = Phaser.Math.Between(40, 80);
-      
+
       this.tweens.add({
         targets: particle,
         x: x + Math.cos(angle) * distance,
@@ -1133,7 +1101,7 @@ class CircuitosQuemados extends Phaser.Scene {
     for (let i = 0; i < 6; i++) {
       const spark = this.add.rectangle(x, y, 8, 2, color, 0.8);
       spark.setRotation(Phaser.Math.Between(0, Math.PI * 2));
-      
+
       this.tweens.add({
         targets: spark,
         x: x + Phaser.Math.Between(-60, 60),
@@ -1152,7 +1120,7 @@ class CircuitosQuemados extends Phaser.Scene {
     // Onda principal
     const wave1 = this.add.circle(x, y, 10, color, 0);
     wave1.setStrokeStyle(3, color, 0.8);
-    
+
     this.tweens.add({
       targets: wave1,
       scaleX: 8,
@@ -1166,7 +1134,7 @@ class CircuitosQuemados extends Phaser.Scene {
     // Onda secundaria
     const wave2 = this.add.circle(x, y, 5, color, 0);
     wave2.setStrokeStyle(2, color, 0.6);
-    
+
     this.time.delayedCall(200, () => {
       this.tweens.add({
         targets: wave2,
@@ -1195,9 +1163,9 @@ class CircuitosQuemados extends Phaser.Scene {
   createModalContent(systemType, container, modalWidth, modalHeight) {
     const contentWidth = modalWidth - 80;
     const isMobile = this.isMobile;
-    
+
     // Encontrar el índice del sistema para los minijuegos
-    const systemIndex = this.circuitBoxes.findIndex(box => 
+    const systemIndex = this.circuitBoxes.findIndex(box =>
       box.titleText.text === systemType
     );
 
@@ -1222,7 +1190,7 @@ class CircuitosQuemados extends Phaser.Scene {
     const smallFont = isMobile ? '12px' : '14px';
 
     // Descripción del problema
-    const description = this.add.text(0, 0, 
+    const description = this.add.text(0, 0,
       '🤖 Los sistemas de movimiento del robot están dañados.\n' +
       'Los servomotores no responden correctamente y las\n' +
       'articulaciones están desalineadas.', {
@@ -1240,7 +1208,7 @@ class CircuitosQuemados extends Phaser.Scene {
       .lineStyle(2, 0xe74c3c)
       .strokeRoundedRect(-width/2 + 20, 80, width - 40, 60, 10);
 
-    const statusText = this.add.text(0, 110, 
+    const statusText = this.add.text(0, 110,
       '⚠️ ESTADO: CRÍTICO\n' +
       '🔧 REPARACIÓN REQUERIDA: Calibración de motores', {
       fontSize: smallFont,
@@ -1256,7 +1224,7 @@ class CircuitosQuemados extends Phaser.Scene {
       .lineStyle(2, 0x3498db)
       .strokeRoundedRect(-width/2 + 20, 160, width - 40, 80, 10);
 
-    const instructions = this.add.text(0, 200, 
+    const instructions = this.add.text(0, 200,
       '🎯 OBJETIVO DEL JUEGO:\n' +
       '• Conecta los cables en el orden correcto\n' +
       '• Calibra los servomotores siguiendo la secuencia\n' +
@@ -1275,7 +1243,7 @@ class CircuitosQuemados extends Phaser.Scene {
     const fontSize = isMobile ? '14px' : '16px';
     const smallFont = isMobile ? '12px' : '14px';
 
-    const description = this.add.text(0, 0, 
+    const description = this.add.text(0, 0,
       '🧠 El sistema de inteligencia artificial presenta\n' +
       'errores en el procesamiento de datos y toma de\n' +
       'decisiones. Los algoritmos necesitan recalibración.', {
@@ -1292,7 +1260,7 @@ class CircuitosQuemados extends Phaser.Scene {
       .lineStyle(2, 0xf39c12)
       .strokeRoundedRect(-width/2 + 20, 80, width - 40, 60, 10);
 
-    const statusText = this.add.text(0, 110, 
+    const statusText = this.add.text(0, 110,
       '⚠️ ESTADO: INESTABLE\n' +
       '🔧 REPARACIÓN REQUERIDA: Optimización de algoritmos', {
       fontSize: smallFont,
@@ -1307,7 +1275,7 @@ class CircuitosQuemados extends Phaser.Scene {
       .lineStyle(2, 0x9b59b6)
       .strokeRoundedRect(-width/2 + 20, 160, width - 40, 80, 10);
 
-    const instructions = this.add.text(0, 200, 
+    const instructions = this.add.text(0, 200,
       '🎯 OBJETIVO DEL JUEGO:\n' +
       '• Responde preguntas de lógica y programación\n' +
       '• Optimiza los algoritmos de decisión\n' +
@@ -1326,7 +1294,7 @@ class CircuitosQuemados extends Phaser.Scene {
     const fontSize = isMobile ? '14px' : '16px';
     const smallFont = isMobile ? '12px' : '14px';
 
-    const description = this.add.text(0, 0, 
+    const description = this.add.text(0, 0,
       '💾 Los módulos de memoria presentan corrupción\n' +
       'de datos y sectores dañados. La información\n' +
       'crítica del sistema está en riesgo.', {
@@ -1343,7 +1311,7 @@ class CircuitosQuemados extends Phaser.Scene {
       .lineStyle(2, 0xe67e22)
       .strokeRoundedRect(-width/2 + 20, 80, width - 40, 60, 10);
 
-    const statusText = this.add.text(0, 110, 
+    const statusText = this.add.text(0, 110,
       '⚠️ ESTADO: DEGRADADO\n' +
       '🔧 REPARACIÓN REQUERIDA: Recuperación de datos', {
       fontSize: smallFont,
@@ -1358,7 +1326,7 @@ class CircuitosQuemados extends Phaser.Scene {
       .lineStyle(2, 0x1abc9c)
       .strokeRoundedRect(-width/2 + 20, 160, width - 40, 80, 10);
 
-    const instructions = this.add.text(0, 200, 
+    const instructions = this.add.text(0, 200,
       '🎯 OBJETIVO DEL JUEGO:\n' +
       '• Memoriza las secuencias de colores\n' +
       '• Reproduce los patrones correctamente\n' +
@@ -1377,7 +1345,7 @@ class CircuitosQuemados extends Phaser.Scene {
     const fontSize = isMobile ? '14px' : '16px';
     const smallFont = isMobile ? '12px' : '14px';
 
-    const description = this.add.text(0, 0, 
+    const description = this.add.text(0, 0,
       '⚡ Los sistemas de secuenciación lógica están\n' +
       'desorganizados. Los procesos no siguen el orden\n' +
       'correcto y causan errores en cascada.', {
@@ -1394,7 +1362,7 @@ class CircuitosQuemados extends Phaser.Scene {
       .lineStyle(2, 0x8e44ad)
       .strokeRoundedRect(-width/2 + 20, 80, width - 40, 60, 10);
 
-    const statusText = this.add.text(0, 110, 
+    const statusText = this.add.text(0, 110,
       '⚠️ ESTADO: DESORGANIZADO\n' +
       '🔧 REPARACIÓN REQUERIDA: Reorganización lógica', {
       fontSize: smallFont,
@@ -1409,7 +1377,7 @@ class CircuitosQuemados extends Phaser.Scene {
       .lineStyle(2, 0x2980b9)
       .strokeRoundedRect(-width/2 + 20, 160, width - 40, 80, 10);
 
-    const instructions = this.add.text(0, 200, 
+    const instructions = this.add.text(0, 200,
       '🎯 OBJETIVO DEL JUEGO:\n' +
       '• Ordena las secuencias numéricas correctamente\n' +
       '• Sigue los patrones lógicos establecidos\n' +
@@ -1451,7 +1419,7 @@ class CircuitosQuemados extends Phaser.Scene {
   startSystemGame(systemType) {
     // Mapear el tipo de sistema al método correspondiente
     const systemIndex = ['ROBÓTICA', 'IA', 'MEMORIA', 'SECUENCIA'].indexOf(systemType);
-    
+
     switch(systemType) {
       case 'ROBÓTICA':
         this.startRoboticsGame(systemIndex);
@@ -2316,26 +2284,26 @@ class CircuitosQuemados extends Phaser.Scene {
     for (let i = 0; i < 4; i++) {
       const xPos = circuitBox.container.x - 60 + (i * 40);
       const yPos = circuitBox.container.y + 90;
-      
+
       // Base hexagonal del botón
       const hexBase = this.add.graphics()
         .fillStyle(0x1a1a2e, 0.9)
         .fillCircle(xPos, yPos, 20)
         .lineStyle(2, colors[i], 0.8)
         .strokeCircle(xPos, yPos, 20);
-      
+
       // Anillo exterior pulsante
       const outerRing = this.add.graphics()
         .lineStyle(3, colors[i], 0.6)
         .strokeCircle(xPos, yPos, 25);
-      
+
       // Núcleo interno brillante
       const innerCore = this.add.graphics()
         .fillStyle(colors[i], 0.8)
         .fillCircle(xPos, yPos, 12)
         .lineStyle(1, 0xffffff, 0.9)
         .strokeCircle(xPos, yPos, 12);
-      
+
       // Patrón de circuito interno
       const circuitPattern = this.add.graphics()
         .lineStyle(1, 0xffffff, 0.4)
@@ -2347,14 +2315,14 @@ class CircuitosQuemados extends Phaser.Scene {
         .lineTo(xPos + 6, yPos + 6)
         .moveTo(xPos - 6, yPos + 6)
         .lineTo(xPos + 6, yPos - 6);
-      
+
       // Indicador LED
       const ledIndicator = this.add.graphics()
         .fillStyle(colors[i], 0.3)
         .fillCircle(xPos, yPos - 30, 3)
         .lineStyle(1, colors[i], 0.8)
         .strokeCircle(xPos, yPos - 30, 3);
-      
+
       // Etiqueta del botón
       const buttonLabel = this.add.text(xPos, yPos + 35, colorNames[i], {
         fontSize: '8px',
@@ -2362,7 +2330,7 @@ class CircuitosQuemados extends Phaser.Scene {
         fill: colors[i],
         align: 'center'
       }).setOrigin(0.5);
-      
+
       // Animación de pulsación constante
       this.tweens.add({
         targets: outerRing,
@@ -2372,12 +2340,12 @@ class CircuitosQuemados extends Phaser.Scene {
         repeat: -1,
         ease: 'Sine.easeInOut'
       });
-      
+
       // Crear contenedor interactivo
       const buttonContainer = this.add.container(0, 0, [hexBase, outerRing, innerCore, circuitPattern, ledIndicator, buttonLabel]);
       const hitArea = new Phaser.Geom.Circle(xPos, yPos, 25);
       buttonContainer.setInteractive(hitArea, Phaser.Geom.Circle.Contains, { useHandCursor: true });
-      
+
       buttonContainer.colorIndex = i;
       buttonContainer.innerCore = innerCore;
       buttonContainer.outerRing = outerRing;
@@ -2398,7 +2366,7 @@ class CircuitosQuemados extends Phaser.Scene {
           yoyo: true,
           ease: 'Power2.easeOut'
         });
-        
+
         // Efecto en el anillo exterior
         this.tweens.add({
           targets: outerRing,
@@ -2409,7 +2377,7 @@ class CircuitosQuemados extends Phaser.Scene {
           yoyo: true,
           ease: 'Power2.easeOut'
         });
-        
+
         // Activar LED
         this.tweens.add({
           targets: ledIndicator,
@@ -2419,7 +2387,7 @@ class CircuitosQuemados extends Phaser.Scene {
           duration: 200,
           yoyo: true
         });
-        
+
         // Partículas de energía
         this.createMemoryParticles(xPos, yPos, colors[i]);
 
@@ -2430,7 +2398,7 @@ class CircuitosQuemados extends Phaser.Scene {
           circuitBox.statusText.setText('ERROR NEURAL');
           circuitBox.statusText.setColor('#ff3366');
           userSequence.length = 0;
-          
+
           // Efecto de error en todos los botones
           colorButtons.forEach(btn => {
             this.tweens.add({
@@ -2439,7 +2407,7 @@ class CircuitosQuemados extends Phaser.Scene {
               duration: 200
             });
           });
-          
+
           this.time.delayedCall(1000, () => {
             circuitBox.statusText.setText('MATRIZ NEURAL...');
             circuitBox.statusText.setColor('#00ccff');
@@ -2449,7 +2417,7 @@ class CircuitosQuemados extends Phaser.Scene {
           // Completado con celebración
           circuitBox.statusText.setText('SINCRONIZADO');
           circuitBox.statusText.setColor('#66ff33');
-          
+
           // Efecto de éxito en todos los botones
           colorButtons.forEach((btn, idx) => {
             this.time.delayedCall(idx * 100, () => {
@@ -2463,7 +2431,7 @@ class CircuitosQuemados extends Phaser.Scene {
               });
             });
           });
-          
+
           this.time.delayedCall(1500, () => {
             colorButtons.forEach(btn => btn.destroy());
             this.completeCircuitRepair('MEMORIA', index);
@@ -2492,7 +2460,7 @@ class CircuitosQuemados extends Phaser.Scene {
             yoyo: true,
             ease: 'Power2.easeOut'
           });
-          
+
           this.tweens.add({
             targets: button.outerRing,
             scaleX: 1.3,
@@ -2502,7 +2470,7 @@ class CircuitosQuemados extends Phaser.Scene {
             yoyo: true,
             ease: 'Power2.easeOut'
           });
-          
+
           // Activar LED durante demostración
           this.tweens.add({
             targets: button.ledIndicator,
@@ -2512,7 +2480,7 @@ class CircuitosQuemados extends Phaser.Scene {
             duration: 400,
             yoyo: true
           });
-          
+
           // Pulso en el patrón de circuito
           this.tweens.add({
             targets: button.circuitPattern,
@@ -2721,21 +2689,12 @@ class CircuitosQuemados extends Phaser.Scene {
   }
 
   showCompletionMessage() {
-    // Crear overlay de fondo
-    const overlay = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height, 0x000000, 0)
-      .setOrigin(0, 0)
-      .setDepth(2000)
-      .setInteractive();
-
-    this.tweens.add({
-      targets: overlay,
-      alpha: { from: 0, to: 0.95 },
-      duration: 800,
-      ease: 'Power2.easeInOut'
+    // Simplemente proceder a la siguiente escena sin efectos visuales
+    // que cambien el estilo de la escena actual
+    this.time.delayedCall(1000, () => {
+      this.transitionToNextScene();
     });
-
-    // Crear partículas de celebración
-    this.createCelebrationParticles();
+    return; // Salir temprano para evitar todos los efectos visuales
 
     // Crear caja de mensaje con gradiente mejorado
     const messageBox = this.add.graphics()
@@ -3184,12 +3143,12 @@ class CircuitosQuemados extends Phaser.Scene {
       .fillRoundedRect(-width/2 + 30, -100, width - 60, 80, 15)
       .lineStyle(3, 0x00d4ff, 0.8)
       .strokeRoundedRect(-width/2 + 30, -100, width - 60, 80, 15);
-    
+
     // Efecto de brillo en el borde
     const glowEffect = this.add.graphics()
       .lineStyle(1, 0x74b9ff, 0.4)
       .strokeRoundedRect(-width/2 + 28, -102, width - 56, 84, 17);
-    
+
     container.add([questionBg, glowEffect]);
 
     const questionText = this.add.text(0, -60, '', {
@@ -3207,7 +3166,7 @@ class CircuitosQuemados extends Phaser.Scene {
 
     for (let i = 0; i < 4; i++) {
       const yPos = 20 + (i * 45);
-      
+
       // Fondo de opción con gradiente visual
       const optionBg = this.add.graphics()
         .fillStyle(0x2c3e50, 0.9)
@@ -3260,10 +3219,10 @@ class CircuitosQuemados extends Phaser.Scene {
     const showQuestion = () => {
       const q = questions[currentQuestion];
       questionText.setText(`Pregunta ${currentQuestion + 1}/3:\n${q.question}`);
-      
+
       q.options.forEach((option, index) => {
         optionButtons[index].text.setText(`${String.fromCharCode(65 + index)}. ${option}`);
-        
+
         // Configurar evento de clic
         optionButtons[index].button.off('pointerdown');
         optionButtons[index].button.on('pointerdown', () => {
@@ -3280,10 +3239,10 @@ class CircuitosQuemados extends Phaser.Scene {
     const handleAnswer = (selectedIndex) => {
       const q = questions[currentQuestion];
       const isCorrect = selectedIndex === q.correct;
-      
+
       if (isCorrect) {
         correctAnswers++;
-        
+
         // Efecto de respuesta correcta
         optionButtons[selectedIndex].bg.clear()
           .fillStyle(0x27ae60, 0.9)
@@ -3309,7 +3268,7 @@ class CircuitosQuemados extends Phaser.Scene {
         this.time.delayedCall(1500, () => {
           currentQuestion++;
           incorrectOptions.clear(); // Limpiar opciones incorrectas para la siguiente pregunta
-          
+
           if (currentQuestion < questions.length) {
             // Resetear colores y reactivar botones
             optionButtons.forEach((opt, index) => {
@@ -3320,11 +3279,11 @@ class CircuitosQuemados extends Phaser.Scene {
                 .lineStyle(2, 0x3498db, 0.6)
                 .strokeRoundedRect(-width/2 + 40, yPos - 15, width - 80, 35, 10);
               opt.text.clearTint();
-              
+
               // Reactivar el botón
               opt.button.on('pointerdown', () => handleAnswer(index));
             });
-            
+
             if (feedbackText) {
               feedbackText.destroy();
               feedbackText = null;
@@ -3334,7 +3293,7 @@ class CircuitosQuemados extends Phaser.Scene {
             // Finalizar quiz
             const score = Math.round((correctAnswers / questions.length) * 100);
             questionText.setText(`¡Quiz completado!\nPuntuación: ${correctAnswers}/${questions.length} (${score}%)`);
-            
+
             // Limpiar opciones
             optionButtons.forEach(opt => {
               opt.bg.setVisible(false);
@@ -3363,7 +3322,7 @@ class CircuitosQuemados extends Phaser.Scene {
                 align: 'center'
               }).setOrigin(0.5);
               container.add(retryText);
-              
+
               this.time.delayedCall(3000, () => {
                 currentQuestion = 0;
                 correctAnswers = 0;
@@ -3382,7 +3341,7 @@ class CircuitosQuemados extends Phaser.Scene {
       } else {
         // Marcar opción como incorrecta permanentemente
         incorrectOptions.add(selectedIndex);
-        
+
         // Efecto de respuesta incorrecta - mantener rojo
         optionButtons[selectedIndex].bg.clear()
           .fillStyle(0xe74c3c, 0.9)
@@ -3462,12 +3421,12 @@ class CircuitosQuemados extends Phaser.Scene {
       .fillRoundedRect(-width/2 + 30, -110, width - 60, 60, 15)
       .lineStyle(3, 0x9b59b6, 0.8)
       .strokeRoundedRect(-width/2 + 30, -110, width - 60, 60, 15);
-    
+
     // Efecto de brillo
     const glowEffect = this.add.graphics()
       .lineStyle(1, 0xd63031, 0.4)
       .strokeRoundedRect(-width/2 + 28, -112, width - 56, 64, 17);
-    
+
     container.add([infoBg, glowEffect]);
 
     // Descripción del proceso
@@ -3598,7 +3557,7 @@ class CircuitosQuemados extends Phaser.Scene {
           progressTimer.destroy();
           statusText.setText('¡PROCESAMIENTO COMPLETO!');
           statusText.setTint(0x00b894);
-          
+
           // Efecto de finalización
           this.tweens.add({
             targets: [aiContainer, aiText],
@@ -3621,34 +3580,37 @@ class CircuitosQuemados extends Phaser.Scene {
   }
 
   createMemoryGameContent(container, width, isMobile, systemIndex) {
-    // Título del juego
-    const title = this.add.text(0, -120, 'SISTEMA DE MEMORIA', {
-      fontSize: isMobile ? '18px' : '24px',
-      fontFamily: 'Arial Bold',
-      fill: '#00d4ff',
-      align: 'center'
+    // Título principal único
+    const title = this.add.text(0, -120, '', {
+      fontSize: isMobile ? '20px' : '26px',
+      fontFamily: 'Orbitron, monospace',
+      fill: '#00ff88',
+      align: 'center',
+      stroke: '#003d29',
+      strokeThickness: 3,
+      shadow: {
+        offsetX: 2,
+        offsetY: 2,
+        color: '#00ff88',
+        blur: 8,
+        fill: true
+      }
     }).setOrigin(0.5);
     container.add(title);
 
-    // Descripción del juego
-    const description = this.add.text(0, -90, 'Memoriza y repite la secuencia de colores', {
-      fontSize: isMobile ? '12px' : '14px',
-      fontFamily: 'Arial',
-      fill: '#ffffff',
-      align: 'center'
-    }).setOrigin(0.5);
-    container.add(description);
-
-    // Estado del juego
-    const statusText = this.add.text(0, -60, 'MEMORIZA...', {
-      fontSize: isMobile ? '14px' : '16px',
-      fontFamily: 'Arial Bold',
-      fill: '#f39c12'
+    // Estado del juego único
+    const statusText = this.add.text(0, -80, 'REPITE LA SECUENCIA', {
+      fontSize: isMobile ? '16px' : '18px',
+      fontFamily: 'Arial, sans-serif',
+      fill: '#4ecdc4',
+      align: 'center',
+      fontWeight: 'bold'
     }).setOrigin(0.5);
     container.add(statusText);
 
     // Variables del juego
-    const colors = [0xff6b7d, 0x74b9ff, 0x00d4ff, 0x27ae60];
+    const colors = [0xff4757, 0x5352ed, 0x00d2d3, 0x2ed573];
+    const glowColors = [0xff6b7d, 0x74b9ff, 0x00e5ff, 0x55efc4];
     const sequence = [];
     const userSequence = [];
     let showingSequence = false;
@@ -3658,50 +3620,77 @@ class CircuitosQuemados extends Phaser.Scene {
       sequence.push(Phaser.Math.Between(0, 3));
     }
 
-    // Crear botones de colores
+    // Crear botones de colores mejorados
     const colorButtons = [];
+    const buttonSpacing = isMobile ? 35 : 45;
+    const startX = -(buttonSpacing * 1.5);
+
     for (let i = 0; i < 4; i++) {
-      const button = this.add.circle(
-        -60 + (i * 40),
-        -10,
-        18,
-        colors[i],
-        0.7
-      ).setInteractive({ useHandCursor: true });
+      const x = startX + (i * buttonSpacing);
+      const y = -20;
+
+      // Fondo del botón con efecto de profundidad
+      const buttonBg = this.add.graphics()
+        .fillStyle(0x1a1a2e, 0.8)
+        .fillCircle(x, y, 22)
+        .lineStyle(2, colors[i], 0.6)
+        .strokeCircle(x, y, 22);
+
+      // Círculo principal del botón
+      const button = this.add.circle(x, y, 18, colors[i], 0.9)
+        .setInteractive({ useHandCursor: true });
+
+      // Efecto de brillo interno
+      const innerGlow = this.add.circle(x, y - 3, 12, glowColors[i], 0.4);
+
+      // Número del botón
+      const buttonNumber = this.add.text(x, y, (i + 1).toString(), {
+        fontSize: isMobile ? '12px' : '14px',
+        fontFamily: 'Arial Bold',
+        fill: '#ffffff',
+        align: 'center',
+        stroke: '#000000',
+        strokeThickness: 2
+      }).setOrigin(0.5);
 
       button.colorIndex = i;
       colorButtons.push(button);
-      container.add(button);
+      container.add([buttonBg, button, innerGlow, buttonNumber]);
 
       button.on('pointerdown', () => {
         if (showingSequence) return;
 
-        // Efecto visual
+        // Efecto visual mejorado
         this.tweens.add({
-          targets: button,
-          scaleX: 1.3,
-          scaleY: 1.3,
-          duration: 150,
-          yoyo: true
+          targets: [button, innerGlow],
+          scaleX: 1.4,
+          scaleY: 1.4,
+          alpha: 1.0,
+          duration: 200,
+          yoyo: true,
+          ease: 'Back.easeOut'
         });
+
+        // Efecto de partículas
+        this.createMemoryParticles(x, y, colors[i]);
 
         userSequence.push(i);
 
         if (userSequence[userSequence.length - 1] !== sequence[userSequence.length - 1]) {
           // Error - reiniciar
           statusText.setText('¡ERROR! Reiniciando...');
-          statusText.setFill('#e74c3c');
+          statusText.setFill('#ff4757');
           userSequence.length = 0;
-          this.time.delayedCall(1000, () => {
-            statusText.setText('MEMORIZA...');
-            statusText.setFill('#f39c12');
+          this.time.delayedCall(1500, () => {
+            statusText.setText('REPITE LA SECUENCIA');
+            statusText.setFill('#4ecdc4');
             showSequence();
           });
         } else if (userSequence.length === sequence.length) {
           // Completado
           statusText.setText('¡SECUENCIA CORRECTA!');
-          statusText.setFill('#27ae60');
-          
+          statusText.setFill('#2ed573');
+
           // Completar el circuito
           this.time.delayedCall(1000, () => {
             this.completeCircuitRepair('MEMORIA', systemIndex);
@@ -3768,12 +3757,12 @@ class CircuitosQuemados extends Phaser.Scene {
       .fillRoundedRect(-width/2 + 30, -110, width - 60, 60, 15)
       .lineStyle(3, 0x9b59b6, 0.8)
       .strokeRoundedRect(-width/2 + 30, -110, width - 60, 60, 15);
-    
+
     // Efecto de brillo
     const glowEffect = this.add.graphics()
       .lineStyle(1, 0xd63031, 0.4)
       .strokeRoundedRect(-width/2 + 28, -112, width - 56, 64, 17);
-    
+
     container.add([infoBg, glowEffect]);
 
     // Descripción del juego
@@ -3882,7 +3871,7 @@ class CircuitosQuemados extends Phaser.Scene {
             duration: 200,
             ease: 'Back.easeOut'
           });
-          
+
           // Efecto de pulso en el borde
           this.tweens.add({
             targets: nodeBg,
@@ -3903,7 +3892,7 @@ class CircuitosQuemados extends Phaser.Scene {
             duration: 200,
             ease: 'Back.easeOut'
           });
-          
+
           // Detener efecto de pulso
           this.tweens.killTweensOf(nodeBg);
           nodeBg.setAlpha(1);
@@ -4054,7 +4043,7 @@ class CircuitosQuemados extends Phaser.Scene {
   createSequenceParticles(x, y) {
     for (let i = 0; i < 10; i++) {
       const particle = this.add.circle(x, y, 2, 0x9b59b6, 0.8);
-      
+
       this.tweens.add({
         targets: particle,
         x: x + Phaser.Math.Between(-40, 40),
