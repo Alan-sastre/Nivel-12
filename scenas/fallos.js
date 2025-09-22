@@ -11,20 +11,20 @@ class Fallos extends Phaser.Scene {
 
     // Función para detectar dispositivos móviles
     checkMobileDevice() {
-        // Solo usar detección de User Agent para ser más preciso
-        // Evitar usar dimensiones de ventana que pueden ser engañosas en desktop
-        return /Android|iPhone|iPad|iPod|Windows Phone|Mobile|Tablet/i.test(navigator.userAgent);
+        // Usar la misma función de detección que game.js para consistencia
+        return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
     }
 
     // Premium particle effects for enhanced visual feedback
     createSuccessExplosion(x, y) {
-        // Create multiple particle bursts with different colors
+        // Optimizado para móviles: menos partículas y duraciones más cortas
         const colors = [0x00ff88, 0x44ff44, 0x88ff00, 0xffff44, 0x44ffff];
+        const particleCount = this.isMobile ? 8 : 15;
 
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < particleCount; i++) {
             const particle = this.add.circle(x, y, Phaser.Math.Between(3, 8), colors[i % colors.length]);
-            const angle = (i / 15) * Math.PI * 2;
-            const speed = Phaser.Math.Between(100, 500);
+            const angle = (i / particleCount) * Math.PI * 2;
+            const speed = this.isMobile ? Phaser.Math.Between(80, 300) : Phaser.Math.Between(100, 500);
 
             this.tweens.add({
                 targets: particle,
@@ -33,25 +33,26 @@ class Fallos extends Phaser.Scene {
                 alpha: 0,
                 scaleX: 0.1,
                 scaleY: 0.1,
-                duration: 1000,
+                duration: this.isMobile ? 600 : 1000,
                 ease: 'Power2.easeOut',
                 onComplete: () => particle.destroy()
             });
         }
 
-        // Add sparkle effect
-        for (let i = 0; i < 8; i++) {
+        // Efecto de destellos reducido para móviles
+        const sparkleCount = this.isMobile ? 4 : 8;
+        for (let i = 0; i < sparkleCount; i++) {
             const sparkle = this.add.star(x + Phaser.Math.Between(-50, 50),
                                         y + Phaser.Math.Between(-50, 50),
                                         5, 4, 8, 0xffffff);
             this.tweens.add({
                 targets: sparkle,
                 alpha: 0,
-                scaleX: 2,
-                scaleY: 2,
+                scaleX: this.isMobile ? 1.5 : 2,
+                scaleY: this.isMobile ? 1.5 : 2,
                 rotation: Math.PI * 2,
-                duration: 800,
-                delay: i * 100,
+                duration: this.isMobile ? 500 : 800,
+                delay: i * (this.isMobile ? 80 : 100),
                 ease: 'Power2.easeOut',
                 onComplete: () => sparkle.destroy()
             });
@@ -81,10 +82,11 @@ class Fallos extends Phaser.Scene {
     }
 
     createFloatingParticles() {
-        // Create ambient floating particles for premium atmosphere
+        // Optimizado para móviles: menos partículas y animaciones más eficientes
         const particles = [];
+        const particleCount = this.isMobile ? 10 : 20;
 
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < particleCount; i++) {
             const particle = this.add.circle(
                 Phaser.Math.Between(0, this.cameras.main.width),
                 Phaser.Math.Between(0, this.cameras.main.height),
@@ -95,16 +97,16 @@ class Fallos extends Phaser.Scene {
 
             particles.push(particle);
 
-            // Continuous floating animation
+            // Animación flotante continua optimizada para móviles
             this.tweens.add({
                 targets: particle,
                 y: particle.y - 100,
                 x: particle.x + Phaser.Math.Between(-50, 50),
-                duration: Phaser.Math.Between(3000, 6000),
+                duration: this.isMobile ? Phaser.Math.Between(4000, 8000) : Phaser.Math.Between(3000, 6000),
                 ease: 'Sine.easeInOut',
                 yoyo: true,
                 repeat: -1,
-                delay: i * 200
+                delay: i * (this.isMobile ? 300 : 200)
             });
         }
 
@@ -806,14 +808,14 @@ class Fallos extends Phaser.Scene {
     createHolographicTitle(gameWidth, gameHeight) {
         const titleY = gameHeight * 0.15;
 
-        // Tamaños de fuente adaptativos mejorados
-        const titleFontSize = this.isMobile ?
-            Math.min(gameWidth * 0.035, 22) :
-            Math.min(gameWidth * 0.022, 28);
-
-        const subtitleFontSize = this.isMobile ?
-            Math.min(gameWidth * 0.022, 15) :
-            Math.min(gameWidth * 0.013, 17);
+        // Tamaños de fuente optimizados para la configuración 1000x500 del proyecto
+        const titleFontSize = this.isMobile ? 
+            Math.max(18, Math.min(gameWidth * 0.028, 24)) : 
+            Math.max(24, Math.min(gameWidth * 0.022, 28));
+        
+        const subtitleFontSize = this.isMobile ? 
+            Math.max(12, Math.min(gameWidth * 0.018, 16)) : 
+            Math.max(14, Math.min(gameWidth * 0.013, 17));
 
         // Main title con efectos visuales mejorados
         this.titleText = this.add.text(gameWidth / 2, titleY, 'SISTEMA DE ENERGÍA CRÍTICO', {
@@ -878,7 +880,7 @@ class Fallos extends Phaser.Scene {
             repeat: subtitleContent.length - 1
         });
 
-        // Title entrance animation mejorada
+        // Animación de entrada del título mejorada y optimizada
         this.titleText.setAlpha(0);
         this.titleText.setScale(0.3);
         this.tweens.add({
@@ -886,7 +888,7 @@ class Fallos extends Phaser.Scene {
             alpha: 1,
             scaleX: 1,
             scaleY: 1,
-            duration: this.isMobile ? 1200 : 800,
+            duration: this.isMobile ? 1000 : 800, // Duración reducida para móviles
             ease: 'Back.easeOut'
         });
 
@@ -1000,12 +1002,12 @@ class Fallos extends Phaser.Scene {
 
         this.codeElements = [];
 
-        // Configuración responsiva mejorada para el código
+        // Configuración responsiva optimizada para el código
         const codeFontSize = this.isMobile ?
-            Math.min(gameWidth * 0.018, 10) :
-            Math.min(gameWidth * 0.01, 12);
+            Math.max(9, Math.min(gameWidth * 0.014, 11)) :
+            Math.max(11, Math.min(gameWidth * 0.01, 12));
 
-        const lineSpacing = this.isMobile ? 14 : 16; // Reducido el espaciado
+        const lineSpacing = this.isMobile ? 12 : 16; // Espaciado más compacto para móviles
 
         // Cálculo dinámico de offsets basado en el tamaño del panel más pequeño
         const panelWidth = this.codePanel.displayWidth * panelScale;
@@ -1035,24 +1037,24 @@ class Fallos extends Phaser.Scene {
             codeText.setDepth(12);
         });
 
-        // Animate code panel entrance
+        // Animación de entrada del panel de código optimizada
         this.tweens.add({
             targets: this.codePanel,
             alpha: 1,
             x: panelX + 5, // Reducido el desplazamiento
-            duration: 800,
-            delay: 500,
+            duration: this.isMobile ? 600 : 800, // Más rápido en móviles
+            delay: this.isMobile ? 300 : 500, // Delay reducido para móviles
             ease: 'Power2.easeOut'
         });
 
-        // Animate code lines
+        // Animación de líneas de código optimizada
         this.codeElements.forEach((element, index) => {
             this.tweens.add({
                 targets: element,
                 alpha: 1,
                 x: element.x + 5, // Reducido el desplazamiento
-                duration: 400,
-                delay: 800 + index * 100, // Reducido el delay
+                duration: this.isMobile ? 300 : 400, // Más rápido en móviles
+                delay: (this.isMobile ? 600 : 800) + index * (this.isMobile ? 80 : 100), // Delays reducidos
                 ease: 'Power2.easeOut'
             });
         });
@@ -1070,10 +1072,10 @@ class Fallos extends Phaser.Scene {
         const panelX = Math.max(minPanelX, Math.min(maxPanelX, this.isMobile ? gameWidth * 0.7 : gameWidth * 0.75));
         const panelY = gameHeight * 0.55; // Movido más abajo para evitar superposición con títulos
 
-        // Question title con tamaño adaptativo mejorado
+        // Question title con tamaño adaptativo optimizado
         const titleFontSize = this.isMobile ?
-            Math.min(gameWidth * 0.02, 14) :
-            Math.min(gameWidth * 0.014, 16);
+            Math.max(12, Math.min(gameWidth * 0.018, 15)) :
+            Math.max(14, Math.min(gameWidth * 0.014, 16));
 
         this.add.text(panelX, panelY - (this.isMobile ? 70 : 85), 'DIAGNÓSTICO', {
             fontSize: `${titleFontSize}px`,
@@ -1083,10 +1085,10 @@ class Fallos extends Phaser.Scene {
             strokeThickness: this.isMobile ? 0.5 : 1
         }).setOrigin(0.5).setDepth(11);
 
-        // Question text con tamaño adaptativo mejorado
+        // Question text con tamaño adaptativo optimizado
         const questionFontSize = this.isMobile ?
-            Math.min(gameWidth * 0.016, 12) :
-            Math.min(gameWidth * 0.011, 13);
+            Math.max(10, Math.min(gameWidth * 0.014, 13)) :
+            Math.max(12, Math.min(gameWidth * 0.011, 13));
 
         this.add.text(panelX, panelY - (this.isMobile ? 40 : 50), '¿Cuál es el error en el código?', {
             fontSize: `${questionFontSize}px`,
@@ -1107,11 +1109,11 @@ class Fallos extends Phaser.Scene {
         this.answerButtons = [];
 
         const buttonFontSize = this.isMobile ?
-            Math.min(gameWidth * 0.014, 10) :
-            Math.min(gameWidth * 0.009, 11);
+            Math.max(9, Math.min(gameWidth * 0.012, 11)) :
+            Math.max(10, Math.min(gameWidth * 0.009, 11));
 
-        const buttonSpacing = this.isMobile ? 38 : 45; // Reducido el espaciado
-        const startY = this.isMobile ? -10 : 0; // Posición inicial ajustada
+        const buttonSpacing = this.isMobile ? 35 : 45; // Espaciado más compacto para móviles
+        const startY = this.isMobile ? -15 : 0; // Posición inicial más alta para móviles
 
         options.forEach((option, index) => {
             const buttonY = panelY + startY + index * buttonSpacing;
@@ -1145,16 +1147,21 @@ class Fallos extends Phaser.Scene {
             }).setOrigin(0.5).setDepth(12);
             buttonText.setAlpha(0);
 
-            // Hover effects mejorados para móviles
+            // Hover effects mejorados para móviles con mejor feedback táctil
             if (this.isMobile) {
-                // Para móviles, usar eventos de toque
+                // Para móviles, usar eventos de toque con feedback visual inmediato
                 buttonBg.on('pointerdown', () => {
                     this.createHoverParticles(panelX, buttonY);
                     buttonBg.clear();
-                    buttonBg.lineStyle(2, 0x44ff44, 1);
-                    buttonBg.fillStyle(0x002200, 0.5);
+                    buttonBg.lineStyle(3, 0x44ff44, 1); // Borde más grueso para móviles
+                    buttonBg.fillStyle(0x002200, 0.7); // Más opaco para mejor visibilidad
                     buttonBg.fillRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 8);
                     buttonBg.strokeRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 8);
+                    
+                    // Vibración táctil si está disponible
+                    if (navigator.vibrate) {
+                        navigator.vibrate(50);
+                    }
                 });
 
                 buttonBg.on('pointerup', () => {
@@ -1415,28 +1422,57 @@ class Fallos extends Phaser.Scene {
             fill: '#ffffff'
         }).setOrigin(0.5);
 
-        // Button animations con escalas adaptativas
+        // Button animations con escalas adaptativas y mejor feedback táctil
         const hoverScale = this.isMobile ? 2.2 : 1.7;
 
-        continueButton.on('pointerover', () => {
-            this.tweens.add({
-                targets: [continueButton, continueText],
-                scaleX: hoverScale,
-                scaleY: hoverScale,
-                duration: 200,
-                ease: 'Power2.easeOut'
+        if (this.isMobile) {
+            // Para móviles, usar eventos táctiles con feedback inmediato
+            continueButton.on('pointerdown', () => {
+                this.tweens.add({
+                    targets: [continueButton, continueText],
+                    scaleX: hoverScale,
+                    scaleY: hoverScale,
+                    duration: 150, // Más rápido para móviles
+                    ease: 'Power2.easeOut'
+                });
+                
+                // Vibración táctil si está disponible
+                if (navigator.vibrate) {
+                    navigator.vibrate(30);
+                }
             });
-        });
 
-        continueButton.on('pointerout', () => {
-            this.tweens.add({
-                targets: [continueButton, continueText],
-                scaleX: buttonScale,
-                scaleY: buttonScale,
-                duration: 200,
-                ease: 'Power2.easeOut'
+            continueButton.on('pointerup', () => {
+                this.tweens.add({
+                    targets: [continueButton, continueText],
+                    scaleX: buttonScale,
+                    scaleY: buttonScale,
+                    duration: 150,
+                    ease: 'Power2.easeOut'
+                });
             });
-        });
+        } else {
+            // Para desktop, mantener hover tradicional
+            continueButton.on('pointerover', () => {
+                this.tweens.add({
+                    targets: [continueButton, continueText],
+                    scaleX: hoverScale,
+                    scaleY: hoverScale,
+                    duration: 200,
+                    ease: 'Power2.easeOut'
+                });
+            });
+
+            continueButton.on('pointerout', () => {
+                this.tweens.add({
+                    targets: [continueButton, continueText],
+                    scaleX: buttonScale,
+                    scaleY: buttonScale,
+                    duration: 200,
+                    ease: 'Power2.easeOut'
+                });
+            });
+        }
 
         continueButton.on('pointerdown', () => {
             // Show the correct code before continuing
@@ -1866,42 +1902,85 @@ void loop() {
         // Interactive effects - área adaptativa
         buttonContainer.setInteractive(new Phaser.Geom.Rectangle(-halfWidth, -halfHeight, buttonWidth, buttonHeight), Phaser.Geom.Rectangle.Contains);
 
-        // Hover effects con escalas adaptativas
+        // Hover effects con escalas adaptativas y mejor feedback táctil
         const hoverScale = this.isMobile ? 1.08 : 1.05;
 
-        buttonContainer.on('pointerover', () => {
-            this.tweens.add({
-                targets: buttonContainer,
-                scaleX: hoverScale,
-                scaleY: hoverScale,
-                duration: 200,
-                ease: 'Power2.easeOut'
+        if (this.isMobile) {
+            // Para móviles, usar eventos táctiles con feedback inmediato
+            buttonContainer.on('pointerdown', () => {
+                this.tweens.add({
+                    targets: buttonContainer,
+                    scaleX: hoverScale,
+                    scaleY: hoverScale,
+                    duration: 150, // Más rápido para móviles
+                    ease: 'Power2.easeOut'
+                });
+
+                // Glow pulse effect más intenso para móviles
+                this.tweens.add({
+                    targets: buttonBg,
+                    alpha: 0.9,
+                    duration: 200,
+                    yoyo: true,
+                    repeat: 2,
+                    ease: 'Sine.easeInOut'
+                });
+                
+                // Vibración táctil si está disponible
+                if (navigator.vibrate) {
+                    navigator.vibrate(40);
+                }
             });
 
-            // Glow pulse effect
-            this.tweens.add({
-                targets: buttonBg,
-                alpha: 0.8,
-                duration: 300,
-                yoyo: true,
-                repeat: -1,
-                ease: 'Sine.easeInOut'
-            });
-        });
+            buttonContainer.on('pointerup', () => {
+                this.tweens.add({
+                    targets: buttonContainer,
+                    scaleX: 1,
+                    scaleY: 1,
+                    duration: 150,
+                    ease: 'Power2.easeOut'
+                });
 
-        buttonContainer.on('pointerout', () => {
-            this.tweens.add({
-                targets: buttonContainer,
-                scaleX: 1,
-                scaleY: 1,
-                duration: 200,
-                ease: 'Power2.easeOut'
+                // Stop glow pulse
+                this.tweens.killTweensOf(buttonBg);
+                buttonBg.alpha = 1;
+            });
+        } else {
+            // Para desktop, mantener hover tradicional
+            buttonContainer.on('pointerover', () => {
+                this.tweens.add({
+                    targets: buttonContainer,
+                    scaleX: hoverScale,
+                    scaleY: hoverScale,
+                    duration: 200,
+                    ease: 'Power2.easeOut'
+                });
+
+                // Glow pulse effect
+                this.tweens.add({
+                    targets: buttonBg,
+                    alpha: 0.8,
+                    duration: 300,
+                    yoyo: true,
+                    repeat: -1,
+                    ease: 'Sine.easeInOut'
+                });
             });
 
-            // Stop glow pulse
-            this.tweens.killTweensOf(buttonBg);
-            buttonBg.alpha = 1;
-        });
+            buttonContainer.on('pointerout', () => {
+                this.tweens.add({
+                    targets: buttonContainer,
+                    scaleX: 1,
+                    scaleY: 1,
+                    duration: 200,
+                    ease: 'Power2.easeOut'
+                });
+
+                // Stop glow pulse
+                this.tweens.killTweensOf(buttonBg);
+                buttonBg.alpha = 1;
+            });
+        }
 
         buttonContainer.on('pointerdown', () => {
             // Click animation
