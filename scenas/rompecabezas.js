@@ -958,7 +958,7 @@ class Rompecabezas extends Phaser.Scene {
       )
       .setInteractive({ useHandCursor: true })
       .on("pointerdown", () => {
-        this.scene.start("scenaVideo4");
+        this.scene.start("CircuitosQuemados");
       });
 
     const continueButtonText = this.add
