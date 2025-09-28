@@ -216,7 +216,7 @@ class DroneRepairScene extends Phaser.Scene {
         const x = 100 + sectionWidth / 2; // Menos margen izquierdo
         const y = height * 0.45; // Subir más para compactar
 
-        this.add.text(x, y - 180, '🤖 NÚCLEO IA', {
+        this.add.text(x, y - 150, ' NÚCLEO IA', {
             fontSize: '22px', // Aumentar tamaño para mejor calidad
             fill: '#00ffff',
             fontFamily: 'Arial, sans-serif', // Cambiar fuente para mejor renderizado
@@ -225,14 +225,14 @@ class DroneRepairScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         // Crear la IA avanzada centrada en la sección
-        this.aiEntity = this.createAdvancedAI(x, y - 120);
+        this.aiEntity = this.createAdvancedAI(x, y - 80);
 
         // Inicializar sistema de malware/virus
         this.initializeMalwareSystem(x, y, sectionWidth);
 
         // Inicializar timer de infección
         this.infectionTimer = 0;
-        this.maxInfectionTime = 60000; // 60 segundos
+        this.maxInfectionTime = 120000; // 120 segundos (2 minutos) - Aumentado para dar más tiempo
         this.isInfected = false;
 
         // Referencias para actualización de estado - COMPACTO
@@ -706,15 +706,15 @@ class DroneRepairScene extends Phaser.Scene {
         this.currentOptions = [correctBlock, ...selectedIncorrect].sort(() => Math.random() - 0.5);
 
         // Crear los 3 bloques en una fila horizontal - VERSIÓN COMPACTA
-         const containerWidth = this.cameras.main.width * 0.7; // Reducir más el ancho
-         const containerHeight = 80; // Reducir altura significativamente
+         const containerWidth = this.cameras.main.width * 0.8; // Ajustar ancho del contenedor
+         const containerHeight = 90; // Altura adecuada para los bloques
          const startX = this.cameras.main.width / 2; // Centrar horizontalmente
          const startY = this.cameras.main.height * 0.8; // Subir más para compactar
 
          this.currentOptions.forEach((data, index) => {
-             const blockWidth = 240; // Reducir más el ancho de los botones
-             const blockHeight = 60; // Reducir más la altura de los botones
-             const spacing = 280; // Reducir espaciado para hacer botones más pequeños
+             const blockWidth = 280; // Reducir ancho para que quepan en pantalla
+             const blockHeight = 85; // Mantener altura adecuada
+             const spacing = 300; // Reducir espaciado para que quepan los 3 bloques
              const blockX = startX - spacing + (index * spacing); // Distribución horizontal
              const blockY = startY;
 
@@ -732,31 +732,37 @@ class DroneRepairScene extends Phaser.Scene {
              block.height = blockHeight;
 
              // Icono del bloque más pequeño
-             const icon = this.add.text(blockX - blockWidth/2 + 15, blockY, data.icon, {
-                 fontSize: '20px' // Reducir más el tamaño del icono
+             const icon = this.add.text(blockX - blockWidth/2 + 15, blockY - 5, data.icon, {
+                 fontSize: '24px', // Aumentar tamaño del icono para mejor visibilidad
+                 resolution: 4, // Aumentar resolución para mejor calidad
+                 smoothed: true // Activar suavizado para mejor calidad
              });
 
              // Texto principal mejorado para evitar pixelado
-             const text = this.add.text(blockX - blockWidth/2 + 45, blockY - 8, data.text, {
-                 fontSize: '14px', // Aumentar tamaño para mejor calidad
+             const text = this.add.text(blockX - blockWidth/2 + 50, blockY - 12, data.text, {
+                 fontSize: '13px', // Reducir más el tamaño para evitar desbordamiento
                  fill: '#ffffff',
-                 fontFamily: 'Arial, sans-serif', // Cambiar a Arial para mejor renderizado
+                 fontFamily: 'Arial Black, Arial, sans-serif', // Usar Arial Black para mejor renderizado
                  fontStyle: 'bold',
                  stroke: '#000000',
-                 strokeThickness: 1,
-                 wordWrap: { width: blockWidth - 60 },
-                 resolution: 2 // Aumentar resolución para texto más nítido
+                 strokeThickness: 3, // Aumentar grosor del borde para mejor definición
+                 wordWrap: { width: blockWidth - 120 }, // Aumentar margen para evitar desbordamiento
+                 resolution: 4, // Aumentar resolución para texto más nítido
+                 padding: { x: 4, y: 4 }, // Aumentar padding para mejor renderizado
+                 smoothed: true // Activar suavizado para mejor calidad
              }).setOrigin(0, 0.5);
 
-             // Descripción mejorada para evitar pixelado
-             const desc = this.add.text(blockX - blockWidth/2 + 45, blockY + 12, data.desc, {
-                 fontSize: '11px', // Aumentar tamaño para mejor calidad
-                 fill: '#ffff99',
+             // Descripción mejorada para evitar pixelado y superposición
+             const desc = this.add.text(blockX - blockWidth/2 + 50, blockY + 20, data.desc, {
+                 fontSize: '10px', // Reducir más el tamaño para evitar desbordamiento
+                 fill: '#cccccc', // Cambiar a gris claro para mejor contraste
                  fontFamily: 'Arial, sans-serif', // Cambiar a Arial para mejor renderizado
                  stroke: '#000000',
-                 strokeThickness: 1,
-                 wordWrap: { width: blockWidth - 110 },
-                 resolution: 2 // Aumentar resolución para texto más nítido
+                 strokeThickness: 2, // Aumentar grosor del borde para mejor definición
+                 wordWrap: { width: blockWidth - 120 }, // Aumentar margen para evitar desbordamiento
+                 resolution: 4, // Aumentar resolución para texto más nítido
+                 padding: { x: 4, y: 4 }, // Aumentar padding para mejor renderizado
+                 smoothed: true // Activar suavizado para mejor calidad
              }).setOrigin(0, 0.5);
 
             block.blockData = data;
@@ -944,7 +950,7 @@ class DroneRepairScene extends Phaser.Scene {
 
         // Ralentizar el timer de infección cuando el usuario progresa
         if (this.currentStep > 0) {
-            this.infectionTimer = Math.max(0, this.infectionTimer - 5000); // Restar 5 segundos por cada comando
+            this.infectionTimer = Math.max(0, this.infectionTimer - 8000); // Restar 8 segundos por cada comando (aumentado para dar más beneficio)
         }
 
         // Actualizar la visualización del código generado con formato IDE
@@ -1247,9 +1253,9 @@ class DroneRepairScene extends Phaser.Scene {
 
     simulateDefenseSystem() {
         this.time.addEvent({
-            delay: 2500,
+            delay: 4000, // Aumentado de 2500 a 4000 para dar más tiempo entre amenazas
             callback: () => {
-                const threat = Math.random() > 0.7;
+                const threat = Math.random() > 0.8; // Cambiado de 0.7 a 0.8 para reducir frecuencia de amenazas
                 if (threat) {
                     this.threatIndicator.setFillStyle(0xff0000);
 
@@ -1334,7 +1340,7 @@ class DroneRepairScene extends Phaser.Scene {
     startMalwareAnimation(x, y, sectionWidth) {
         // Animar malware intentando entrar desde diferentes direcciones
         this.time.addEvent({
-            delay: 2000,
+            delay: 3000, // Aumentado de 2000 a 3000 para dar más tiempo
             callback: () => {
                 if (!this.isInfected) {
                     this.animateMalwareAttack(x, y, sectionWidth);
@@ -1346,7 +1352,7 @@ class DroneRepairScene extends Phaser.Scene {
 
         // Animar virus más agresivos
         this.time.addEvent({
-            delay: 3500,
+            delay: 5000, // Aumentado de 3500 a 5000 para dar más tiempo
             callback: () => {
                 if (!this.isInfected) {
                     this.animateVirusAttack(x, y, sectionWidth);

@@ -196,7 +196,7 @@ class Fallos extends Phaser.Scene {
             align: 'center',
             stroke: '#003366',
             strokeThickness: 2
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setDepth(1000); // Máxima profundidad para aparecer por encima de todo
 
         // Animación simple de carga
         this.tweens.add({
@@ -1019,7 +1019,7 @@ class Fallos extends Phaser.Scene {
         const panelHeight = this.codePanel.displayHeight * panelScale;
 
         const leftOffset = -(panelWidth * 0.32); // Ajustado para el panel más grande
-        const topOffset = -(panelHeight * 0.25); // Ajustado para mejor centrado
+        const topOffset = -(panelHeight * 0.35); // Movido más arriba dentro del panel
         const wrapWidth = panelWidth * 0.7; // Ajustado para el panel más grande
 
         codeLines.forEach((line, index) => {
@@ -1299,7 +1299,7 @@ class Fallos extends Phaser.Scene {
             },
             wordWrap: { width: gameWidth * 0.9 },
             align: 'center'
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setDepth(1000); // Máxima profundidad para aparecer por encima de todo
 
         successText.setAlpha(0);
         this.tweens.add({
@@ -1318,8 +1318,10 @@ class Fallos extends Phaser.Scene {
     }
 
     showIncorrectAnswer(buttonBg, buttonText, gameWidth, gameHeight) {
-        // Create a red rectangle overlay behind the text (since no buttonBg)
-        const redOverlay = this.add.rectangle(buttonText.x, buttonText.y, 200, 40, 0xff0000, 0.8);
+        // Create a red rectangle overlay behind the text with rounded corners
+        const redOverlay = this.add.graphics();
+        redOverlay.fillStyle(0xff0000, 0.8);
+        redOverlay.fillRoundedRect(buttonText.x - 100, buttonText.y - 20, 200, 40, 10);
         redOverlay.setDepth(buttonText.depth - 1);
 
         // Store the red overlay reference in the button object for later removal
@@ -1331,16 +1333,6 @@ class Fallos extends Phaser.Scene {
 
         // Make sure text is above the red overlay
         buttonText.setDepth(redOverlay.depth + 1);
-
-        // Error animation for button text and overlay
-        this.tweens.add({
-            targets: [buttonText, redOverlay],
-            x: buttonText.x + 10,
-            duration: 100,
-            yoyo: true,
-            repeat: 3,
-            ease: 'Power2.easeOut'
-        });
 
         buttonText.setFill('#ffffff'); // Keep text white for better contrast on red background
 
@@ -1360,7 +1352,7 @@ class Fallos extends Phaser.Scene {
             fill: '#ff0000',
             stroke: '#330000',
             strokeThickness: 3
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setDepth(1000); // Máxima profundidad para aparecer por encima de todo
 
         errorText.setAlpha(0);
         this.tweens.add({
