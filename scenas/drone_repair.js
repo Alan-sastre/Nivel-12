@@ -713,13 +713,13 @@ class DroneRepairScene extends Phaser.Scene {
          const containerWidth = this.cameras.main.width * 0.8; // Ajustar ancho del contenedor
          const containerHeight = 90; // Altura adecuada para los bloques
          const startX = this.cameras.main.width / 2; // Centrar horizontalmente
-         const startY = this.cameras.main.height * 0.8; // Subir más para compactar
+         const startY = this.isMobile ? this.cameras.main.height * 0.85 : this.cameras.main.height * 0.8; // Posición más baja en móviles
 
          this.currentOptions.forEach((data, index) => {
-             // Ajustar dimensiones para móviles
-             const blockWidth = this.isMobile ? 240 : 280; // Más pequeño en móviles
-             const blockHeight = this.isMobile ? 75 : 85; // Más compacto en móviles
-             const spacing = this.isMobile ? 250 : 300; // Menos espaciado en móviles
+             // Ajustar dimensiones para móviles - MUCHO MÁS PEQUEÑOS
+             const blockWidth = this.isMobile ? 180 : 280; // Mucho más pequeño en móviles
+             const blockHeight = this.isMobile ? 60 : 85; // Mucho más compacto en móviles
+             const spacing = this.isMobile ? 190 : 300; // Mucho menos espaciado en móviles
              const blockX = startX - spacing + (index * spacing); // Distribución horizontal
              const blockY = startY;
 
@@ -737,34 +737,34 @@ class DroneRepairScene extends Phaser.Scene {
              block.height = blockHeight;
 
              // Icono del bloque más pequeño
-             const icon = this.add.text(blockX - blockWidth/2 + 15, blockY - 5, data.icon, {
-                 fontSize: this.isMobile ? '20px' : '24px', // Más pequeño en móviles
+             const icon = this.add.text(blockX - blockWidth/2 + (this.isMobile ? 10 : 15), blockY - 5, data.icon, {
+                 fontSize: this.isMobile ? '16px' : '24px', // Mucho más pequeño en móviles
                  resolution: 4, // Aumentar resolución para mejor calidad
                  smoothed: true // Activar suavizado para mejor calidad
              });
 
              // Texto principal mejorado para evitar pixelado
-             const text = this.add.text(blockX - blockWidth/2 + 50, blockY - 12, data.text, {
-                 fontSize: this.isMobile ? '11px' : '13px', // Más pequeño en móviles
+             const text = this.add.text(blockX - blockWidth/2 + (this.isMobile ? 35 : 50), blockY - 12, data.text, {
+                 fontSize: this.isMobile ? '9px' : '13px', // Mucho más pequeño en móviles
                  fill: '#ffffff',
                  fontFamily: 'Arial Black, Arial, sans-serif', // Usar Arial Black para mejor renderizado
                  fontStyle: 'bold',
                  stroke: '#000000',
-                 strokeThickness: this.isMobile ? 2 : 3, // Menos grosor en móviles
-                 wordWrap: { width: blockWidth - (this.isMobile ? 100 : 120) }, // Ajustar margen según dispositivo
+                 strokeThickness: this.isMobile ? 1 : 3, // Menos grosor en móviles
+                 wordWrap: { width: blockWidth - (this.isMobile ? 80 : 120) }, // Ajustar margen según dispositivo
                  resolution: 4, // Aumentar resolución para texto más nítido
                  padding: { x: 4, y: 4 }, // Aumentar padding para mejor renderizado
                  smoothed: true // Activar suavizado para mejor calidad
              }).setOrigin(0, 0.5);
 
              // Descripción mejorada para evitar pixelado y superposición
-             const desc = this.add.text(blockX - blockWidth/2 + 50, blockY + 20, data.desc, {
-                 fontSize: this.isMobile ? '9px' : '10px', // Más pequeño en móviles
+             const desc = this.add.text(blockX - blockWidth/2 + (this.isMobile ? 35 : 50), blockY + 20, data.desc, {
+                 fontSize: this.isMobile ? '7px' : '10px', // Mucho más pequeño en móviles
                  fill: '#cccccc', // Cambiar a gris claro para mejor contraste
                  fontFamily: 'Arial, sans-serif', // Cambiar a Arial para mejor renderizado
                  stroke: '#000000',
-                 strokeThickness: this.isMobile ? 1 : 2, // Menos grosor en móviles
-                 wordWrap: { width: blockWidth - (this.isMobile ? 100 : 120) }, // Ajustar margen según dispositivo
+                 strokeThickness: this.isMobile ? 0.5 : 2, // Menos grosor en móviles
+                 wordWrap: { width: blockWidth - (this.isMobile ? 60 : 120) }, // Ajustar margen según dispositivo
                  resolution: 4, // Aumentar resolución para texto más nítido
                  padding: { x: 4, y: 4 }, // Aumentar padding para mejor renderizado
                  smoothed: true // Activar suavizado para mejor calidad
