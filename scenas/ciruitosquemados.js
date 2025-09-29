@@ -17,56 +17,36 @@ class CircuitosQuemados extends Phaser.Scene {
     // Crear fondo mejorado
     this.createEnhancedBackground();
 
-    // Crear efectos de partículas flotantes
-    this.createFloatingParticles();
+    // Crear efectos ambientales (reducidos para mejor rendimiento)
+    // this.createFloatingParticles(); // REMOVIDO: causaba neblina de colores y lentitud
 
-    // Crear efectos ambientales
-    this.createAmbientEffects();
+    // Crear efectos ambientales (reducidos para mejor rendimiento)
+    // this.createAmbientEffects(); // REMOVIDO: causaba efectos de neblina adicionales
 
-    // Crear efectos de chispas
-    this.createSparkEffects();
+    // Crear efectos de chispas (reducidos para mejor rendimiento)
+    // this.createSparkEffects(); // REMOVIDO: causaba efectos adicionales de partículas
 
-    // Título principal con animación (ajustado para móviles)
-    const titleSize = this.isMobile ? '28px' : '36px';
-    const titleY = this.isMobile ? 40 : 50;
-
-    const mainTitle = this.add.text(this.cameras.main.centerX, titleY, '⚡ SISTEMAS DAÑADOS ⚡', {
-      fontSize: titleSize,
+    // Título principal con animación - RESTAURADO AL ORIGINAL
+    const mainTitle = this.add.text(this.cameras.main.centerX, 80, '⚡ SISTEMAS DAÑADOS ⚡', {
+      fontSize: this.isMobile ? '20px' : '28px',
       fontFamily: 'Arial Black',
       fill: '#ffffff',
-      stroke: '#000000',
-      strokeThickness: 4
+      stroke: '#ff6b6b',
+      strokeThickness: 2,
+      shadow: {
+        offsetX: 2,
+        offsetY: 2,
+        color: '#000000',
+        blur: 4,
+        fill: true
+      }
     }).setOrigin(0.5);
 
-    // Animación del título
+    // Animación del título original
     this.tweens.add({
       targets: mainTitle,
-      alpha: { from: 0.7, to: 1 },
-      duration: 2000,
-      yoyo: true,
-      repeat: -1,
-      ease: 'Power2'
-    });
-
-    // Subtítulo (ajustado para móviles)
-    const subtitleSize = this.isMobile ? '14px' : '18px';
-    const subtitleY = this.isMobile ? 70 : 100;
-
-    const subtitle = this.add.text(this.cameras.main.centerX, subtitleY, '', {
-      fontSize: subtitleSize,
-      fontFamily: 'Arial',
-      fill: '#74b9ff',
-      align: 'center'
-    }).setOrigin(0.5);
-
-    // Línea decorativa
-    const decorativeLine = this.add.graphics()
-      .lineStyle(3, 0x74b9ff, 0.8)
-      .lineBetween(this.cameras.main.centerX - 200, 140, this.cameras.main.centerX + 200, 140);
-
-    this.tweens.add({
-      targets: decorativeLine,
-      alpha: { from: 0.5, to: 1 },
+      scaleX: { from: 1, to: 1.05 },
+      scaleY: { from: 1, to: 1.05 },
       duration: 1500,
       yoyo: true,
       repeat: -1,
@@ -99,6 +79,10 @@ class CircuitosQuemados extends Phaser.Scene {
     // Si ya hay un modal abierto, cerrarlo primero
     if (this.currentModal) {
       this.closeModal();
+      // Esperar un poco antes de crear el nuevo modal para evitar conflictos
+      this.time.delayedCall(350, () => {
+        this.createModal(systemType, systemData);
+      });
       return;
     }
 
@@ -111,9 +95,9 @@ class CircuitosQuemados extends Phaser.Scene {
       .setInteractive()
       .on('pointerdown', () => this.closeModal());
 
-    // Dimensiones del modal adaptadas para móviles
-    const modalWidth = this.isMobile ? this.cameras.main.width - 40 : 600;
-    const modalHeight = this.isMobile ? this.cameras.main.height - 100 : 500;
+    // Dimensiones del modal mejoradas y centradas
+    const modalWidth = this.isMobile ? this.cameras.main.width - 60 : 700;
+    const modalHeight = this.isMobile ? this.cameras.main.height - 120 : 550;
     const modalX = this.cameras.main.centerX;
     const modalY = this.cameras.main.centerY;
 
@@ -174,38 +158,21 @@ class CircuitosQuemados extends Phaser.Scene {
       fill: '#ffffff'
     }).setOrigin(0.5);
 
-    // Título del modal
-    const titleSize = this.isMobile ? '24px' : '28px';
-    const modalTitle = this.add.text(modalX, modalY - modalHeight/2 + 60, `🔧 SISTEMA ${systemType.toUpperCase()}`, {
-      fontSize: titleSize,
-      fontFamily: 'Arial Black',
-      fill: '#ffffff',
-      stroke: '#2c3e50',
-      strokeThickness: 3
-    }).setOrigin(0.5);
+    // Título del modal eliminado para interfaz más limpia
 
-    // Subtítulo
-    const subtitleSize = this.isMobile ? '14px' : '16px';
-    const modalSubtitle = this.add.text(modalX, modalY - modalHeight/2 + 95, systemData.subtitle, {
-      fontSize: subtitleSize,
-      fontFamily: 'Arial',
-      fill: '#74b9ff',
-      fontStyle: 'italic'
-    }).setOrigin(0.5);
-
-    // Línea decorativa
+    // Línea decorativa - POSICIÓN MEJORADA
     const decorLine = this.add.graphics()
-      .lineStyle(3, 0x74b9ff, 0.8)
-      .lineBetween(modalX - 150, modalY - modalHeight/2 + 115, modalX + 150, modalY - modalHeight/2 + 115);
+      .lineStyle(2, 0x74b9ff, 0.8)
+      .lineBetween(modalX - 120, modalY - modalHeight/2 + 95, modalX + 120, modalY - modalHeight/2 + 95);
 
-    // Contenido específico del sistema
-    const contentContainer = this.add.container(modalX, modalY - modalHeight/2 + 160);
+    // Contenido específico del sistema - POSICIÓN MEJORADA
+    const contentContainer = this.add.container(modalX, modalY - modalHeight/2 + 130);
     this.createModalContent(systemType, contentContainer, modalWidth, modalHeight);
 
     // Agregar todos los elementos al contenedor del modal
     this.modalContainer.add([
       overlay, modalBg, modalGlow, closeButton, closeText,
-      modalTitle, modalSubtitle, decorLine, contentContainer
+      decorLine, contentContainer
     ]);
 
     // Animación de entrada del modal (REMOVIDA)
@@ -1395,6 +1362,9 @@ class CircuitosQuemados extends Phaser.Scene {
   closeModal() {
     if (!this.modalContainer) return;
 
+    // Detener todas las animaciones del modal container antes de destruirlo
+    this.tweens.killTweensOf(this.modalContainer);
+
     // Animación de salida
     this.tweens.add({
       targets: this.modalContainer,
@@ -1404,8 +1374,10 @@ class CircuitosQuemados extends Phaser.Scene {
       duration: 300,
       ease: 'Power2.easeIn',
       onComplete: () => {
-        this.modalContainer.destroy();
-        this.modalContainer = null;
+        if (this.modalContainer) {
+          this.modalContainer.destroy();
+          this.modalContainer = null;
+        }
         this.currentModal = null;
       }
     });
@@ -1461,7 +1433,7 @@ class CircuitosQuemados extends Phaser.Scene {
     }
 
     // Crear efectos de humo
-    this.createSmokeEffects();
+    // this.createSmokeEffects(); // REMOVIDO: causaba efectos de niebla
 
     // Crear líneas de energía
     this.createEnergyLines();
@@ -1640,20 +1612,21 @@ class CircuitosQuemados extends Phaser.Scene {
     // Inicializar array de cuadros de circuitos
     this.circuitBoxes = [];
 
-    // Ajustar posiciones según el dispositivo - centrados más hacia el medio
+    // Posiciones con mejor espaciado
     const centerX = this.cameras.main.centerX;
     const centerY = this.cameras.main.centerY;
 
+    // Posiciones con más espacio entre estaciones
     const boxes = this.isMobile ? [
-      { title: 'ROBÓTICA', subtitle: 'Sistemas de movimiento', x: centerX - 120, y: centerY - 60, icon: '🤖' },
-      { title: 'IA', subtitle: 'Inteligencia artificial', x: centerX + 120, y: centerY - 60, icon: '🧠' },
-      { title: 'MEMORIA', subtitle: 'Almacenamiento de datos', x: centerX - 120, y: centerY + 80, icon: '💾' },
-      { title: 'SECUENCIA', subtitle: 'Lógica de programación', x: centerX + 120, y: centerY + 80, icon: '⚡' }
+      { title: 'ROBÓTICA', subtitle: 'Sistemas de movimiento', x: centerX - 140, y: centerY - 50, icon: '🤖' },
+      { title: 'IA', subtitle: 'Inteligencia artificial', x: centerX + 140, y: centerY - 50, icon: '🧠' },
+      { title: 'MEMORIA', subtitle: 'Almacenamiento de datos', x: centerX - 140, y: centerY + 90, icon: '💾' },
+      { title: 'SECUENCIA', subtitle: 'Lógica de programación', x: centerX + 140, y: centerY + 90, icon: '⚡' }
     ] : [
-      { title: 'ROBÓTICA', subtitle: 'Sistemas de movimiento', x: centerX - 150, y: centerY - 80, icon: '🤖' },
-      { title: 'IA', subtitle: 'Inteligencia artificial', x: centerX + 150, y: centerY - 80, icon: '🧠' },
-      { title: 'MEMORIA', subtitle: 'Almacenamiento de datos', x: centerX - 150, y: centerY + 100, icon: '💾' },
-      { title: 'SECUENCIA', subtitle: 'Lógica de programación', x: centerX + 150, y: centerY + 100, icon: '⚡' }
+      { title: 'ROBÓTICA', subtitle: 'Sistemas de movimiento', x: centerX - 220, y: centerY - 70, icon: '🤖' },
+      { title: 'IA', subtitle: 'Inteligencia artificial', x: centerX + 220, y: centerY - 70, icon: '🧠' },
+      { title: 'MEMORIA', subtitle: 'Almacenamiento de datos', x: centerX - 220, y: centerY + 100, icon: '💾' },
+      { title: 'SECUENCIA', subtitle: 'Lógica de programación', x: centerX + 220, y: centerY + 100, icon: '⚡' }
     ];
 
     boxes.forEach((boxData, index) => {
@@ -2196,11 +2169,13 @@ class CircuitosQuemados extends Phaser.Scene {
     const maxClicks = 5;
 
     circuitBox.statusText.setText('REPARANDO...');
-    circuitBox.statusBg.clear()
-      .fillGradientStyle(0xf39c12, 0xe67e22, 0xf39c12, 0xe67e22, 0.3)
-      .fillRoundedRect(-95, 35, 120, 22, 11)
-      .lineStyle(2, 0xf39c12, 0.9)
-      .strokeRoundedRect(-95, 35, 120, 22, 11);
+    if (circuitBox.statusBg) {
+      circuitBox.statusBg.clear()
+        .fillGradientStyle(0xf39c12, 0xe67e22, 0xf39c12, 0xe67e22, 0.3)
+        .fillRoundedRect(-95, 35, 120, 22, 11)
+        .lineStyle(2, 0xf39c12, 0.9)
+        .strokeRoundedRect(-95, 35, 120, 22, 11);
+    }
 
     const clickHandler = () => {
       clickCount++;
@@ -2230,11 +2205,13 @@ class CircuitosQuemados extends Phaser.Scene {
     let progress = 0;
 
     circuitBox.statusText.setText('PROCESANDO...');
-    circuitBox.statusBg.clear()
-      .fillGradientStyle(0xf39c12, 0xe67e22, 0xf39c12, 0xe67e22, 0.3)
-      .fillRoundedRect(-95, 35, 120, 22, 11)
-      .lineStyle(2, 0xf39c12, 0.9)
-      .strokeRoundedRect(-95, 35, 120, 22, 11);
+    if (circuitBox.statusBg) {
+      circuitBox.statusBg.clear()
+        .fillGradientStyle(0xf39c12, 0xe67e22, 0xf39c12, 0xe67e22, 0.3)
+        .fillRoundedRect(-95, 35, 120, 22, 11)
+        .lineStyle(2, 0xf39c12, 0.9)
+        .strokeRoundedRect(-95, 35, 120, 22, 11);
+    }
 
     const progressTimer = this.time.addEvent({
       delay: 100,
@@ -2242,9 +2219,11 @@ class CircuitosQuemados extends Phaser.Scene {
         progress += 2;
         const width = (progress / 100) * 120;
 
-        circuitBox.progressFill.clear()
-          .fillStyle(0x00d4ff, 1)
-          .fillRoundedRect(-90, 60, width, 10, 5);
+        if (circuitBox.progressFill) {
+          circuitBox.progressFill.clear()
+            .fillStyle(0x00d4ff, 1)
+            .fillRoundedRect(-90, 60, width, 10, 5);
+        }
 
         circuitBox.progressText.setText(progress + '%');
 
@@ -2273,11 +2252,13 @@ class CircuitosQuemados extends Phaser.Scene {
     }
 
     circuitBox.statusText.setText('MATRIZ NEURAL...');
-    circuitBox.statusBg.clear()
-      .fillGradientStyle(0x0a1428, 0x1a2332, 0x0f1b2d, 0x243447, 0.95)
-      .fillRoundedRect(-95, 35, 120, 22, 11)
-      .lineStyle(2, 0x00ccff, 0.9)
-      .strokeRoundedRect(-95, 35, 120, 22, 11);
+    if (circuitBox.statusBg) {
+      circuitBox.statusBg.clear()
+        .fillGradientStyle(0x0a1428, 0x1a2332, 0x0f1b2d, 0x243447, 0.95)
+        .fillRoundedRect(-95, 35, 120, 22, 11)
+        .lineStyle(2, 0x00ccff, 0.9)
+        .strokeRoundedRect(-95, 35, 120, 22, 11);
+    }
 
     // Crear botones de colores con diseño futurista mejorado
     const colorButtons = [];
@@ -2516,11 +2497,13 @@ class CircuitosQuemados extends Phaser.Scene {
     let currentOrder = [...numbers];
 
     circuitBox.statusText.setText('ORDENA 1-4');
-    circuitBox.statusBg.clear()
-      .fillGradientStyle(0xf39c12, 0xe67e22, 0xf39c12, 0xe67e22, 0.3)
-      .fillRoundedRect(-95, 35, 120, 22, 11)
-      .lineStyle(2, 0xf39c12, 0.9)
-      .strokeRoundedRect(-95, 35, 120, 22, 11);
+    if (circuitBox.statusBg) {
+      circuitBox.statusBg.clear()
+        .fillGradientStyle(0xf39c12, 0xe67e22, 0xf39c12, 0xe67e22, 0.3)
+        .fillRoundedRect(-95, 35, 120, 22, 11)
+        .lineStyle(2, 0xf39c12, 0.9)
+        .strokeRoundedRect(-95, 35, 120, 22, 11);
+    }
 
     // Crear botones de números
     const numberButtons = [];
@@ -2586,16 +2569,20 @@ class CircuitosQuemados extends Phaser.Scene {
 
     // Cambiar estado a reparado
     circuitBox.statusText.setText('REPARADO');
-    circuitBox.statusBg.clear()
-      .fillGradientStyle(0x27ae60, 0x2ecc71, 0x27ae60, 0x2ecc71, 0.3)
-      .fillRoundedRect(-95, 35, 120, 22, 11)
-      .lineStyle(2, 0x27ae60, 0.9)
-      .strokeRoundedRect(-95, 35, 120, 22, 11);
+    if (circuitBox.statusBg) {
+      circuitBox.statusBg.clear()
+        .fillGradientStyle(0x27ae60, 0x2ecc71, 0x27ae60, 0x2ecc71, 0.3)
+        .fillRoundedRect(-95, 35, 120, 22, 11)
+        .lineStyle(2, 0x27ae60, 0.9)
+        .strokeRoundedRect(-95, 35, 120, 22, 11);
+    }
 
     // Cambiar color del brillo
-    circuitBox.glowEffect.clear()
-      .lineStyle(4, 0x00ff88, 0.8)
-      .strokeRoundedRect(-115, -75, 230, 150, 18);
+    if (circuitBox.glowEffect) {
+      circuitBox.glowEffect.clear()
+        .lineStyle(4, 0x00ff88, 0.8)
+        .strokeRoundedRect(-115, -75, 230, 150, 18);
+    }
 
     // Efecto de éxito
     this.tweens.add({
@@ -3104,16 +3091,6 @@ class CircuitosQuemados extends Phaser.Scene {
   }
 
   createRoboticsGameContent(container, width, isMobile, systemIndex) {
-    // Título del juego con efecto de gradiente
-    const title = this.add.text(0, -140, '🤖 QUIZ DE ROBÓTICA', {
-      fontSize: isMobile ? '20px' : '26px',
-      fontFamily: 'Arial Black',
-      fill: '#00d4ff',
-      align: 'center',
-      stroke: '#003d5c',
-      strokeThickness: 2
-    }).setOrigin(0.5);
-    container.add(title);
 
     // Preguntas y respuestas de robótica
     const questions = [
@@ -3137,21 +3114,21 @@ class CircuitosQuemados extends Phaser.Scene {
     let currentQuestion = 0;
     let correctAnswers = 0;
 
-    // Contenedor de la pregunta con diseño mejorado
+    // Contenedor de la pregunta con diseño mejorado - POSICIÓN CENTRADA Y OPTIMIZADA
     const questionBg = this.add.graphics()
       .fillStyle(0x1a252f, 0.95)
-      .fillRoundedRect(-width/2 + 30, -100, width - 60, 80, 15)
+      .fillRoundedRect(-width/2 + 30, -80, width - 60, 90, 15)
       .lineStyle(3, 0x00d4ff, 0.8)
-      .strokeRoundedRect(-width/2 + 30, -100, width - 60, 80, 15);
+      .strokeRoundedRect(-width/2 + 30, -80, width - 60, 90, 15);
 
-    // Efecto de brillo en el borde
+    // Efecto de brillo en el borde - POSICIÓN CENTRADA Y OPTIMIZADA
     const glowEffect = this.add.graphics()
       .lineStyle(1, 0x74b9ff, 0.4)
-      .strokeRoundedRect(-width/2 + 28, -102, width - 56, 84, 17);
+      .strokeRoundedRect(-width/2 + 28, -82, width - 56, 94, 17);
 
     container.add([questionBg, glowEffect]);
 
-    const questionText = this.add.text(0, -60, '', {
+    const questionText = this.add.text(0, -35, '', {
       fontSize: isMobile ? '13px' : '15px',
       fontFamily: 'Arial Bold',
       fill: '#ffffff',
@@ -3165,7 +3142,7 @@ class CircuitosQuemados extends Phaser.Scene {
     const optionTexts = [];
 
     for (let i = 0; i < 4; i++) {
-      const yPos = 20 + (i * 45);
+      const yPos = 30 + (i * 50);
 
       // Fondo de opción con gradiente visual
       const optionBg = this.add.graphics()
@@ -3193,21 +3170,25 @@ class CircuitosQuemados extends Phaser.Scene {
       // Efectos de hover mejorados
       optionButton.on('pointerover', () => {
         hoverEffect.setVisible(true);
-        optionBg.clear()
-          .fillStyle(0x34495e, 0.9)
-          .fillRoundedRect(-width/2 + 40, yPos - 15, width - 80, 35, 10)
-          .lineStyle(2, 0x00d4ff, 0.8)
-          .strokeRoundedRect(-width/2 + 40, yPos - 15, width - 80, 35, 10);
+        if (optionBg && optionBg.clear) {
+          optionBg.clear()
+            .fillStyle(0x34495e, 0.9)
+            .fillRoundedRect(-width/2 + 40, yPos - 15, width - 80, 35, 10)
+            .lineStyle(2, 0x00d4ff, 0.8)
+            .strokeRoundedRect(-width/2 + 40, yPos - 15, width - 80, 35, 10);
+        }
         optionText.setTint(0x00d4ff);
       });
 
       optionButton.on('pointerout', () => {
         hoverEffect.setVisible(false);
-        optionBg.clear()
-          .fillStyle(0x2c3e50, 0.9)
-          .fillRoundedRect(-width/2 + 40, yPos - 15, width - 80, 35, 10)
-          .lineStyle(2, 0x3498db, 0.6)
-          .strokeRoundedRect(-width/2 + 40, yPos - 15, width - 80, 35, 10);
+        if (optionBg && optionBg.clear) {
+          optionBg.clear()
+            .fillStyle(0x2c3e50, 0.9)
+            .fillRoundedRect(-width/2 + 40, yPos - 15, width - 80, 35, 10)
+            .lineStyle(2, 0x3498db, 0.6)
+            .strokeRoundedRect(-width/2 + 40, yPos - 15, width - 80, 35, 10);
+        }
         optionText.clearTint();
       });
 
@@ -3244,11 +3225,13 @@ class CircuitosQuemados extends Phaser.Scene {
         correctAnswers++;
 
         // Efecto de respuesta correcta
-        optionButtons[selectedIndex].bg.clear()
-          .fillStyle(0x27ae60, 0.9)
-          .fillRoundedRect(-width/2 + 40, 20 + (selectedIndex * 45) - 15, width - 80, 35, 10)
-          .lineStyle(2, 0x2ecc71, 1)
-          .strokeRoundedRect(-width/2 + 40, 20 + (selectedIndex * 45) - 15, width - 80, 35, 10);
+        if (optionButtons[selectedIndex].bg && optionButtons[selectedIndex].bg.clear) {
+          optionButtons[selectedIndex].bg.clear()
+            .fillStyle(0x27ae60, 0.9)
+            .fillRoundedRect(-width/2 + 40, 20 + (selectedIndex * 45) - 15, width - 80, 35, 10)
+            .lineStyle(2, 0x2ecc71, 1)
+            .strokeRoundedRect(-width/2 + 40, 20 + (selectedIndex * 45) - 15, width - 80, 35, 10);
+        }
         optionButtons[selectedIndex].text.setTint(0x2ecc71);
 
         // Mostrar mensaje de éxito
@@ -3273,11 +3256,13 @@ class CircuitosQuemados extends Phaser.Scene {
             // Resetear colores y reactivar botones
             optionButtons.forEach((opt, index) => {
               const yPos = 20 + (index * 45);
-              opt.bg.clear()
-                .fillStyle(0x2c3e50, 0.9)
-                .fillRoundedRect(-width/2 + 40, yPos - 15, width - 80, 35, 10)
-                .lineStyle(2, 0x3498db, 0.6)
-                .strokeRoundedRect(-width/2 + 40, yPos - 15, width - 80, 35, 10);
+              if (opt.bg && opt.bg.clear) {
+                opt.bg.clear()
+                  .fillStyle(0x2c3e50, 0.9)
+                  .fillRoundedRect(-width/2 + 40, yPos - 15, width - 80, 35, 10)
+                  .lineStyle(2, 0x3498db, 0.6)
+                  .strokeRoundedRect(-width/2 + 40, yPos - 15, width - 80, 35, 10);
+              }
               opt.text.clearTint();
 
               // Reactivar el botón
@@ -3343,11 +3328,13 @@ class CircuitosQuemados extends Phaser.Scene {
         incorrectOptions.add(selectedIndex);
 
         // Efecto de respuesta incorrecta - mantener rojo
-        optionButtons[selectedIndex].bg.clear()
-          .fillStyle(0xe74c3c, 0.9)
-          .fillRoundedRect(-width/2 + 40, 20 + (selectedIndex * 45) - 15, width - 80, 35, 10)
-          .lineStyle(2, 0xc0392b, 1)
-          .strokeRoundedRect(-width/2 + 40, 20 + (selectedIndex * 45) - 15, width - 80, 35, 10);
+        if (optionButtons[selectedIndex].bg && optionButtons[selectedIndex].bg.clear) {
+          optionButtons[selectedIndex].bg.clear()
+            .fillStyle(0xe74c3c, 0.9)
+            .fillRoundedRect(-width/2 + 40, 20 + (selectedIndex * 45) - 15, width - 80, 35, 10)
+            .lineStyle(2, 0xc0392b, 1)
+            .strokeRoundedRect(-width/2 + 40, 20 + (selectedIndex * 45) - 15, width - 80, 35, 10);
+        }
         optionButtons[selectedIndex].text.setTint(0xe74c3c);
 
         // Desactivar solo el botón incorrecto
@@ -3404,33 +3391,22 @@ class CircuitosQuemados extends Phaser.Scene {
   }
 
   createAIGameContent(container, width, isMobile, systemIndex) {
-    // Título del juego con efecto mejorado
-    const title = this.add.text(0, -140, '🧠 SISTEMA DE IA', {
-      fontSize: isMobile ? '20px' : '26px',
-      fontFamily: 'Arial Black',
-      fill: '#00d4ff',
-      align: 'center',
-      stroke: '#003d5c',
-      strokeThickness: 2
-    }).setOrigin(0.5);
-    container.add(title);
-
-    // Contenedor de información con diseño mejorado
+    // Contenedor de información con diseño mejorado - POSICIÓN CENTRADA Y OPTIMIZADA
     const infoBg = this.add.graphics()
       .fillStyle(0x1a252f, 0.95)
-      .fillRoundedRect(-width/2 + 30, -110, width - 60, 60, 15)
+      .fillRoundedRect(-width/2 + 30, -80, width - 60, 70, 15)
       .lineStyle(3, 0x9b59b6, 0.8)
-      .strokeRoundedRect(-width/2 + 30, -110, width - 60, 60, 15);
+      .strokeRoundedRect(-width/2 + 30, -80, width - 60, 70, 15);
 
-    // Efecto de brillo
+    // Efecto de brillo - POSICIÓN CENTRADA Y OPTIMIZADA
     const glowEffect = this.add.graphics()
       .lineStyle(1, 0xd63031, 0.4)
-      .strokeRoundedRect(-width/2 + 28, -112, width - 56, 64, 17);
+      .strokeRoundedRect(-width/2 + 28, -82, width - 56, 74, 17);
 
     container.add([infoBg, glowEffect]);
 
-    // Descripción del proceso
-    const description = this.add.text(0, -80, 'La IA está analizando patrones de datos\ny optimizando algoritmos automáticamente', {
+    // Descripción del proceso - POSICIÓN CENTRADA Y OPTIMIZADA
+    const description = this.add.text(0, -45, 'La IA está analizando patrones de datos\ny optimizando algoritmos automáticamente', {
       fontSize: isMobile ? '12px' : '14px',
       fontFamily: 'Arial',
       fill: '#ffffff',
@@ -3441,55 +3417,56 @@ class CircuitosQuemados extends Phaser.Scene {
     // Estado del procesamiento con diseño mejorado
     const statusBg = this.add.graphics()
       .fillStyle(0x2c3e50, 0.9)
-      .fillRoundedRect(-width/2 + 40, -35, width - 80, 30, 10)
+      .fillRoundedRect(-width/2 + 40, 15, width - 80, 25, 10)
       .lineStyle(2, 0xf39c12, 0.8)
-      .strokeRoundedRect(-width/2 + 40, -35, width - 80, 30, 10);
+      .strokeRoundedRect(-width/2 + 40, 15, width - 80, 25, 10);
     container.add(statusBg);
 
-    const statusText = this.add.text(0, -20, 'PROCESANDO...', {
-      fontSize: isMobile ? '14px' : '16px',
+    const statusText = this.add.text(0, 27, 'PROCESANDO...', {
+      fontSize: isMobile ? '13px' : '15px',
       fontFamily: 'Arial Bold',
       fill: '#f39c12'
     }).setOrigin(0.5);
     container.add(statusText);
 
-    // Barra de progreso con diseño mejorado
+    // Barra de progreso con diseño mejorado y mejor posicionamiento
     const progressContainer = this.add.graphics()
       .fillStyle(0x34495e, 0.8)
-      .fillRoundedRect(-125, 15, 250, 25, 12)
+      .fillRoundedRect(-120, 50, 240, 25, 12)
       .lineStyle(2, 0x00d4ff, 0.6)
-      .strokeRoundedRect(-125, 15, 250, 25, 12);
+      .strokeRoundedRect(-120, 50, 240, 25, 12);
     container.add(progressContainer);
 
     const progressFill = this.add.graphics();
     container.add(progressFill);
 
-    const progressText = this.add.text(0, 27, '0%', {
+    const progressText = this.add.text(0, 62, '0%', {
       fontSize: '14px',
       fontFamily: 'Arial Bold',
       fill: '#ffffff'
     }).setOrigin(0.5);
     container.add(progressText);
 
-    // Indicador de actividad de IA mejorado
+    // Indicador de actividad de IA mejorado con mejor posición
     const aiContainer = this.add.graphics()
       .fillStyle(0x3498db, 0.2)
-      .fillCircle(0, 70, 35)
+      .fillCircle(0, 100, 35)
       .lineStyle(3, 0x74b9ff, 0.8)
-      .strokeCircle(0, 70, 35);
+      .strokeCircle(0, 100, 35);
     container.add(aiContainer);
 
-    const aiText = this.add.text(0, 70, '🧠', {
+    const aiText = this.add.text(0, 100, '🧠', {
       fontSize: '28px'
     }).setOrigin(0.5);
     container.add(aiText);
 
-    // Partículas de procesamiento
+    // Partículas de procesamiento con mejor distribución
     const particles = [];
     for (let i = 0; i < 6; i++) {
+      const angle = (i * Math.PI * 2) / 6;
       const particle = this.add.circle(
-        Math.cos(i * Math.PI / 3) * 50,
-        70 + Math.sin(i * Math.PI / 3) * 50,
+        Math.cos(angle) * 50,
+        100 + Math.sin(angle) * 50,
         3,
         0x00d4ff,
         0.8
@@ -3536,21 +3513,26 @@ class CircuitosQuemados extends Phaser.Scene {
         progress += Math.random() * 3 + 1;
         if (progress > 100) progress = 100;
 
-        // Actualizar barra de progreso con gradiente
-        progressFill.clear();
-        const fillWidth = (progress / 100) * 246;
-        progressFill.fillGradientStyle(0x00d4ff, 0x74b9ff, 0x0984e3, 0x6c5ce7, 1);
-        progressFill.fillRoundedRect(-123, 17, fillWidth, 21, 10);
+        // Actualizar barra de progreso con gradiente mejorado y mejor posicionamiento
+        if (progressFill) {
+          progressFill.clear();
+          const fillWidth = (progress / 100) * 236; // Ajustado para la nueva barra (240-4 para padding)
+          progressFill.fillGradientStyle(0x00d4ff, 0x74b9ff, 0x0984e3, 0x6c5ce7, 1);
+          progressFill.fillRoundedRect(-118, 52, fillWidth, 21, 10); // Ajustado para coincidir con el nuevo tamaño
+        }
 
         progressText.setText(`${Math.floor(progress)}%`);
 
-        // Cambiar color del texto según progreso
+        // Cambiar color del texto según progreso con colores más vibrantes
         if (progress < 30) {
           statusText.setTint(0xf39c12);
+          statusText.setText('PROCESANDO...');
         } else if (progress < 70) {
           statusText.setTint(0xe17055);
+          statusText.setText('ANALIZANDO...');
         } else {
           statusText.setTint(0x00b894);
+          statusText.setText('OPTIMIZANDO...');
         }
 
         if (progress >= 100) {
@@ -3558,14 +3540,24 @@ class CircuitosQuemados extends Phaser.Scene {
           statusText.setText('¡PROCESAMIENTO COMPLETO!');
           statusText.setTint(0x00b894);
 
-          // Efecto de finalización
+          // Efecto de finalización mejorado
           this.tweens.add({
             targets: [aiContainer, aiText],
-            scaleX: 1.3,
-            scaleY: 1.3,
-            duration: 300,
+            scaleX: 1.4,
+            scaleY: 1.4,
+            duration: 400,
             yoyo: true,
             ease: 'Back.easeOut'
+          });
+
+          // Efecto de brillo en la barra de progreso completada
+          this.tweens.add({
+            targets: progressContainer,
+            alpha: 0.5,
+            duration: 200,
+            yoyo: true,
+            repeat: 3,
+            ease: 'Sine.easeInOut'
           });
 
           // Completar reparación
@@ -3580,26 +3572,9 @@ class CircuitosQuemados extends Phaser.Scene {
   }
 
   createMemoryGameContent(container, width, isMobile, systemIndex) {
-    // Título principal único
-    const title = this.add.text(0, -120, '', {
-      fontSize: isMobile ? '20px' : '26px',
-      fontFamily: 'Orbitron, monospace',
-      fill: '#00ff88',
-      align: 'center',
-      stroke: '#003d29',
-      strokeThickness: 3,
-      shadow: {
-        offsetX: 2,
-        offsetY: 2,
-        color: '#00ff88',
-        blur: 8,
-        fill: true
-      }
-    }).setOrigin(0.5);
-    container.add(title);
 
-    // Estado del juego único
-    const statusText = this.add.text(0, -80, 'REPITE LA SECUENCIA', {
+    // Estado del juego único - POSICIÓN CENTRADA Y OPTIMIZADA
+    const statusText = this.add.text(0, -40, 'REPITE LA SECUENCIA', {
       fontSize: isMobile ? '16px' : '18px',
       fontFamily: 'Arial, sans-serif',
       fill: '#4ecdc4',
@@ -3627,7 +3602,7 @@ class CircuitosQuemados extends Phaser.Scene {
 
     for (let i = 0; i < 4; i++) {
       const x = startX + (i * buttonSpacing);
-      const y = -20;
+      const y = 10;
 
       // Fondo del botón con efecto de profundidad
       const buttonBg = this.add.graphics()
@@ -3740,33 +3715,22 @@ class CircuitosQuemados extends Phaser.Scene {
   }
 
   createSequenceGameContent(container, width, isMobile, systemIndex) {
-    // Título del juego con efecto mejorado
-    const title = this.add.text(0, -140, '⚡ SISTEMA DE SECUENCIA', {
-      fontSize: isMobile ? '20px' : '26px',
-      fontFamily: 'Arial Black',
-      fill: '#9b59b6',
-      align: 'center',
-      stroke: '#4a148c',
-      strokeThickness: 2
-    }).setOrigin(0.5);
-    container.add(title);
-
-    // Contenedor de información con diseño mejorado
+    // Contenedor de información con diseño mejorado - POSICIÓN CENTRADA Y OPTIMIZADA
     const infoBg = this.add.graphics()
       .fillStyle(0x1a0d2e, 0.95)
-      .fillRoundedRect(-width/2 + 30, -110, width - 60, 60, 15)
+      .fillRoundedRect(-width/2 + 30, -90, width - 60, 70, 15)
       .lineStyle(3, 0x9b59b6, 0.8)
-      .strokeRoundedRect(-width/2 + 30, -110, width - 60, 60, 15);
+      .strokeRoundedRect(-width/2 + 30, -90, width - 60, 70, 15);
 
-    // Efecto de brillo
+    // Efecto de brillo - POSICIÓN CENTRADA Y OPTIMIZADA
     const glowEffect = this.add.graphics()
       .lineStyle(1, 0xd63031, 0.4)
-      .strokeRoundedRect(-width/2 + 28, -112, width - 56, 64, 17);
+      .strokeRoundedRect(-width/2 + 28, -92, width - 56, 74, 17);
 
     container.add([infoBg, glowEffect]);
 
-    // Descripción del juego
-    const description = this.add.text(0, -80, 'Conecta los nodos en el orden correcto\npara restablecer la secuencia', {
+    // Descripción del juego - POSICIÓN CENTRADA Y OPTIMIZADA
+    const description = this.add.text(0, -55, 'Conecta los nodos en el orden correcto\npara restablecer la secuencia', {
       fontSize: isMobile ? '12px' : '14px',
       fontFamily: 'Arial',
       fill: '#ffffff',
@@ -3777,12 +3741,12 @@ class CircuitosQuemados extends Phaser.Scene {
     // Estado del juego con diseño mejorado
     const statusBg = this.add.graphics()
       .fillStyle(0x2c3e50, 0.9)
-      .fillRoundedRect(-width/2 + 40, -35, width - 80, 30, 10)
+      .fillRoundedRect(-width/2 + 40, -5, width - 80, 30, 10)
       .lineStyle(2, 0xf39c12, 0.8)
-      .strokeRoundedRect(-width/2 + 40, -35, width - 80, 30, 10);
+      .strokeRoundedRect(-width/2 + 40, -5, width - 80, 30, 10);
     container.add(statusBg);
 
-    const statusText = this.add.text(0, -20, 'CONECTA LOS NODOS', {
+    const statusText = this.add.text(0, 10, 'CONECTA LOS NODOS', {
       fontSize: isMobile ? '14px' : '16px',
       fontFamily: 'Arial Bold',
       fill: '#f39c12'
@@ -3797,19 +3761,19 @@ class CircuitosQuemados extends Phaser.Scene {
     // Contenedor para los nodos con diseño mejorado
     const nodeContainer = this.add.graphics()
       .fillStyle(0x1a252f, 0.8)
-      .fillRoundedRect(-140, 10, 280, 120, 15)
+      .fillRoundedRect(-140, 50, 280, 120, 15)
       .lineStyle(2, 0x636e72, 0.6)
-      .strokeRoundedRect(-140, 10, 280, 120, 15);
+      .strokeRoundedRect(-140, 50, 280, 120, 15);
     container.add(nodeContainer);
 
     // Crear nodos con diseño mejorado
     const nodes = [];
     const nodeNumbers = [];
     const nodePositions = [
-      { x: -80, y: 40 },
-      { x: 80, y: 40 },
-      { x: -80, y: 90 },
-      { x: 80, y: 90 }
+      { x: -80, y: 80 },
+      { x: 80, y: 80 },
+      { x: -80, y: 130 },
+      { x: 80, y: 130 }
     ];
 
     for (let i = 0; i < 4; i++) {
@@ -4015,13 +3979,13 @@ class CircuitosQuemados extends Phaser.Scene {
     // Contenedor para la pista con diseño mejorado
     const hintBg = this.add.graphics()
       .fillStyle(0x34495e, 0.8)
-      .fillRoundedRect(-100, 140, 200, 30, 10)
+      .fillRoundedRect(-100, 200, 200, 30, 10)
       .lineStyle(2, 0x74b9ff, 0.6)
-      .strokeRoundedRect(-100, 140, 200, 30, 10);
+      .strokeRoundedRect(-100, 200, 200, 30, 10);
     container.add(hintBg);
 
     // Mostrar pista de la secuencia correcta
-    const hintText = this.add.text(0, 155, '💡 Pista: 1 → 3 → 2 → 4', {
+    const hintText = this.add.text(0, 215, '💡 Pista: 1 → 3 → 2 → 4', {
       fontSize: isMobile ? '12px' : '14px',
       fontFamily: 'Arial Bold',
       fill: '#74b9ff',

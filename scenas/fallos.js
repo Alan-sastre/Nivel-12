@@ -411,8 +411,8 @@ class Fallos extends Phaser.Scene {
             }
         }
 
-        // Crear nebulosas de fondo
-        this.createNebulae(gameWidth, gameHeight);
+        // Crear nebulosas de fondo - ELIMINADO por problemas de niebla
+        // this.createNebulae(gameWidth, gameHeight);
 
         // Animated grid overlay
         this.createEnergyGrid(gameWidth, gameHeight);
