@@ -715,9 +715,11 @@ class DroneRepairScene extends Phaser.Scene {
          // POSICIÓN CONDICIONAL: Solo en móviles debajo del mensaje "Esperando...", en desktop en la parte inferior
          let startY;
          if (this.isMobile) {
-             // MÓVILES: Debajo del mensaje "Esperando..." que está en y + 40
-             const aiSectionY = this.cameras.main.height * 0.5; // Posición aproximada de la IA
-             startY = aiSectionY + 80; // Justo debajo del mensaje "Esperando..."
+             // MÓVILES: Debajo del mensaje "Esperando..." 
+             // El mensaje está en y + 40, donde y = height * 0.45
+             const aiY = this.cameras.main.height * 0.45;
+             const statusY = aiY + 40; // Posición del mensaje "Esperando..."
+             startY = statusY + 60; // Debajo del mensaje con espacio suficiente
          } else {
              // DESKTOP: Mantener posición original en la parte inferior
              startY = this.cameras.main.height * 0.8; // Posición original para desktop
