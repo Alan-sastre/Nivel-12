@@ -694,23 +694,23 @@ class DroneRepairScene extends Phaser.Scene {
         // Encontrar el bloque correcto
         const correctBlock = this.allBlockData.find(block => block.text === correctCommand);
 
-        // Seleccionar 2 bloques incorrectos aleatorios
+        // Seleccionar bloques incorrectos aleatorios - CANTIDAD SEGÚN DISPOSITIVO
         const incorrectBlocks = this.allBlockData.filter(block =>
             block.text !== correctCommand &&
             !this.selectedBlocks.includes(block.text)
         );
 
-        // Mezclar y tomar 2 incorrectos
+        // Mezclar y tomar cantidad según dispositivo
         const shuffledIncorrect = incorrectBlocks.sort(() => Math.random() - 0.5);
-        const selectedIncorrect = shuffledIncorrect.slice(0, 2);
+        const incorrectCount = this.isMobile ? 1 : 2; // MÓVILES: 1 incorrecto, DESKTOP: 2 incorrectos
+        const selectedIncorrect = shuffledIncorrect.slice(0, incorrectCount);
 
-        // Combinar correcto + 2 incorrectos y mezclar
+        // Combinar correcto + incorrectos y mezclar
         this.currentOptions = [correctBlock, ...selectedIncorrect].sort(() => Math.random() - 0.5);
 
-        // Crear los 3 bloques en una fila horizontal - POSICIÓN CONDICIONAL SEGÚN DISPOSITIVO
+        // Crear los bloques en una fila horizontal - POSICIÓN CONDICIONAL SEGÚN DISPOSITIVO
          const containerWidth = this.cameras.main.width * 0.8; // Ajustar ancho del contenedor
          const containerHeight = 90; // Altura adecuada para los bloques
-         const startX = this.cameras.main.width / 2; // Centrar horizontalmente
          
          // POSICIÓN CONDICIONAL: Solo en móviles debajo del mensaje "Esperando...", en desktop en la parte inferior
          let startY;
@@ -727,15 +727,16 @@ class DroneRepairScene extends Phaser.Scene {
 
          this.currentOptions.forEach((data, index) => {
              // AJUSTES ESPECÍFICOS PARA MÓVILES
-             let blockWidth, blockHeight, spacing, fontSize, iconSize;
+             let blockWidth, blockHeight, spacing, fontSize, iconSize, startX;
              
              if (this.isMobile) {
-                 // MÓVILES: Bloques más pequeños y mejor espaciado
+                 // MÓVILES: Bloques más pequeños, mejor espaciado y posición más a la izquierda
                  blockWidth = 200; // Más pequeño para móviles
                  blockHeight = 70; // Más compacto
                  spacing = 220; // Espaciado más ajustado
                  fontSize = '11px'; // Texto más pequeño
                  iconSize = '20px'; // Icono más pequeño
+                 startX = this.cameras.main.width * 0.35; // MÁS A LA IZQUIERDA para evitar superposición
              } else {
                  // DESKTOP: Tamaños originales
                  blockWidth = 280;
@@ -743,6 +744,7 @@ class DroneRepairScene extends Phaser.Scene {
                  spacing = 300;
                  fontSize = '13px';
                  iconSize = '24px';
+                 startX = this.cameras.main.width / 2; // Centrado para desktop
              }
              
              const blockX = startX - spacing + (index * spacing); // Distribución horizontal
