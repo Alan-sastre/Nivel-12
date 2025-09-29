@@ -813,10 +813,14 @@ class DroneRepairScene extends Phaser.Scene {
             block.setAlpha(0);
             icon.setAlpha(0);
             text.setAlpha(0);
-            desc.setAlpha(0);
+            if (desc) desc.setAlpha(0); // Solo si desc existe
+
+            // Crear array de targets para animación, excluyendo desc si es null
+            const animationTargets = [block, icon, text];
+            if (desc) animationTargets.push(desc);
 
             this.tweens.add({
-                targets: [block, icon, text, desc],
+                targets: animationTargets,
                 alpha: 1,
                 scaleX: { from: 0.8, to: 1 },
                 scaleY: { from: 0.8, to: 1 },
