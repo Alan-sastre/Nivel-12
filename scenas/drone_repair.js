@@ -10,6 +10,8 @@ class DroneRepairScene extends Phaser.Scene {
         this.scanLines = [];
         this.selectedBlocks = [];
         this.currentStep = 0;
+        // Detección de dispositivos móviles
+        this.isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent) || window.innerWidth < 768;
         this.codeSteps = [
             'int sensorAmenaza = A1;',
             'int sistemaDefensa = 8;',
@@ -722,9 +724,25 @@ class DroneRepairScene extends Phaser.Scene {
          }
 
          this.currentOptions.forEach((data, index) => {
-             const blockWidth = 280; // Reducir ancho para que quepan en pantalla
-             const blockHeight = 85; // Mantener altura adecuada
-             const spacing = 300; // Reducir espaciado para que quepan los 3 bloques
+             // AJUSTES ESPECÍFICOS PARA MÓVILES
+             let blockWidth, blockHeight, spacing, fontSize, iconSize;
+             
+             if (this.isMobile) {
+                 // MÓVILES: Bloques más pequeños y mejor espaciado
+                 blockWidth = 200; // Más pequeño para móviles
+                 blockHeight = 70; // Más compacto
+                 spacing = 220; // Espaciado más ajustado
+                 fontSize = '11px'; // Texto más pequeño
+                 iconSize = '20px'; // Icono más pequeño
+             } else {
+                 // DESKTOP: Tamaños originales
+                 blockWidth = 280;
+                 blockHeight = 85;
+                 spacing = 300;
+                 fontSize = '13px';
+                 iconSize = '24px';
+             }
+             
              const blockX = startX - spacing + (index * spacing); // Distribución horizontal
              const blockY = startY;
 
@@ -743,14 +761,14 @@ class DroneRepairScene extends Phaser.Scene {
 
              // Icono del bloque más pequeño
              const icon = this.add.text(blockX - blockWidth/2 + 15, blockY - 5, data.icon, {
-                 fontSize: '24px', // Aumentar tamaño del icono para mejor visibilidad
+                 fontSize: iconSize, // Usar tamaño responsivo
                  resolution: 4, // Aumentar resolución para mejor calidad
                  smoothed: true // Activar suavizado para mejor calidad
              });
 
              // Texto principal mejorado para evitar pixelado
              const text = this.add.text(blockX - blockWidth/2 + 50, blockY - 12, data.text, {
-                 fontSize: '13px', // Reducir más el tamaño para evitar desbordamiento
+                 fontSize: fontSize, // Usar tamaño responsivo
                  fill: '#ffffff',
                  fontFamily: 'Arial Black, Arial, sans-serif', // Usar Arial Black para mejor renderizado
                  fontStyle: 'bold',
@@ -763,8 +781,9 @@ class DroneRepairScene extends Phaser.Scene {
              }).setOrigin(0, 0.5);
 
              // Descripción mejorada para evitar pixelado y superposición
+             const descFontSize = this.isMobile ? '9px' : '10px'; // Tamaño aún más pequeño para móviles
              const desc = this.add.text(blockX - blockWidth/2 + 50, blockY + 20, data.desc, {
-                 fontSize: '10px', // Reducir más el tamaño para evitar desbordamiento
+                 fontSize: descFontSize, // Usar tamaño responsivo
                  fill: '#cccccc', // Cambiar a gris claro para mejor contraste
                  fontFamily: 'Arial, sans-serif', // Cambiar a Arial para mejor renderizado
                  stroke: '#000000',
