@@ -149,31 +149,28 @@ class Rompecabezas extends Phaser.Scene {
         title: "🔧 Declaración de Variables Globales",
         content:
           "📍 CONFIGURACIÓN INICIAL:\n\n🚨 int sensorAmenaza = A1;\n   → Pin analógico A1 detecta amenazas\n   → Entrada analógica (0-1023 valores)\n\n🛡️ int sistemaDefensa = 8;\n   → Pin digital #8 controla defensa\n   → Salida digital (0V = OFF, 5V = ON)\n\n💡 CONCEPTO CLAVE:\nLas variables globales se declaran fuera de las funciones para ser accesibles en todo el programa.",
-        icon: "🔧",
+
       },
       {
         title: "⚙️ Función setup() - Inicialización",
         content:
           "🚀 CONFIGURACIÓN INICIAL:\n\n📥 pinMode(sensorAmenaza, INPUT);\n   → Configura A1 como entrada\n   → Lee señales analógicas (0-1023)\n\n📤 pinMode(sistemaDefensa, OUTPUT);\n   → Configura pin 8 como salida\n   → Controla sistema de defensa\n\n⏰ setup() se ejecuta UNA VEZ al inicio.",
-        icon: "⚙️",
       },
       {
         title: "🔄 Función loop() - Monitoreo",
         content:
           "📡 LECTURA CONTINUA:\n\n🔍 int amenaza = analogRead(sensorAmenaza);\n   → Lee valor del pin A1\n   → Convierte señal a digital (0-1023)\n\n📈 VALORES DE REFERENCIA:\n   • 0 = Sin amenaza\n   • 512 = Amenaza media\n   • 1023 = Amenaza máxima\n\n🔁 loop() se repite infinitamente.",
-        icon: "🔄",
       },
       {
         title: "⚠️ Evaluación de Condición",
         content:
           "🚨 DETECCIÓN DE AMENAZA:\n\n⚡ if (amenaza > 700) {\n   → Umbral: 700 ≈ 3.42V\n   → Si amenaza > 3.42V → PELIGRO\n   → Activa sistema de defensa\n\n📊 ANÁLISIS:\n   • Seguro: < 600 (2.93V)\n   • Alerta: 600-700 (2.93-3.42V)\n   • Crítico: > 700 (3.42V)\n\n💡 Valor 700 = umbral de activación.",
-        icon: "⚠️",
       },
       {
         title: "🛡️ Sistema de Defensa",
         content:
           "⚡ RESPUESTA AUTOMÁTICA:\n\n🟢 digitalWrite(sistemaDefensa, HIGH);\n   → Activa defensa (5V)\n   → Sistema de protección ON\n\n🔴 digitalWrite(sistemaDefensa, LOW);\n   → Desactiva defensa (0V)\n   → Sistema de protección OFF\n\n🔄 El sistema responde instantáneamente a las amenazas detectadas.",
-        icon: "🛡️",
+
       },
     ];
   }

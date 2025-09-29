@@ -25,8 +25,6 @@ var config = {
     willReadFrequently: true,
   },
   scene: [
-    DroneRepairScene,
-    Rompecabezas,
     CircuitosQuemados,
     scenaVideo4,
     Ultima,
