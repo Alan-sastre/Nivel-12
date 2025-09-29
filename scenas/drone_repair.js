@@ -780,19 +780,22 @@ class DroneRepairScene extends Phaser.Scene {
                  smoothed: true // Activar suavizado para mejor calidad
              }).setOrigin(0, 0.5);
 
-             // Descripción mejorada para evitar pixelado y superposición
-             const descFontSize = this.isMobile ? '9px' : '10px'; // Tamaño aún más pequeño para móviles
-             const desc = this.add.text(blockX - blockWidth/2 + 50, blockY + 20, data.desc, {
-                 fontSize: descFontSize, // Usar tamaño responsivo
-                 fill: '#cccccc', // Cambiar a gris claro para mejor contraste
-                 fontFamily: 'Arial, sans-serif', // Cambiar a Arial para mejor renderizado
-                 stroke: '#000000',
-                 strokeThickness: 2, // Aumentar grosor del borde para mejor definición
-                 wordWrap: { width: blockWidth - 120 }, // Aumentar margen para evitar desbordamiento
-                 resolution: 4, // Aumentar resolución para texto más nítido
-                 padding: { x: 4, y: 4 }, // Aumentar padding para mejor renderizado
-                 smoothed: true // Activar suavizado para mejor calidad
-             }).setOrigin(0, 0.5);
+             // Descripción solo para desktop - oculta en móviles
+             let desc = null;
+             if (!this.isMobile) {
+                 const descFontSize = '10px';
+                 desc = this.add.text(blockX - blockWidth/2 + 50, blockY + 20, data.desc, {
+                     fontSize: descFontSize,
+                     fill: '#cccccc', // Cambiar a gris claro para mejor contraste
+                     fontFamily: 'Arial, sans-serif', // Cambiar a Arial para mejor renderizado
+                     stroke: '#000000',
+                     strokeThickness: 2, // Aumentar grosor del borde para mejor definición
+                     wordWrap: { width: blockWidth - 120 }, // Aumentar margen para evitar desbordamiento
+                     resolution: 4, // Aumentar resolución para texto más nítido
+                     padding: { x: 4, y: 4 }, // Aumentar padding para mejor renderizado
+                     smoothed: true // Activar suavizado para mejor calidad
+                 }).setOrigin(0, 0.5);
+             }
 
             block.blockData = data;
             block.blockText = text;
