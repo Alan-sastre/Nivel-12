@@ -32,6 +32,10 @@ class DroneRepairScene extends Phaser.Scene {
     }
 
     create() {
+        // Detectar dispositivo móvil
+        this.isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent) || 
+                       window.innerWidth <= 768;
+        
         // Obtener dimensiones de pantalla
         const width = this.scale.width;
         const height = this.scale.height;
@@ -152,7 +156,7 @@ class DroneRepairScene extends Phaser.Scene {
 
         // Título principal mejorado para evitar pixelado
         const mainTitle = this.add.text(0, -5, '🛡️ DEFENSA CIBERNÉTICA', {
-            fontSize: '22px', // Aumentar tamaño para mejor calidad
+            fontSize: this.isMobile ? '18px' : '22px', // Más pequeño en móviles
             fill: '#00ccff',
             fontFamily: 'Arial, sans-serif',
             fontStyle: 'bold',
@@ -163,7 +167,7 @@ class DroneRepairScene extends Phaser.Scene {
 
         // Subtítulo mejorado para evitar pixelado
         const subtitle = this.add.text(0, 12, 'Seguridad Avanzada', {
-            fontSize: '14px', // Aumentar tamaño para mejor calidad
+            fontSize: this.isMobile ? '12px' : '14px', // Más pequeño en móviles
             fill: '#88ccff',
             fontFamily: 'Arial, sans-serif',
             fontStyle: 'italic',
@@ -174,7 +178,7 @@ class DroneRepairScene extends Phaser.Scene {
 
         // Texto "Sistema seguro" mejorado para evitar pixelado
         this.systemStatusText = this.add.text(width / 2, 85, '✅ SISTEMA SEGURO', { // Mucho más arriba
-            fontSize: '18px', // Aumentar tamaño para mejor calidad
+            fontSize: this.isMobile ? '16px' : '18px', // Más pequeño en móviles
             fill: '#00ff00',
             fontFamily: 'Arial, sans-serif',
             fontStyle: 'bold',
@@ -712,9 +716,10 @@ class DroneRepairScene extends Phaser.Scene {
          const startY = this.cameras.main.height * 0.8; // Subir más para compactar
 
          this.currentOptions.forEach((data, index) => {
-             const blockWidth = 280; // Reducir ancho para que quepan en pantalla
-             const blockHeight = 85; // Mantener altura adecuada
-             const spacing = 300; // Reducir espaciado para que quepan los 3 bloques
+             // Ajustar dimensiones para móviles
+             const blockWidth = this.isMobile ? 240 : 280; // Más pequeño en móviles
+             const blockHeight = this.isMobile ? 75 : 85; // Más compacto en móviles
+             const spacing = this.isMobile ? 250 : 300; // Menos espaciado en móviles
              const blockX = startX - spacing + (index * spacing); // Distribución horizontal
              const blockY = startY;
 
@@ -733,20 +738,20 @@ class DroneRepairScene extends Phaser.Scene {
 
              // Icono del bloque más pequeño
              const icon = this.add.text(blockX - blockWidth/2 + 15, blockY - 5, data.icon, {
-                 fontSize: '24px', // Aumentar tamaño del icono para mejor visibilidad
+                 fontSize: this.isMobile ? '20px' : '24px', // Más pequeño en móviles
                  resolution: 4, // Aumentar resolución para mejor calidad
                  smoothed: true // Activar suavizado para mejor calidad
              });
 
              // Texto principal mejorado para evitar pixelado
              const text = this.add.text(blockX - blockWidth/2 + 50, blockY - 12, data.text, {
-                 fontSize: '13px', // Reducir más el tamaño para evitar desbordamiento
+                 fontSize: this.isMobile ? '11px' : '13px', // Más pequeño en móviles
                  fill: '#ffffff',
                  fontFamily: 'Arial Black, Arial, sans-serif', // Usar Arial Black para mejor renderizado
                  fontStyle: 'bold',
                  stroke: '#000000',
-                 strokeThickness: 3, // Aumentar grosor del borde para mejor definición
-                 wordWrap: { width: blockWidth - 120 }, // Aumentar margen para evitar desbordamiento
+                 strokeThickness: this.isMobile ? 2 : 3, // Menos grosor en móviles
+                 wordWrap: { width: blockWidth - (this.isMobile ? 100 : 120) }, // Ajustar margen según dispositivo
                  resolution: 4, // Aumentar resolución para texto más nítido
                  padding: { x: 4, y: 4 }, // Aumentar padding para mejor renderizado
                  smoothed: true // Activar suavizado para mejor calidad
@@ -754,12 +759,12 @@ class DroneRepairScene extends Phaser.Scene {
 
              // Descripción mejorada para evitar pixelado y superposición
              const desc = this.add.text(blockX - blockWidth/2 + 50, blockY + 20, data.desc, {
-                 fontSize: '10px', // Reducir más el tamaño para evitar desbordamiento
+                 fontSize: this.isMobile ? '9px' : '10px', // Más pequeño en móviles
                  fill: '#cccccc', // Cambiar a gris claro para mejor contraste
                  fontFamily: 'Arial, sans-serif', // Cambiar a Arial para mejor renderizado
                  stroke: '#000000',
-                 strokeThickness: 2, // Aumentar grosor del borde para mejor definición
-                 wordWrap: { width: blockWidth - 120 }, // Aumentar margen para evitar desbordamiento
+                 strokeThickness: this.isMobile ? 1 : 2, // Menos grosor en móviles
+                 wordWrap: { width: blockWidth - (this.isMobile ? 100 : 120) }, // Ajustar margen según dispositivo
                  resolution: 4, // Aumentar resolución para texto más nítido
                  padding: { x: 4, y: 4 }, // Aumentar padding para mejor renderizado
                  smoothed: true // Activar suavizado para mejor calidad
@@ -832,6 +837,10 @@ class DroneRepairScene extends Phaser.Scene {
         const originalColor = this.getBlockColor(block.blockData.type);
         const originalStrokeColor = this.getBlockStrokeColor(block.blockData.type);
 
+        // Mejorar la interacción táctil para móviles
+        const hoverScale = this.isMobile ? 1.08 : 1.05; // Mayor escala en móviles para mejor feedback
+        const hoverDuration = this.isMobile ? 150 : 200; // Animación más rápida en móviles
+
         block.on('pointerover', () => {
             if (!block.isSelected) {
                 // Crear un color más claro para hover manteniendo el tono original
@@ -843,9 +852,9 @@ class DroneRepairScene extends Phaser.Scene {
 
                 this.tweens.add({
                     targets: [block, text, icon, desc],
-                    scaleX: 1.05,
-                    scaleY: 1.05,
-                    duration: 200,
+                    scaleX: hoverScale,
+                    scaleY: hoverScale,
+                    duration: hoverDuration,
                     ease: 'Power2'
                 });
             }
